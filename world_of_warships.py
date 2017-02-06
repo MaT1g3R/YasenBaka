@@ -102,9 +102,9 @@ class WorldOfWarships:
             res.append(ctx.message.server.get_member(id_).name)
 
         res_str = '```' + ', '.join(res) + '```'
-        await self.bot.say('You can be shamed by pings if you are in the shame shame_list! Use the `?addshame` command '
+        await self.bot.say('You can be shamed by pings if you are in the shamelist! Use the `?addshame` command '
                            'with your WoWs username to add yourself to '
-                           'the shame_list and use the `?removeshame` command '
+                           'the shamelist and use the `?removeshame` command '
                            'without any other inputs to remove you from the shamelist')
         await self.bot.say(res_str)
 
