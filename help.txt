@@ -1,0 +1,9 @@
+You can find the bot's source code at:
+<https://github.com/MaT1g3R/YasenBaka>
+```
+anime:  Searches MAL for an anime
+choose: Choose an item from the input seperated by space
+joined: Shows when a member joined
+roll:   Rolls a dice in NdN format
+salt:   Chance of a thing happeneing
+```
