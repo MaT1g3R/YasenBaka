@@ -8,6 +8,7 @@ import textwrap
 import stackexchange
 from os import listdir
 from os.path import isfile, join
+import json
 
 
 class Commands:
@@ -16,17 +17,13 @@ class Commands:
         self.kanna_files = read_kana_files()
         self.bot = bot
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
-        with open('help.txt', 'r') as help_:
-            self.help_message = help_.read()
+        with open('help.json', 'r') as help_:
+            self.help_message = json.load(help_)
 
-    @commands.command(pass_context=True)
-    async def help(self, ctx, input_: str = None):
+    @commands.command()
+    async def help(self, input_: str = 'Default'):
         """Help messages"""
-        author = ctx.message.author
-        if input_ is None:
-            await self.bot.send_message(author, self.help_message)
-        elif input_ == '1':
-            await self.bot.send_message(author, '1')
+        await self.bot.say(self.help_message[input_])
 
     @commands.command()
     async def roll(self, dice: str):
