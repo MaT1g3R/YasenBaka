@@ -26,25 +26,58 @@ class WorldOfWarships:
     @commands.command()
     async def ship(self, *input_: str):
         """ look for a ship on the wargaming wiki"""
+        ship_dict = None
         ship_name = ' '.join(input_).title()
         if ship_name.startswith('Arp'):
             ship_name = ship_name.replace('Arp', 'ARP')
         for key, val in self.na_ships.items():
             if val['name'] == ship_name:
-                await self.try_say(str(val))
-                return
-        await self.bot.say('Ship not found!')
+                ship_dict = val
+                break
+        if ship_dict is None:
+            await self.bot.say("Ship not found!")
+            return
+        # Format the dictionary so it's human readable
+        name = ship_dict['name']
+        armour = ship_dict['default_profile']['armour']
+        # --------------------------------------------------------------------------------------------------------------
+        tier = 'Tier: {}' .format(ship_dict['tier'])
+        # --------------------------------------------------------------------------------------------------------------
+        price_val = '0'
+        if ship_dict['price_gold'] != 0:
+            price_val = str(ship_dict['price_gold']) + ' Doubloons'
+        elif ship_dict['price_credit'] != 0:
+            price_val = str(ship_dict['price_credit']) + ' Credits'
+        price = 'Price: {}'.format(price_val)
+        # --------------------------------------------------------------------------------------------------------------
+        hp = 'Hit Points: {}'.format(ship_dict['default_profile']['hull']['health'])
+        # --------------------------------------------------------------------------------------------------------------
+        if armour['citadel']['min'] == armour['citadel']['max']:
+            citadel_armor_val = armour['citadel']['min']
+        else:
+            citadel_armor_val = str(armour['citadel']['min']) + '-' + str(armour['citadel']['max'])
+        citadel_armor = 'Citadel armor: {} mm'.format(citadel_armor_val)
+        # --------------------------------------------------------------------------------------------------------------
+        if armour['casemate']['min'] == armour['casemate']['max']:
+            gun_casemate_armor_val = armour['casemate']['min']
+        else:
+            gun_casemate_armor_val = str(armour['casemate']['min']) + '-' + str(armour['casemate']['max'])
+        gun_casemate_armor = 'Gun Casemate Armor: {} mm'.format(gun_casemate_armor_val)
+        result = '```\n' + name + '\n' + tier + '\n' + price + '\n' + hp + '\n' + citadel_armor + '\n' + \
+                 gun_casemate_armor + '\n```'
+        await self.bot.say(result)
 
     @commands.command(pass_context=True)
     async def shame(self, ctx, user_name: str, region: str= 'NA'):
         """Get shamed by a bot"""
+        server_id = ctx.message.server.id
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
         if user_name.startswith('<@!'):
             user_name = '<@' + user_name[3:-1] + '>'
-        if user_name in self.shame_list:
-            url = "http://na.warshipstoday.com/signature/{}/dark.png".format(self.shame_list[user_name])
+        if user_name in self.shame_list[server_id]:
+            url = "http://na.warshipstoday.com/signature/{}/dark.png".format(self.shame_list[server_id][user_name])
             fn = self.generate_image_online(url)
             await self.bot.send_file(ctx.message.channel, fn)
             return
@@ -96,7 +129,7 @@ class WorldOfWarships:
     async def shamelist(self, ctx):
         """Get the entire shame shamelist"""
         res = []
-        for key in self.shame_list:
+        for key in self.shame_list[ctx.message.server.id]:
             id_ = key[2:-1]
             res.append(ctx.message.server.get_member(id_).name)
 
@@ -110,8 +143,9 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def addshame(self, ctx, user_name: str):
         """Add you to the shame shamelist"""
-        old_dict = dict(self.shame_list)
+        new_entry = False
         user_id = "<@" + str(ctx.message.author.id) + ">"
+        server_id = ctx.message.server.id
         request_url = "https://api.worldofwarships.com/wows/account/list/?" \
                       "application_id={}&search={}".format(self.wows_api, user_name)
         r = requests.get(request_url).text
@@ -124,18 +158,25 @@ class WorldOfWarships:
             await self.bot.say("Can't find player")
             return
         playerid = json_data["data"][0]["account_id"]
-        self.shame_list[user_id] = playerid
+        if ctx.message.server.id not in self.shame_list:
+            self.shame_list[server_id] = {}
+            new_entry = True
+        if user_id not in self.shame_list[server_id]:
+            self.shame_list[server_id][user_id] = None
+            new_entry = True
+        self.shame_list[ctx.message.server.id][user_id] = playerid
         with open('shamelist.json', 'w') as fp:
             json.dump(self.shame_list, fp)
         with open('shamelist.json') as data_file:
             self.shame_list = json.load(data_file)
-        await self.bot.say('Add success!') if user_id not in old_dict else await self.bot.say('Edit Success!')
+        await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
 
     @commands.command(pass_context=True)
     async def removeshame(self, ctx):
         """Remove you from the shame shamelist"""
-        if "<@" + str(ctx.message.author.id) + ">" in self.shame_list:
-            self.shame_list.pop("<@" + str(ctx.message.author.id) + ">", None)
+        server_id = ctx.message.server.id
+        if "<@" + str(ctx.message.author.id) + ">" in self.shame_list[server_id]:
+            self.shame_list[server_id].pop("<@" + str(ctx.message.author.id) + ">", None)
             with open('shamelist.json', 'w') as fp:
                 json.dump(self.shame_list, fp)
             with open('shamelist.json') as data_file:

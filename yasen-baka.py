@@ -10,7 +10,7 @@ import json
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
-    yasen_baka = commands.Bot(command_prefix=['!', '?'], description=description)
+    yasen_baka = commands.Bot(command_prefix=['!', '?', 'pip '], description=description)
 
     @yasen_baka.event
     async def on_ready():

@@ -6,7 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="cbb44fe8-c9db-4b5e-a641-458dfcbe0660" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/help.json" afterPath="$PROJECT_DIR$/help.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/music_player.py" afterPath="$PROJECT_DIR$/music_player.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/na_ships.json" afterPath="$PROJECT_DIR$/na_ships.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/shamelist.json" afterPath="$PROJECT_DIR$/shamelist.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/world_of_warships.py" afterPath="$PROJECT_DIR$/world_of_warships.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/yasen-baka.py" afterPath="$PROJECT_DIR$/yasen-baka.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,31 +27,41 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file leaf-file-name="yasen-baka.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/yasen-baka.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="476">
+              <caret line="28" column="38" lean-forward="true" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="world_of_warships.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/world_of_warships.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="1003">
+              <caret line="59" column="55" lean-forward="true" selection-start-line="59" selection-start-column="55" selection-end-line="59" selection-end-column="55" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="temp.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/temp.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="0" column="5179" lean-forward="false" selection-start-line="0" selection-start-column="5179" selection-end-line="0" selection-end-column="5179" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="help.json" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/help.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="459">
-              <caret line="26" column="65" lean-forward="false" selection-start-line="26" selection-start-column="65" selection-end-line="26" selection-end-column="65" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="music_player.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/music_player.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="255">
-              <caret line="229" column="54" lean-forward="false" selection-start-line="229" selection-start-column="11" selection-end-line="229" selection-end-column="54" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="main_commands.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main_commands.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1088">
-              <caret line="64" column="0" lean-forward="true" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+            <state relative-caret-position="153">
+              <caret line="8" column="90" lean-forward="false" selection-start-line="8" selection-start-column="90" selection-end-line="8" selection-end-column="90" />
               <folding />
             </state>
           </provider>
@@ -62,8 +78,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>&lt;a href=&quot;/questions/</find>
-      <find>/questions/</find>
       <find>The</find>
       <find>answer</find>
       <find>Update</find>
@@ -85,13 +99,15 @@
       <find>ex</find>
       <find>ytdl</find>
       <find>Game</find>
-      <find>name</find>
       <find>Moskva</find>
       <find>Bismarck</find>
       <find>'</find>
       <find>shame_list</find>
       <find>shame</find>
       <find>99271746347110400</find>
+      <find>name</find>
+      <find>&quot;</find>
+      <find>price</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -105,25 +121,26 @@
         <option value="$PROJECT_DIR$/musicbot/downloader.py" />
         <option value="$USER_HOME$/Downloads/ex1.py" />
         <option value="$PROJECT_DIR$/.idea/test.py" />
-        <option value="$PROJECT_DIR$/shamelist.json" />
         <option value="$PROJECT_DIR$/text2png.py" />
         <option value="$USER_HOME$/AppData/Local/Programs/Python/Python35-32/Lib/site-packages/stackexchange/models.py" />
         <option value="$USER_HOME$/AppData/Local/Programs/Python/Python35-32/Lib/site-packages/youtube_dl/YoutubeDL.py" />
         <option value="$PROJECT_DIR$/lenny.txt" />
         <option value="$PROJECT_DIR$/na_ships.json" />
-        <option value="$PROJECT_DIR$/music_player.py" />
         <option value="$PROJECT_DIR$/test.py" />
         <option value="$PROJECT_DIR$/channel_reader.py" />
         <option value="$PROJECT_DIR$/latex.py" />
         <option value="$PROJECT_DIR$/lewd.txt" />
         <option value="$PROJECT_DIR$/help.txt" />
-        <option value="$PROJECT_DIR$/world_of_warships.py" />
         <option value="$PROJECT_DIR$/api_keys.json" />
-        <option value="$PROJECT_DIR$/yasen-baka.py" />
         <option value="$USER_HOME$/AppData/Roaming/Python/Python36/site-packages/cleverbot/cleverbot.py" />
         <option value="$PROJECT_DIR$/channelreader.py" />
         <option value="$PROJECT_DIR$/main_commands.py" />
+        <option value="$PROJECT_DIR$/yasen-baka.py" />
+        <option value="$PROJECT_DIR$/shamelist.json" />
+        <option value="$PROJECT_DIR$/music_player.py" />
+        <option value="$PROJECT_DIR$/world_of_warships.py" />
         <option value="$PROJECT_DIR$/help.json" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -616,7 +633,14 @@
       <option name="project" value="LOCAL" />
       <updated>1486920414026</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Help messages completed">
+      <created>1486930571663</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1486930571663</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TodoView">
@@ -637,9 +661,9 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2631579" sideWeight="0.50898635" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276414" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32862645" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18463181" sideWeight="0.49101365" order="2" side_tool="false" content_ui="tabs" x="155" y="694" width="1521" height="223" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.1547492" sideWeight="0.49101365" order="2" side_tool="false" content_ui="tabs" x="155" y="694" width="1521" height="223" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32862645" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276414" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.30202776" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -693,7 +717,8 @@
     <MESSAGE value="Cleverbot API is dead, removed chat bot function atm" />
     <MESSAGE value="Cleverbot API fixed itself LUUL" />
     <MESSAGE value="Kyubey" />
-    <option name="LAST_COMMIT_MESSAGE" value="Kyubey" />
+    <MESSAGE value="Help messages completed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Help messages completed" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -702,14 +727,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35-32/Lib/site-packages/discord/server.py" />
-    <entry file="file://$USER_HOME$/.PyCharmCE2016.3/system/python_stubs/-743455275/builtins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="2791" column="8" lean-forward="false" selection-start-line="2791" selection-start-column="8" selection-end-line="2791" selection-end-column="8" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/1726830963.png" />
     <entry file="file://$PROJECT_DIR$/1132882930.png" />
     <entry file="file://$USER_HOME$/AppData/Local/Programs/Python/Python35-32/Lib/urllib/parse.py" />
@@ -820,13 +837,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/shamelist.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="0" column="522" lean-forward="true" selection-start-line="0" selection-start-column="522" selection-end-line="0" selection-end-column="522" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Roaming/Python/Python36/site-packages/cleverbot3/cleverbot.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="272">
@@ -875,14 +885,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/yasen-baka.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="612">
-          <caret line="36" column="0" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="36" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/latex.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -891,34 +893,69 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/world_of_warships.py">
+    <entry file="file://$PROJECT_DIR$/shamelist.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2652">
-          <caret line="10" column="36" lean-forward="false" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main_commands.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1088">
-          <caret line="64" column="0" lean-forward="true" selection-start-line="64" selection-start-column="0" selection-end-line="64" selection-end-column="0" />
+        <state relative-caret-position="17">
+          <caret line="0" column="436" lean-forward="true" selection-start-line="0" selection-start-column="436" selection-end-line="0" selection-end-column="436" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/music_player.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="229" column="54" lean-forward="false" selection-start-line="229" selection-start-column="11" selection-end-line="229" selection-end-column="54" />
+        <state relative-caret-position="187">
+          <caret line="92" column="0" lean-forward="true" selection-start-line="92" selection-start-column="0" selection-end-line="92" selection-end-column="0" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main_commands.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="204">
+          <caret line="12" column="0" lean-forward="true" selection-start-line="12" selection-start-column="0" selection-end-line="12" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/world_of_warships.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1003">
+          <caret line="59" column="55" lean-forward="true" selection-start-line="59" selection-start-column="55" selection-end-line="59" selection-end-column="55" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/temp.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="0" column="5179" lean-forward="false" selection-start-line="0" selection-start-column="5179" selection-end-line="0" selection-end-column="5179" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/yasen-baka.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="28" column="38" lean-forward="true" selection-start-line="28" selection-start-column="38" selection-end-line="28" selection-end-column="38" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="187">
+            <caret line="11" column="62" lean-forward="false" selection-start-line="11" selection-start-column="62" selection-end-line="11" selection-end-column="62" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/help.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="459">
-          <caret line="26" column="65" lean-forward="false" selection-start-line="26" selection-start-column="65" selection-end-line="26" selection-end-column="65" />
+        <state relative-caret-position="153">
+          <caret line="8" column="90" lean-forward="false" selection-start-line="8" selection-start-column="90" selection-end-line="8" selection-end-column="90" />
           <folding />
         </state>
       </provider>
