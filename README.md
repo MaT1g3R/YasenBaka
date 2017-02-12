@@ -9,4 +9,4 @@ World of Warships commands:
 ship, shame, shamelist, addshame, removeshame  
 
 Music commadns:  
-join, summon, play, volume, pause, resume, stop, skip, playing
+summon, play, volume, pause, resume, stop, skip, playing
