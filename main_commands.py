@@ -26,6 +26,11 @@ class Commands:
         await self.bot.say(self.help_message[input_])
 
     @commands.command()
+    async def kyubey(self):
+        """Madoka is best anime ever"""
+        await self.bot.say('／人◕ ‿‿ ◕人＼')
+
+    @commands.command()
     async def roll(self, dice: str):
         """Rolls a dice in NdN format."""
         try:
