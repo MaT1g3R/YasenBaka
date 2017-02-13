@@ -167,5 +167,5 @@ def read_kana_files():
     :return: All path of kanna pics
     :rtype: list
     """
-    return [join('kanna_is_cute_af//kanna is cute af', f) for
-            f in listdir('kanna_is_cute_af//kanna is cute af') if isfile(join('kanna_is_cute_af//kanna is cute af', f))]
+    return [join('kanna_is_cute_af', f) for
+            f in listdir('kanna_is_cute_af') if isfile(join('kanna_is_cute_af', f))]
