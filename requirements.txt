@@ -14,14 +14,8 @@ discord.py == 0.16.5
 # main_commands.py: 5
 google == 1.9.3
 
-# yasen-baka.py: 4
-googlemusicplayer == 0.6
-
 # main_commands.py: 6
 html2text == 2016.9.19
-
-# yasen-baka.py: 3
-latex == 0.6.4
 
 # main_commands.py: 8
 py_stackexchange == 2.2.6
