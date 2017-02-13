@@ -38,34 +38,36 @@ class WorldOfWarships:
             await self.bot.say("Ship not found!")
             return
         # Format the dictionary so it's human readable
-        name = ship_dict['name']
+        result = ['```']
         armour = ship_dict['default_profile']['armour']
         # --------------------------------------------------------------------------------------------------------------
-        tier = 'Tier: {}' .format(ship_dict['tier'])
+        result.append(ship_dict['name'])
+        # --------------------------------------------------------------------------------------------------------------
+        result.append('Tier: {}' .format(ship_dict['tier']))
         # --------------------------------------------------------------------------------------------------------------
         price_val = '0'
         if ship_dict['price_gold'] != 0:
             price_val = str(ship_dict['price_gold']) + ' Doubloons'
         elif ship_dict['price_credit'] != 0:
             price_val = str(ship_dict['price_credit']) + ' Credits'
-        price = 'Price: {}'.format(price_val)
+        result.append('Price: {}'.format(price_val))
         # --------------------------------------------------------------------------------------------------------------
-        hp = 'Hit Points: {}'.format(ship_dict['default_profile']['hull']['health'])
+        result.append('Hit Points: {}'.format(ship_dict['default_profile']['hull']['health']))
         # --------------------------------------------------------------------------------------------------------------
-        if armour['citadel']['min'] == armour['citadel']['max']:
-            citadel_armor_val = armour['citadel']['min']
-        else:
-            citadel_armor_val = str(armour['citadel']['min']) + '-' + str(armour['citadel']['max'])
-        citadel_armor = 'Citadel armor: {} mm'.format(citadel_armor_val)
+        result.append('Citadel armor: {} mm'.format(format_eq(armour['citadel']['min'], armour['citadel']['max'])))
         # --------------------------------------------------------------------------------------------------------------
-        if armour['casemate']['min'] == armour['casemate']['max']:
-            gun_casemate_armor_val = armour['casemate']['min']
-        else:
-            gun_casemate_armor_val = str(armour['casemate']['min']) + '-' + str(armour['casemate']['max'])
-        gun_casemate_armor = 'Gun Casemate Armor: {} mm'.format(gun_casemate_armor_val)
-        result = '```\n' + name + '\n' + tier + '\n' + price + '\n' + hp + '\n' + citadel_armor + '\n' + \
-                 gun_casemate_armor + '\n```'
-        await self.bot.say(result)
+        result.append('Gun Casemate Armor: {} mm'.format
+                      (format_eq(armour['casemate']['min'], armour['casemate']['max'])))
+        # --------------------------------------------------------------------------------------------------------------
+        result.append('Armoured Deck: {} mm'.format(format_eq(armour['deck']['min'], armour['deck']['max'])))
+        # --------------------------------------------------------------------------------------------------------------
+        result.append('Forward and After Ends Armor: {} mm'.format
+                      (format_eq(armour['extremities']['min'], armour['extremities']['max'])))
+        # --------------------------------------------------------------------------------------------------------------
+
+
+        result.append('```')
+        await self.bot.say('\n'.join(result))
 
     @commands.command(pass_context=True)
     async def shame(self, ctx, user_name: str, region: str= 'NA'):
@@ -76,7 +78,7 @@ class WorldOfWarships:
             return
         if user_name.startswith('<@!'):
             user_name = '<@' + user_name[3:-1] + '>'
-        if user_name in self.shame_list[server_id]:
+        if server_id in self.shame_list and user_name in self.shame_list[server_id]:
             url = "http://na.warshipstoday.com/signature/{}/dark.png".format(self.shame_list[server_id][user_name])
             fn = self.generate_image_online(url)
             await self.bot.send_file(ctx.message.channel, fn)
@@ -203,18 +205,32 @@ class WorldOfWarships:
                     await self.bot.say('```markdown\n' + text + '```')
         except Exception:
             i += 1
-            await self.try_say(self.split_text(text, i), i)
+            await self.try_say(split_text(text, i), i)
 
-    def split_text(self, text, i):
-        """
-        Splits text into a list
-        :param text: The text to be splitted
-        :type text: str | list
-        :param i: the number of sections the text needs to be split into
-        :type i: int
-        :return: The split up text
-        :rtype: list
-        """
-        if isinstance(text, list):
-            text = ''.join(text)
-        return textwrap.wrap(text, int(len(text)/i))
+
+def split_text(text, i):
+    """
+    Splits text into a list
+    :param text: The text to be splitted
+    :type text: str | list
+    :param i: the number of sections the text needs to be split into
+    :type i: int
+    :return: The split up text
+    :rtype: list
+    """
+    if isinstance(text, list):
+        text = ''.join(text)
+    return textwrap.wrap(text, int(len(text)/i))
+
+
+def format_eq(term1, term2):
+    """
+    checks if the value of term1 and term2 are equal, and return the range between them
+    :param term1: the first term
+    :type term1: object
+    :param term2: the second term
+    :type term2: object
+    :return: the range between them
+    :rtype: str
+    """
+    return str(term1) if term1 == term2 else str(min(term1, term2)) + '-' + str(max(term1, term2))
