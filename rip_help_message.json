@@ -1,5 +1,5 @@
 {
-  "Default":"General commands: ```avatar, joined, stackoverflow, latex```\nMusic commadns: ```summon, play, volume, pause, resume, stop, skip, playing```\n?help [command] for more info on that command, such as `?help shame`\n\nYou can find the bot's source code at:\n<https://github.com/MaT1g3R/YasenBaka>\nInvite this bot to your server with this link:\n<https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=2146958463>\nJoin the support server here: https://discord.gg/BnPbz6q",
+  "Default":"General commands: ```avatar, joined, stackoverflow, latex```\nMusic commadns: ```summon, play, volume, pause, resume, stop, skip, playing```\n?help [command] for more info on that command, such as `?help volume`\n\nYou can find the bot's source code at:\n<https://github.com/MaT1g3R/YasenBaka>\nInvite this bot to your server with this link:\n<https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=2146958463>\nJoin the support server here: https://discord.gg/BnPbz6q",
   "avatar":"?avatar @some_user Shows the mentioned user's avatar, must mention the user.",
   "joined":"?joined @some_user Shows when a user joined this server. Must mention the user.",
   "stackoverflow":"?stackoverflow [search term] Search for an answer on stackoverflow, highly experimental feature, use at your own risk.",
