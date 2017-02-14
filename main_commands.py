@@ -19,20 +19,29 @@ class Commands:
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
         with open('help.json', 'r') as help_:
             self.help_message = json.load(help_)
+        with open('rip_help_message.json', 'r') as help_:
+            self.rip_help = json.load(help_)
 
-    @commands.command()
-    async def help(self, input_: str = 'Default'):
+    @commands.command(pass_context=True)
+    async def help(self, ctx, input_: str = 'Default'):
         """Help messages"""
-        await self.bot.say(self.help_message[input_])
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            await self.bot.say(self.rip_help[input_])
+        else:
+            await self.bot.say(self.help_message[input_])
 
-    @commands.command()
-    async def kyubey(self):
+    @commands.command(pass_context=True)
+    async def kyubey(self, ctx):
         """Madoka is best anime ever"""
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         await self.bot.say('／人◕ ‿‿ ◕人＼')
 
-    @commands.command()
-    async def roll(self, dice: str):
+    @commands.command(pass_context=True)
+    async def roll(self, ctx, dice: str):
         """Rolls a dice in NdN format."""
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         try:
             rolls, limit = map(int, dice.split('d'))
         except Exception:
@@ -42,9 +51,11 @@ class Commands:
         result = ', '.join(str(random.randint(1, limit)) for _ in range(rolls))
         await self.bot.say(result)
 
-    @commands.command()
-    async def choose(self,  *choices: str):
+    @commands.command(pass_context=True)
+    async def choose(self, ctx, *choices: str):
         """Chooses between multiple choices."""
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         await self.bot.say(random.choice(choices))
 
     @commands.command(pass_context=True)
@@ -57,21 +68,24 @@ class Commands:
             res = ' '.join(res)
             await self.bot.say(res)
 
-    @commands.command()
-    async def anime(self,  *input_: str):
+    @commands.command(pass_context=True)
+    async def anime(self, ctx, *input_: str):
         """
         search MAL for anime
         """
-
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         name = '+'.join(input_) + ' site:https://myanimelist.net'
         for url in search(name, stop=20):
             if 'https://myanimelist.net/anime' in url:
                 await self.bot.say(url)
                 break
 
-    @commands.command()
-    async def salt(self,  percentage: str, tries: int):
+    @commands.command(pass_context=True)
+    async def salt(self, ctx, percentage: str, tries: int):
         """ chance of an event happeneing """
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         percentage = float(percentage.replace('%', ''))/100 if '%' in percentage else float(percentage)
         res = round((1 - (1 - percentage)**tries)*100, 2)
         await self.bot.say('about {}% of dropping'.format(res))
@@ -82,9 +96,11 @@ class Commands:
         if ctx.message.channel.name is not None:
             await self.bot.say('{0.avatar_url}'.format(member))
 
-    @commands.command()
-    async def repeat(self, n: int, *message: str):
+    @commands.command(pass_context=True)
+    async def repeat(self, ctx, n: int, *message: str):
         """ repeat message n times, n <= 5 """
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         if n > 5:
             await self.bot.say("Are you trying to break me?")
             return
@@ -100,6 +116,8 @@ class Commands:
         :return: nothing
         :rtype: None
         """
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         fn = random.choice(self.kanna_files)
         await self.bot.send_file(ctx.message.channel, fn)
 

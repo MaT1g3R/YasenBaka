@@ -23,9 +23,11 @@ class WorldOfWarships:
         with open('na_ships.json') as data_file:
             self.na_ships = json.load(data_file)['data']
 
-    @commands.command()
-    async def ship(self, *input_: str):
+    @commands.command(pass_context=True)
+    async def ship(self, ctx, *input_: str):
         """ look for a ship on the wargaming wiki"""
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         ship_dict = None
         ship_name = ' '.join(input_).title()
         if ship_name.startswith('Arp'):
@@ -72,17 +74,20 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def shame(self, ctx, user_name: str, region: str= 'NA'):
         """Get shamed by a bot"""
-        server_id = ctx.message.server.id
+        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
+            return
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
-        if user_name.startswith('<@!'):
-            user_name = '<@' + user_name[3:-1] + '>'
-        if server_id in self.shame_list and user_name in self.shame_list[server_id]:
-            url = "http://na.warshipstoday.com/signature/{}/dark.png".format(self.shame_list[server_id][user_name])
-            fn = self.generate_image_online(url)
-            await self.bot.send_file(ctx.message.channel, fn)
-            return
+        if ctx.message.server is not None:
+            server_id = ctx.message.server.id
+            if user_name.startswith('<@!'):
+                user_name = '<@' + user_name[3:-1] + '>'
+            if server_id in self.shame_list and user_name in self.shame_list[server_id]:
+                url = "http://na.warshipstoday.com/signature/{}/dark.png".format(self.shame_list[server_id][user_name])
+                fn = self.generate_image_online(url)
+                await self.bot.send_file(ctx.message.channel, fn)
+                return
 
         request_urls = {'NA': 'https://api.worldofwarships.com/wows/account/list/'
                               '?application_id={}&search={}'.format(self.wows_api, user_name),
@@ -130,6 +135,8 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def shamelist(self, ctx):
         """Get the entire shame shamelist"""
+        if ctx.message.server is None or ctx.message.server.id == '229386752861798401':
+            return
         res = []
         for key in self.shame_list[ctx.message.server.id]:
             id_ = key[2:-1]
@@ -145,6 +152,8 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def addshame(self, ctx, user_name: str):
         """Add you to the shame shamelist"""
+        if ctx.message.server is None or ctx.message.server.id == '229386752861798401':
+            return
         new_entry = False
         user_id = "<@" + str(ctx.message.author.id) + ">"
         server_id = ctx.message.server.id
@@ -176,6 +185,8 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def removeshame(self, ctx):
         """Remove you from the shame shamelist"""
+        if ctx.message.server is None or ctx.message.server.id == '229386752861798401':
+            return
         server_id = ctx.message.server.id
         if "<@" + str(ctx.message.author.id) + ">" in self.shame_list[server_id]:
             self.shame_list[server_id].pop("<@" + str(ctx.message.author.id) + ">", None)
