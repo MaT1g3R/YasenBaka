@@ -1,5 +1,8 @@
 {
-  "Default":"General commands: ```anime, kyubey, roll, choose, salt, avatar, joined, repeat, kanna, stackoverflow, latex```\nWorld of Warships commands: ```ship, shame, shamelist, addshame, removeshame```\nMusic commadns: ```summon, play, volume, pause, resume, stop, skip, playing```\n?help [command] for more info on that command, such as `?help shame`\n\nYou can find the bot's source code at:\n<https://github.com/MaT1g3R/YasenBaka>\nInvite this bot to your server with this link:\n<https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=2146958463>\nJoin the support server here: https://discord.gg/BnPbz6q",
+  "Default":"General commands: ```{}```\nWorld of Warships commands: ```{}```\nMusic commadns: ```{}```\n?help [command] for more info on that command, such as `?help shame`\n\nYou can find the bot's source code at:\n<https://github.com/MaT1g3R/YasenBaka>\nInvite this bot to your server with this link:\n<https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=2146958463>\nJoin the support server here: https://discord.gg/BnPbz6q",
+  "Music commadns":["summon", "play", "volume", "pause", "resume", "stop", "skip", "playing"],
+  "World of Warships commands": ["ship", "shame", "shamelist", "addshame", "removeshame"],
+  "General commands": ["anime", "kyubey", "roll", "choose", "salt", "avatar", "joined", "repeat", "kanna", "stackoverflow", "latex", "ban_me"],
   "anime":"?anime [anime name] Looks for an anime on MAL.",
   "kyubey":"?kyubey Sends a kyubey face.",
   "roll":"?roll [n]d[n] Roll dice in NdN format, where the first n is the number of rolls and the second n is the number of die sides. For example ?roll 3d5 will roll 3 5-sided dice.",
@@ -23,7 +26,8 @@
   "resume":"?resume Resume the currently playing song.",
   "stop":"?stop Shut down the music bot.",
   "skip":"?skip Vote to skip a song. The song requester can automatically skip. 3 skip votes are needed for the song to be skipped.",
-  "playing":"?playing Shows info about the currently played song."
+  "playing":"?playing Shows info about the currently played song.",
+  "ban_me":"BAN ME I DARE YOU!"
 }
 
 

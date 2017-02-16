@@ -4,11 +4,8 @@ from discord.ext import commands
 import random
 from google import search
 import html2text
-import textwrap
 import stackexchange
-from os import listdir
-from os.path import isfile, join
-import json
+from helpers import read_json, generate_latex_online, try_say, read_kana_files, update_command_blacklist, is_banned, get_server_id
 
 
 class Commands:
@@ -17,18 +14,46 @@ class Commands:
         self.kanna_files = read_kana_files()
         self.bot = bot
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
-        with open('help.json', 'r') as help_:
-            self.help_message = json.load(help_)
-        with open('rip_help_message.json', 'r') as help_:
-            self.rip_help = json.load(help_)
+        self.help_message = read_json('help.json')
 
     @commands.command(pass_context=True)
     async def help(self, ctx, input_: str = 'Default'):
         """Help messages"""
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            await self.bot.say(self.rip_help[input_])
+        server_id = get_server_id(ctx)
+        general_commands = ', '.join([command for command in self.help_message['General commands']
+                                      if not is_banned(command, server_id)])
+        wows_commands = [command for command in self.help_message['World of Warships commands']
+                         if not is_banned(command, server_id)]
+        music_commands = [command for command in self.help_message['Music commadns']
+                          if not is_banned(command, server_id)]
+        if input_ == 'Default':
+            await self.bot.say(self.help_message[input_].format(general_commands, wows_commands, music_commands))
         else:
             await self.bot.say(self.help_message[input_])
+
+    @commands.command(pass_context=True)
+    async def ban_me(self, ctx):
+        server_id = get_server_id(ctx)
+        if not is_banned('ban_me', server_id):
+            await self.bot.say('BAN ME I DARE YOU')
+        else:
+            await self.bot.say('Oh shit i got banned!')
+
+    @commands.command(pass_context=True)
+    async def ban(self, ctx, command):
+        update_command_blacklist(True, command, ctx.message.server.id)
+
+    @commands.command(pass_context=True)
+    async def unban(self, ctx, command):
+        update_command_blacklist(False, command, ctx.message.server.id)
+
+
+    @commands.command(pass_context=True)
+    async def latex(self, ctx, *input_: str):
+        """Renders the input LaTeX equation"""
+        l = " ".join(input_)
+        fn = generate_latex_online(l)
+        await self.bot.send_file(ctx.message.channel, fn)
 
     @commands.command(pass_context=True)
     async def kyubey(self, ctx):
@@ -142,48 +167,4 @@ class Commands:
 
         question = self.so.question(question_id)
         answer = html2text.html2text(question.answers[0].body)
-        await self.try_say(answer)
-
-    async def try_say(self, text, i=1):
-        """
-        Try to say the block of text until the bot succeeds
-        :param text: The block of text
-        :type text: str | list
-        :param i: how many sections the text needs to be split into
-        :type i: int
-        :return: nothing
-        :rtype: None
-        """
-        try:
-            if isinstance(text, list):
-                for txt in text:
-                    await self.bot.say('```markdown\n'+txt+'```')
-            elif isinstance(text, str):
-                    await self.bot.say('```markdown\n' + text + '```')
-        except Exception:
-            i += 1
-            await self.try_say(self.split_text(text, i), i)
-
-    def split_text(self, text, i):
-        """
-        Splits text into a shame_list
-        :param text: The text to be splitted
-        :type text: str | list
-        :param i: the number of sections the text needs to be split into
-        :type i: int
-        :return: The split up text
-        :rtype: list
-        """
-        if isinstance(text, list):
-            text = ''.join(text)
-        return textwrap.wrap(text, int(len(text)/i))
-
-
-def read_kana_files():
-    """
-    Reads the kanna pictures
-    :return: All path of kanna pics
-    :rtype: list
-    """
-    return [join('kanna_is_cute_af', f) for
-            f in listdir('kanna_is_cute_af') if isfile(join('kanna_is_cute_af', f))]
+        await try_say(self.bot, answer)

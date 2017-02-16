@@ -2,8 +2,7 @@
 from discord.ext import commands
 import requests
 import json
-import urllib.request
-import textwrap
+from helpers import format_eq, generate_image_online, read_json, write_json
 
 
 class WorldOfWarships:
@@ -11,17 +10,13 @@ class WorldOfWarships:
     def __init__(self, bot, wows_api):
         self.bot = bot
         self.wows_api = wows_api
-        with open('shamelist.json') as data_file:
-            tmp_shame_list = json.load(data_file)
-        self.shame_list = tmp_shame_list
+        self.shame_list = read_json('shamelist.json')
         na_ships_url = 'https://api.worldofwarships.com/wows/' \
                        'encyclopedia/ships/?application_id={}'.format(self.wows_api)
         na_ship_api_response = requests.get(na_ships_url).text
         na_ships_json_data = json.loads(na_ship_api_response)
-        with open('na_ships.json', 'w') as fp:
-            json.dump(na_ships_json_data, fp)
-        with open('na_ships.json') as data_file:
-            self.na_ships = json.load(data_file)['data']
+        write_json('na_ships.json', na_ships_json_data)
+        self.na_ships = read_json('na_ships.json')['data']
 
     @commands.command(pass_context=True)
     async def ship(self, ctx, *input_: str):
@@ -66,8 +61,6 @@ class WorldOfWarships:
         result.append('Forward and After Ends Armor: {} mm'.format
                       (format_eq(armour['extremities']['min'], armour['extremities']['max'])))
         # --------------------------------------------------------------------------------------------------------------
-
-
         result.append('```')
         await self.bot.say('\n'.join(result))
 
@@ -85,7 +78,7 @@ class WorldOfWarships:
                 user_name = '<@' + user_name[3:-1] + '>'
             if server_id in self.shame_list and user_name in self.shame_list[server_id]:
                 url = "http://na.warshipstoday.com/signature/{}/dark.png".format(self.shame_list[server_id][user_name])
-                fn = self.generate_image_online(url)
+                fn = generate_image_online(url)
                 await self.bot.send_file(ctx.message.channel, fn)
                 return
 
@@ -117,20 +110,8 @@ class WorldOfWarships:
                 'AS': 'http://asia.warshipstoday.com/signature/{}/dark.png'.format(playerid)}
         url = urls[region]
 
-        fn = self.generate_image_online(url)
+        fn = generate_image_online(url)
         await self.bot.send_file(ctx.message.channel, fn)
-
-    def generate_image_online(self, url):
-        """
-        Generates an image file from a image hot link
-        :param url: The url
-        :type url: str
-        :return: The generated image path
-        :rtype: str
-        """
-        fn = url.split('/')[-1]
-        urllib.request.urlretrieve(url, fn)
-        return fn
 
     @commands.command(pass_context=True)
     async def shamelist(self, ctx):
@@ -176,10 +157,8 @@ class WorldOfWarships:
             self.shame_list[server_id][user_id] = None
             new_entry = True
         self.shame_list[ctx.message.server.id][user_id] = playerid
-        with open('shamelist.json', 'w') as fp:
-            json.dump(self.shame_list, fp)
-        with open('shamelist.json') as data_file:
-            self.shame_list = json.load(data_file)
+        write_json('shamelist.json', self.shame_list)
+        self.shame_list = read_json('shamelist.json')
         await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
 
     @commands.command(pass_context=True)
@@ -190,58 +169,8 @@ class WorldOfWarships:
         server_id = ctx.message.server.id
         if "<@" + str(ctx.message.author.id) + ">" in self.shame_list[server_id]:
             self.shame_list[server_id].pop("<@" + str(ctx.message.author.id) + ">", None)
-            with open('shamelist.json', 'w') as fp:
-                json.dump(self.shame_list, fp)
-            with open('shamelist.json') as data_file:
-                self.shame_list = json.load(data_file)
+            write_json('shamelist.json', self.shame_list)
+            self.shame_list = read_json('shamelist.json')
             await self.bot.say('Remove success!')
         else:
             await self.bot.say('Removed failed, you were not in the shamelist to begin with.')
-
-    async def try_say(self, text, i=1):
-        """
-        Try to say the block of text until the bot succeeds
-        :param text: The block of text
-        :type text: str | list
-        :param i: how many sections the text needs to be split into
-        :type i: int
-        :return: nothing
-        :rtype: None
-        """
-        try:
-            if isinstance(text, list):
-                for txt in text:
-                    await self.bot.say('```markdown\n'+txt+'```')
-            elif isinstance(text, str):
-                    await self.bot.say('```markdown\n' + text + '```')
-        except Exception:
-            i += 1
-            await self.try_say(split_text(text, i), i)
-
-
-def split_text(text, i):
-    """
-    Splits text into a list
-    :param text: The text to be splitted
-    :type text: str | list
-    :param i: the number of sections the text needs to be split into
-    :type i: int
-    :return: The split up text
-    :rtype: list
-    """
-    if isinstance(text, list):
-        text = ''.join(text)
-    return textwrap.wrap(text, int(len(text)/i))
-
-
-def format_eq(term1, term2):
-    """
-    checks if the value of term1 and term2 are equal, and return the range between them
-    :param term1: the first term
-    :type term1: object
-    :param term2: the second term
-    :type term2: object
-    :return: the range between them
-    :rtype: str
-    """
-    return str(term1) if term1 == term2 else str(min(term1, term2)) + '-' + str(max(term1, term2))
