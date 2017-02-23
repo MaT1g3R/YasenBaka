@@ -1,7 +1,7 @@
-cleverbot==2.0.0
-discord.py==0.16.5
-google==1.9.3
-html2text==2016.9.19
-py-stackexchange==2.2.6
-requests==2.13.0
-youtube-dl==2017.2.11
+cleverbot
+discord.py
+google
+html2text
+py-stackexchange
+requests
+youtube-dl
