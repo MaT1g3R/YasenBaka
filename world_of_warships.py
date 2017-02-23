@@ -2,7 +2,7 @@
 from discord.ext import commands
 import requests
 import json
-from helpers import format_eq, generate_image_online, read_json, write_json
+from helpers import format_eq, generate_image_online, read_json, write_json, get_server_id
 
 
 class WorldOfWarships:
@@ -119,10 +119,19 @@ class WorldOfWarships:
         if ctx.message.server is None or ctx.message.server.id == '229386752861798401':
             return
         res = []
-        for key in self.shame_list[ctx.message.server.id]:
+        server_dict = dict(self.shame_list[get_server_id(ctx)])
+        new_server_dict = {}
+        for key in server_dict.keys():
             id_ = key[2:-1]
-            res.append(ctx.message.server.get_member(id_).name)
+            try:
+                res.append(ctx.message.server.get_member(id_).name)
+                new_server_dict[key] = server_dict[key]
+            except AttributeError:
+                pass
 
+        self.shame_list[get_server_id(ctx)] = new_server_dict
+        write_json('shamelist.json', self.shame_list)
+        self.shame_list = read_json('shamelist.json')
         res_str = '```' + ', '.join(res) + '```'
         await self.bot.say('You can be shamed by pings if you are in the shamelist! Use the `?addshame` command '
                            'with your WoWs username to add yourself to '

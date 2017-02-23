@@ -47,7 +47,6 @@ class Commands:
     async def unban(self, ctx, command):
         update_command_blacklist(False, command, ctx.message.server.id)
 
-
     @commands.command(pass_context=True)
     async def latex(self, ctx, *input_: str):
         """Renders the input LaTeX equation"""
