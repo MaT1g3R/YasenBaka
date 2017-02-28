@@ -5,7 +5,8 @@ import random
 from google import search
 import html2text
 import stackexchange
-from helpers import read_json, generate_latex_online, try_say, read_kana_files, update_command_blacklist, is_banned, get_server_id
+from helpers import read_json, generate_latex_online, try_say, read_kana_files, update_command_blacklist, is_banned, \
+    get_server_id, is_admin
 
 
 class Commands:
@@ -46,6 +47,26 @@ class Commands:
     @commands.command(pass_context=True)
     async def unban(self, ctx, command):
         update_command_blacklist(False, command, ctx.message.server.id)
+
+    @commands.command(pass_context=True)
+    async def pmall(self, ctx, *args):
+        server_id = get_server_id(ctx)
+        if server_id is None or not is_admin(ctx, ctx.message.author.id):
+            await self.bot.say("Cannot use this command, not admin")
+        else:
+            message = []
+            lazy_bums = []
+            for s in args:
+                if s.startswith('<@!') and s.endswith('>'):
+                    lazy_bums.append(s[3:-1])
+                elif s.startswith('<@') and s.endswith('>'):
+                    lazy_bums.append(s[2:-1])
+                else:
+                    message.append(s)
+            members = [member for member in ctx.message.server.members if member.id in lazy_bums]
+            for member in members:
+                await self.bot.send_message(member, ' '.join(message))
+            await self.bot.say("Mass pm success!")
 
     @commands.command(pass_context=True)
     async def latex(self, ctx, *input_: str):
