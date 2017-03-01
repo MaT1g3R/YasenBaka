@@ -198,11 +198,11 @@ class Commands:
             base = base.upper()
             target = target.upper()
         except ValueError:
-            await self.bot.say('Please enter a vaild amount')
+            await self.bot.say('Please enter a valid amount')
             return
 
         try:
             money = convert_currency(base, amount, target)
             await self.bot.say(amount_str + base + ' in ' + target + ' is ' + money + target)
         except KeyError:
-            await self.bot.say('Please enter vaild currency codes!')
+            await self.bot.say('Please enter valid currency codes!')

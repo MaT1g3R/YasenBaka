@@ -6,10 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cbb44fe8-c9db-4b5e-a641-458dfcbe0660" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/command_blacklist.json" afterPath="$PROJECT_DIR$/command_blacklist.json" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helpers.py" afterPath="$PROJECT_DIR$/helpers.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main_commands.py" afterPath="$PROJECT_DIR$/main_commands.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/na_ships.json" afterPath="$PROJECT_DIR$/na_ships.json" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -27,32 +24,10 @@
       <file leaf-file-name="main_commands.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_commands.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="3492">
-              <caret line="194" column="12" lean-forward="true" selection-start-line="194" selection-start-column="12" selection-end-line="194" selection-end-column="12" />
+            <state relative-caret-position="332">
+              <caret line="191" column="40" lean-forward="true" selection-start-line="191" selection-start-column="40" selection-end-line="191" selection-end-column="40" />
               <folding>
                 <element signature="e#33#47#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="api_keys.json" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/api_keys.json">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="72">
-              <caret line="4" column="11" lean-forward="false" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="11" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="world_of_warships.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/world_of_warships.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="16" column="61" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-              <folding>
-                <element signature="e#46#78#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -994,8 +969,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main_commands.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3492">
-          <caret line="194" column="12" lean-forward="true" selection-start-line="194" selection-start-column="12" selection-end-line="194" selection-end-column="12" />
+        <state relative-caret-position="332">
+          <caret line="191" column="40" lean-forward="true" selection-start-line="191" selection-start-column="40" selection-end-line="191" selection-end-column="40" />
           <folding>
             <element signature="e#33#47#0" expanded="true" />
           </folding>
