@@ -6,7 +6,7 @@ from google import search
 import html2text
 import stackexchange
 from helpers import read_json, generate_latex_online, try_say, read_kana_files, update_command_blacklist, is_banned, \
-    get_server_id, is_admin
+    get_server_id, is_admin, convert_currency
 
 
 class Commands:
@@ -188,3 +188,21 @@ class Commands:
         question = self.so.question(question_id)
         answer = html2text.html2text(question.answers[0].body)
         await try_say(self.bot, answer)
+
+    @commands.command(pass_context=True)
+    async def currency(self, ctx, base: str, target: str, amount: str):
+        """converts currency"""
+        try:
+            amount_str = amount
+            amount = float(amount)
+            base = base.upper()
+            target = target.upper()
+        except ValueError:
+            await self.bot.say('Please enter a vaild amount')
+            return
+
+        try:
+            money = convert_currency(base, amount, target)
+            await self.bot.say(amount_str + base + ' in ' + target + ' is ' + money + target)
+        except KeyError:
+            await self.bot.say('Please enter vaild currency codes!')

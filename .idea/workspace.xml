@@ -7,6 +7,7 @@
     <list default="true" id="cbb44fe8-c9db-4b5e-a641-458dfcbe0660" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/command_blacklist.json" afterPath="$PROJECT_DIR$/command_blacklist.json" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/helpers.py" afterPath="$PROJECT_DIR$/helpers.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main_commands.py" afterPath="$PROJECT_DIR$/main_commands.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/na_ships.json" afterPath="$PROJECT_DIR$/na_ships.json" />
     </list>
@@ -26,8 +27,8 @@
       <file leaf-file-name="main_commands.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main_commands.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="288">
-              <caret line="52" column="38" lean-forward="true" selection-start-line="52" selection-start-column="38" selection-end-line="52" selection-end-column="38" />
+            <state relative-caret-position="3492">
+              <caret line="194" column="12" lean-forward="true" selection-start-line="194" selection-start-column="12" selection-end-line="194" selection-end-column="12" />
               <folding>
                 <element signature="e#33#47#0" expanded="true" />
               </folding>
@@ -35,21 +36,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="member.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/discord/member.py">
+      <file leaf-file-name="api_keys.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/api_keys.json">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="248">
-              <caret line="111" column="13" lean-forward="false" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="client.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/discord/client.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="518">
-              <caret line="583" column="8" lean-forward="false" selection-start-line="583" selection-start-column="8" selection-end-line="583" selection-end-column="8" />
+            <state relative-caret-position="72">
+              <caret line="4" column="11" lean-forward="false" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="11" />
               <folding />
             </state>
           </provider>
@@ -58,8 +49,8 @@
       <file leaf-file-name="world_of_warships.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/world_of_warships.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-36">
-              <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+            <state relative-caret-position="288">
+              <caret line="16" column="61" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
               <folding>
                 <element signature="e#46#78#0" expanded="true" />
               </folding>
@@ -70,8 +61,8 @@
       <file leaf-file-name="helpers.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/helpers.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1754">
-              <caret line="157" column="49" lean-forward="false" selection-start-line="157" selection-start-column="49" selection-end-line="157" selection-end-column="49" />
+            <state relative-caret-position="586">
+              <caret line="199" column="0" lean-forward="false" selection-start-line="199" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
               <folding>
                 <element signature="e#37#52#0" expanded="true" />
               </folding>
@@ -145,7 +136,6 @@
         <option value="$PROJECT_DIR$/channel_reader.py" />
         <option value="$PROJECT_DIR$/lewd.txt" />
         <option value="$PROJECT_DIR$/help.txt" />
-        <option value="$PROJECT_DIR$/api_keys.json" />
         <option value="$USER_HOME$/AppData/Roaming/Python/Python36/site-packages/cleverbot/cleverbot.py" />
         <option value="$PROJECT_DIR$/channelreader.py" />
         <option value="$PROJECT_DIR$/shamelist.json" />
@@ -158,14 +148,15 @@
         <option value="$PROJECT_DIR$/music_player.py" />
         <option value="$PROJECT_DIR$/world_of_warships.py" />
         <option value="$PROJECT_DIR$/requirements.txt" />
+        <option value="$PROJECT_DIR$/api_keys.json" />
         <option value="$PROJECT_DIR$/helpers.py" />
         <option value="$PROJECT_DIR$/main_commands.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="2123" />
-    <option name="y" value="62" />
+    <option name="x" value="2302" />
+    <option name="y" value="101" />
     <option name="width" value="1984" />
     <option name="height" value="884" />
   </component>
@@ -209,8 +200,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -225,6 +214,8 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -248,7 +239,7 @@
       <recent name="A:\Python Projects\Yasen-Baka" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.yasen-baka">
+  <component name="RunManager" selected="Python tests.Doctests in helpers">
     <configuration default="false" name="bot" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -298,6 +289,25 @@
       <option name="SCRIPT_NAME" value="$USER_HOME$/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin/dev_appserver.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
+      <method />
+    </configuration>
+    <configuration default="false" name="Doctests in helpers" type="tests" factoryName="Doctests" temporary="true" nameIsGenerated="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="Yasen-Baka" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/helpers.py" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
       <method />
     </configuration>
     <configuration default="true" type="CompoundRunConfigurationType" factoryName="Compound Run Configuration">
@@ -454,17 +464,19 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <method />
     </configuration>
-    <list size="4">
+    <list size="5">
       <item index="0" class="java.lang.String" itemvalue="Python.yasen-baka" />
       <item index="1" class="java.lang.String" itemvalue="Python.bot" />
       <item index="2" class="java.lang.String" itemvalue="Python.run" />
       <item index="3" class="java.lang.String" itemvalue="Python.dev_appserver" />
+      <item index="4" class="java.lang.String" itemvalue="Python tests.Doctests in helpers" />
     </list>
     <recent_temporary>
-      <list size="3">
-        <item index="0" class="java.lang.String" itemvalue="Python.dev_appserver" />
-        <item index="1" class="java.lang.String" itemvalue="Python.run" />
-        <item index="2" class="java.lang.String" itemvalue="Python.bot" />
+      <list size="4">
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Doctests in helpers" />
+        <item index="1" class="java.lang.String" itemvalue="Python.dev_appserver" />
+        <item index="2" class="java.lang.String" itemvalue="Python.run" />
+        <item index="3" class="java.lang.String" itemvalue="Python.bot" />
       </list>
     </recent_temporary>
   </component>
@@ -730,6 +742,38 @@
     <option name="localTasksCounter" value="36" />
     <servers />
   </component>
+  <component name="TestHistory">
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 18h 37m 12s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 18h 37m 33s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 18h 38m 00s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 18h 39m 44s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 18h 40m 08s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 19h 04m 34s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 19h 05m 07s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 19h 08m 39s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 19h 08m 56s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+    <history-entry file="Doctests_in_helpers - 2017.02.28 at 19h 09m 10s.xml">
+      <configuration name="Doctests in helpers" configurationId="tests" />
+    </history-entry>
+  </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
@@ -740,15 +784,15 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="2123" y="62" width="1984" height="884" extended-state="0" />
+    <frame x="2302" y="101" width="1984" height="884" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.13967611" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32953104" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2631579" sideWeight="0.50898635" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32603094" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3276414" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.33552632" sideWeight="0.49101365" order="3" side_tool="false" content_ui="tabs" x="155" y="694" width="1521" height="223" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32684427" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25859374" sideWeight="0.49101365" order="3" side_tool="false" content_ui="tabs" x="155" y="694" width="1521" height="223" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24973656" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3272921" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
@@ -794,13 +838,6 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/world_of_warships.py</url>
-          <line>1</line>
-          <option name="timeStamp" value="23" />
-        </line-breakpoint>
-      </breakpoints>
       <option name="time" value="24" />
     </breakpoint-manager>
     <watches-manager />
@@ -837,13 +874,6 @@
     <entry file="file://$USER_HOME$/AppData/Roaming/Python/Python36/site-packages/cleverbot3/cleverbot.py" />
     <entry file="file://$USER_HOME$/AppData/Roaming/Python/Python36/site-packages/cleverbot3/__init__.py" />
     <entry file="file://$USER_HOME$/AppData/Roaming/Python/Python36/site-packages/cleverbot/cleverbot.py" />
-    <entry file="file://$PROJECT_DIR$/api_keys.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="46" lean-forward="true" selection-start-line="2" selection-start-column="46" selection-end-line="2" selection-end-column="46" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/temp.json" />
     <entry file="file://$PROJECT_DIR$/rip_help_message.json" />
     <entry file="file://$PROJECT_DIR$/na_ships.json">
@@ -918,21 +948,13 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/helpers.py">
+    <entry file="file://$PROJECT_DIR$/world_of_warships.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1754">
-          <caret line="157" column="49" lean-forward="false" selection-start-line="157" selection-start-column="49" selection-end-line="157" selection-end-column="49" />
+        <state relative-caret-position="288">
+          <caret line="16" column="61" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding>
-            <element signature="e#37#52#0" expanded="true" />
+            <element signature="e#46#78#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/discord/member.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="248">
-          <caret line="111" column="13" lean-forward="false" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -944,20 +966,36 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/world_of_warships.py">
+    <entry file="file://$USER_HOME$/.local/lib/python3.5/site-packages/discord/member.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-36">
-          <caret line="1" column="0" lean-forward="false" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        <state relative-caret-position="248">
+          <caret line="111" column="13" lean-forward="false" selection-start-line="111" selection-start-column="13" selection-end-line="111" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/api_keys.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="72">
+          <caret line="4" column="11" lean-forward="false" selection-start-line="4" selection-start-column="3" selection-end-line="4" selection-end-column="11" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/helpers.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="586">
+          <caret line="199" column="0" lean-forward="false" selection-start-line="199" selection-start-column="0" selection-end-line="199" selection-end-column="0" />
           <folding>
-            <element signature="e#46#78#0" expanded="true" />
+            <element signature="e#37#52#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main_commands.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="288">
-          <caret line="52" column="38" lean-forward="true" selection-start-line="52" selection-start-column="38" selection-end-line="52" selection-end-column="38" />
+        <state relative-caret-position="3492">
+          <caret line="194" column="12" lean-forward="true" selection-start-line="194" selection-start-column="12" selection-end-line="194" selection-end-column="12" />
           <folding>
             <element signature="e#33#47#0" expanded="true" />
           </folding>

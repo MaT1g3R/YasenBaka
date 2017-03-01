@@ -5,6 +5,7 @@ from os.path import isfile, join
 import urllib.request
 import urllib.parse
 import json
+import requests
 
 
 def split_text(text, i):
@@ -187,3 +188,26 @@ def get_server_id(ctx):
         return ctx.message.server.id
     except AttributeError:
         return None
+
+
+def convert_currency(base, amount, target):
+    """
+    Conver currency to another
+    :param base: str
+    :param amount: str
+    :param target: str
+    :return: str
+    """
+    key = read_json('api_keys.json')['Currency']
+    request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1'\
+        .format(key, base, target)
+    response = requests.get(request_url).text
+    try:
+        parsed_data = json.loads(response)['quotes']
+    except KeyError:
+        raise KeyError
+    try:
+        rate = float(parsed_data['USD{}'.format(target)]) / float(parsed_data['USD{}'.format(base)])
+        return "{0:.2f}".format(float(amount)*rate)
+    except KeyError:
+        raise KeyError
