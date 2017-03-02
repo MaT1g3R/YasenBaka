@@ -5,6 +5,6 @@ dark\.png
 
 api_keys\.json
 
-\.idea/*
+__pycache__/
 
-__pycache__/*
+.idea/
