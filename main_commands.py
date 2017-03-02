@@ -63,9 +63,16 @@ class Commands:
                     lazy_bums.append(s[2:-1])
                 else:
                     message.append(s)
+            await self.bot.say(lazy_bums)
             members = [member for member in ctx.message.server.members if member.id in lazy_bums]
+            ex_list = []
             for member in members:
-                await self.bot.send_message(member, ' '.join(message))
+                try:
+                    await self.bot.send_message(member, ' '.join(message))
+                except Exception:
+                    ex_list.append(member.name)
+            if ex_list != []:
+                await self.bot.say('The pm could not be sent to the following users: {}'.format(', '.join(ex_list)))
             await self.bot.say("Mass pm success!")
 
     @commands.command(pass_context=True)
