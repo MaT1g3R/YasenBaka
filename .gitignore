@@ -4,3 +4,7 @@ latex\.png
 dark\.png
 
 api_keys\.json
+
+__pycache__/
+
+.idea/
