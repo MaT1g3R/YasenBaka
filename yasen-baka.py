@@ -9,7 +9,7 @@ from helpers import read_json
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
-    yasen_baka = commands.Bot(command_prefix=['!', '?', 'pip '], description=description)
+    yasen_baka = commands.Bot(command_prefix=['-'], description=description)
 
     @yasen_baka.event
     async def on_ready():
@@ -32,4 +32,3 @@ if __name__ == '__main__':
     yasen_baka.add_cog(Music(yasen_baka))
     yasen_baka.add_cog(ChannelReader(yasen_baka))
     yasen_baka.run(my_apis['Discord'])
-
