@@ -54,19 +54,25 @@ class Commands:
         if server_id is None or not is_admin(ctx, ctx.message.author.id):
             await self.bot.say("Cannot use this command, not admin")
         else:
-            message = []
-            lazy_bums = []
-            for s in args:
-                if s.startswith('<@!') and s.endswith('>'):
-                    lazy_bums.append(s[3:-1])
-                elif s.startswith('<@') and s.endswith('>'):
-                    lazy_bums.append(s[2:-1])
-                else:
-                    message.append(s)
-            members = [member for member in ctx.message.server.members if member.id in lazy_bums]
-            for member in members:
-                await self.bot.send_message(member, ' '.join(message))
-            await self.bot.say("Mass pm success!")
+                message = []
+                lazy_bums = []
+                for s in args:
+                    if s.startswith('<@!') and s.endswith('>'):
+                        lazy_bums.append(s[3:-1])
+                    elif s.startswith('<@') and s.endswith('>'):
+                        lazy_bums.append(s[2:-1])
+                    else:
+                        message.append(s)
+                members = [member for member in ctx.message.server.members if member.id in lazy_bums]
+                ex_list = []
+                for member in members:
+                    try:
+                        await self.bot.send_message(member, ' '.join(message))
+                    except Exception:
+                        ex_list.append(member.name)
+                if ex_list != []:
+                    await self.bot.say('The pm could not be sent to the following users: {}'.format(', '.join(ex_list)))
+                await self.bot.say("Mass pm success!")
 
     @commands.command(pass_context=True)
     async def latex(self, ctx, *input_: str):
