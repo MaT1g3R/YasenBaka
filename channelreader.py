@@ -7,9 +7,9 @@ class ChannelReader:
     Channel reading functions
     """
     def __init__(self, bot):
-        self.bot_id = '<@286926601655156736>'
-        self.bot_nick = '<@!286926601655156736>'
-        self.bot_name = 'Yasen-Baka-Beta#2978'
+        self.bot_id = '<@243230010532560896>'
+        self.bot_nick = '<@!243230010532560896>'
+        self.bot_name = 'Yasen-Baka#6539'
         self.bot = bot
         with open('data//lewd.txt') as f:
             self.lewd = f.read().splitlines()
