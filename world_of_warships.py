@@ -10,19 +10,17 @@ class WorldOfWarships:
     def __init__(self, bot, wows_api):
         self.bot = bot
         self.wows_api = wows_api
-        self.shame_list = read_json('shamelist.json')
+        self.shame_list = read_json('data//shamelist.json')
         na_ships_url = 'https://api.worldofwarships.com/wows/' \
                        'encyclopedia/ships/?application_id={}'.format(self.wows_api)
         na_ship_api_response = requests.get(na_ships_url).text
         na_ships_json_data = json.loads(na_ship_api_response)
-        write_json('na_ships.json', na_ships_json_data)
-        self.na_ships = read_json('na_ships.json')['data']
+        write_json('data//na_ships.json', na_ships_json_data)
+        self.na_ships = read_json('data//na_ships.json')['data']
 
     @commands.command(pass_context=True)
     async def ship(self, ctx, *input_: str):
         """ look for a ship on the wargaming wiki"""
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         ship_dict = None
         ship_name = ' '.join(input_).title()
         if ship_name.startswith('Arp'):
@@ -67,8 +65,6 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def shame(self, ctx, user_name: str, region: str= 'NA'):
         """Get shamed by a bot"""
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
@@ -116,8 +112,6 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def shamelist(self, ctx):
         """Get the entire shame shamelist"""
-        if ctx.message.server is None or ctx.message.server.id == '229386752861798401':
-            return
         res = []
         server_dict = dict(self.shame_list[get_server_id(ctx)])
         new_server_dict = {}
@@ -130,8 +124,8 @@ class WorldOfWarships:
                 pass
 
         self.shame_list[get_server_id(ctx)] = new_server_dict
-        write_json('shamelist.json', self.shame_list)
-        self.shame_list = read_json('shamelist.json')
+        write_json('data//shamelist.json', self.shame_list)
+        self.shame_list = read_json('data//shamelist.json')
         res_str = '```' + ', '.join(res) + '```'
         await self.bot.say('You can be shamed by pings if you are in the shamelist! Use the `?addshame` command '
                            'with your WoWs username to add yourself to '
@@ -142,8 +136,6 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def addshame(self, ctx, user_name: str):
         """Add you to the shame shamelist"""
-        if ctx.message.server is None or ctx.message.server.id == '229386752861798401':
-            return
         new_entry = False
         user_id = "<@" + str(ctx.message.author.id) + ">"
         server_id = ctx.message.server.id
@@ -166,20 +158,18 @@ class WorldOfWarships:
             self.shame_list[server_id][user_id] = None
             new_entry = True
         self.shame_list[ctx.message.server.id][user_id] = playerid
-        write_json('shamelist.json', self.shame_list)
-        self.shame_list = read_json('shamelist.json')
+        write_json('data//shamelist.json', self.shame_list)
+        self.shame_list = read_json('data//shamelist.json')
         await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
 
     @commands.command(pass_context=True)
     async def removeshame(self, ctx):
         """Remove you from the shame shamelist"""
-        if ctx.message.server is None or ctx.message.server.id == '229386752861798401':
-            return
         server_id = ctx.message.server.id
         if "<@" + str(ctx.message.author.id) + ">" in self.shame_list[server_id]:
             self.shame_list[server_id].pop("<@" + str(ctx.message.author.id) + ">", None)
-            write_json('shamelist.json', self.shame_list)
-            self.shame_list = read_json('shamelist.json')
+            write_json('data//shamelist.json', self.shame_list)
+            self.shame_list = read_json('data//shamelist.json')
             await self.bot.say('Remove success!')
         else:
             await self.bot.say('Removed failed, you were not in the shamelist to begin with.')

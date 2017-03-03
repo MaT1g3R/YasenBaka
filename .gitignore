@@ -8,3 +8,5 @@ api_keys\.json
 __pycache__/
 
 .idea/
+
+data/shame\.png

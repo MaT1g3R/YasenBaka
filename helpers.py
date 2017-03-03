@@ -65,8 +65,8 @@ def read_kana_files():
     :return: All path of kanna pics
     :rtype: list
     """
-    return [join('kanna_is_cute_af', f) for
-            f in listdir('kanna_is_cute_af') if isfile(join('kanna_is_cute_af', f))]
+    return [join('data//kanna_is_cute_af', f) for
+            f in listdir('data//kanna_is_cute_af') if isfile(join('data//kanna_is_cute_af', f))]
 
 
 def is_admin(ctx, id_):
@@ -89,7 +89,7 @@ def generate_image_online(url):
     :return: The generated image path
     :rtype: str
     """
-    fn = url.split('/')[-1]
+    fn = 'data//shame.png'
     urllib.request.urlretrieve(url, fn)
     return fn
 
@@ -104,7 +104,7 @@ def generate_latex_online(latex):
     """
     url = 'http://frog.isima.fr/cgi-bin/bruno/tex2png--10.cgi?'
     url += urllib.parse.quote(latex, safe='')
-    fn = 'latex.png'
+    fn = 'data//latex.png'
     urllib.request.urlretrieve(url, fn)
     return fn
 
@@ -147,7 +147,7 @@ def update_command_blacklist(add, command, id_):
     :return: nothing
     :rtype: None
     """
-    my_dict = read_json('command_blacklist.json')
+    my_dict = read_json('data//command_blacklist.json')
     if id_ not in my_dict:
         my_dict[id_] = []
     if add is False:
@@ -156,7 +156,7 @@ def update_command_blacklist(add, command, id_):
     else:
         if command not in my_dict[id_]:
             my_dict[id_].append(command)
-    write_json('command_blacklist.json', my_dict)
+    write_json('data//command_blacklist.json', my_dict)
 
 
 def is_banned(command, id_):
@@ -170,8 +170,8 @@ def is_banned(command, id_):
     :rtype: bool
     """
     try:
-        return True if id_ in read_json('command_blacklist.json') and \
-                   command in read_json('command_blacklist.json')[id_] else False
+        return True if id_ in read_json('data//command_blacklist.json') and \
+                   command in read_json('data//command_blacklist.json')[id_] else False
     except AttributeError:
         return False
 
@@ -198,7 +198,7 @@ def convert_currency(base, amount, target):
     :param target: str
     :return: str
     """
-    key = read_json('api_keys.json')['Currency']
+    key = read_json('data//api_keys.json')['Currency']
     request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1'\
         .format(key, base, target)
     response = requests.get(request_url).text

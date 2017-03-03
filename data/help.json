@@ -1,5 +1,5 @@
 {
-  "Default":"General commands: ```{}```\nWorld of Warships commands: ```{}```\nMusic commadns: ```{}```\n?help [command] for more info on that command, such as `?help shame`\n\nYou can find the bot's source code at:\n<https://github.com/MaT1g3R/YasenBaka>\nInvite this bot to your server with this link:\n<https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=2146958463>\nJoin the support server here: https://discord.gg/BnPbz6q",
+  "Default":"General commands: ```{}```\nWorld of Warships commands: ```{}```\nMusic commadns: ```{}```\n?help [command] for more info on that command, such as `?help shame`\n\nYou can find the bot's source code at:\n<https://github.com/MaT1g3R/YasenBaka>\nInvite this bot to your server with this link:\n<https://discordapp.com/oauth2/authorize?client_id=286926601655156736&scope=bot&permissions=-1>\nJoin the support server here: https://discord.gg/BnPbz6q",
   "Music commadns":["summon", "play", "volume", "pause", "resume", "stop", "skip", "playing"],
   "World of Warships commands": ["ship", "shame", "shamelist", "addshame", "removeshame"],
   "General commands": ["anime", "kyubey", "roll", "choose", "salt", "avatar", "joined", "repeat", "kanna", "stackoverflow", "latex", "ban_me"],
