@@ -10,3 +10,5 @@ __pycache__/
 .idea/
 
 data/shame\.png
+
+data/na_ships\.json
