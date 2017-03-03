@@ -9,7 +9,7 @@ class ChannelReader:
     def __init__(self, bot):
         self.bot_id = '<@243230010532560896>'
         self.bot_nick = '<@!243230010532560896>'
-        self.bot_name = 'Yasen-Baka#6539'
+        self.bot_name = 'Yasen-Baka-Beta#2978'
         self.bot = bot
         with open('data//lewd.txt') as f:
             self.lewd = f.read().splitlines()
