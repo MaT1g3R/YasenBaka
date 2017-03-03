@@ -22,9 +22,9 @@ if __name__ == '__main__':
         print(yasen_baka.user.name)
         print(yasen_baka.user.id)
         print('------')
-        await yasen_baka.change_presence(game=game.Game(name='Yasen'))
+        await yasen_baka.change_presence(game=game.Game(name='Yasen-Beta'))
 
-    my_apis = read_json('api_keys.json')
+    my_apis = read_json('data//api_keys.json')
 
     yasen_baka.remove_command('help')
     yasen_baka.add_cog(Commands(yasen_baka, my_apis['StackExchange']))

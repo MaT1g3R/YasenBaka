@@ -11,7 +11,7 @@ class ChannelReader:
         self.bot_nick = '<@!243230010532560896>'
         self.bot_name = 'Yasen-Baka#6539'
         self.bot = bot
-        with open('lewd.txt') as f:
+        with open('data//lewd.txt') as f:
             self.lewd = f.read().splitlines()
         self.lewd.append('( ͡° ͜ʖ ͡°)')
     async def on_message(self, message):
@@ -38,4 +38,4 @@ class ChannelReader:
         # Chensaw
         elif message.content == 'chensaw':
             await self.bot.delete_message(message)
-            await self.bot.send_file(message.channel, 'chensaw.gif')
+            await self.bot.send_file(message.channel, 'data//chensaw.gif')

@@ -10,6 +10,7 @@ if not discord.opus.is_loaded():
     # note that on windows this DLL is automatically provided for you
     discord.opus.load_opus('')
 
+
 class VoiceEntry:
     def __init__(self, message, player):
         self.requester = message.author
@@ -22,6 +23,7 @@ class VoiceEntry:
         if duration:
             fmt = fmt + ' [length: {0[0]}m {0[1]}s]'.format(divmod(duration, 60))
         return fmt.format(self.player, self.requester)
+
 
 class VoiceState:
     def __init__(self, bot):
@@ -59,6 +61,7 @@ class VoiceState:
             await self.bot.send_message(self.current.channel, 'Now playing ' + str(self.current))
             self.current.player.start()
             await self.play_next_song.wait()
+
 
 class Music:
     """Voice related commands.

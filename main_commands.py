@@ -15,38 +15,13 @@ class Commands:
         self.kanna_files = read_kana_files()
         self.bot = bot
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
-        self.help_message = read_json('help.json')
+        self.help_message = read_json('data//help.json')
 
     @commands.command(pass_context=True)
     async def help(self, ctx, input_: str = 'Default'):
         """Help messages"""
-        server_id = get_server_id(ctx)
-        general_commands = ', '.join([command for command in self.help_message['General commands']
-                                      if not is_banned(command, server_id)])
-        wows_commands = [command for command in self.help_message['World of Warships commands']
-                         if not is_banned(command, server_id)]
-        music_commands = [command for command in self.help_message['Music commadns']
-                          if not is_banned(command, server_id)]
-        if input_ == 'Default':
-            await self.bot.say(self.help_message[input_].format(general_commands, wows_commands, music_commands))
-        else:
-            await self.bot.say(self.help_message[input_])
-
-    @commands.command(pass_context=True)
-    async def ban_me(self, ctx):
-        server_id = get_server_id(ctx)
-        if not is_banned('ban_me', server_id):
-            await self.bot.say('BAN ME I DARE YOU')
-        else:
-            await self.bot.say('Oh shit i got banned!')
-
-    @commands.command(pass_context=True)
-    async def ban(self, ctx, command):
-        update_command_blacklist(True, command, ctx.message.server.id)
-
-    @commands.command(pass_context=True)
-    async def unban(self, ctx, command):
-        update_command_blacklist(False, command, ctx.message.server.id)
+        # TODO: Finish this
+        pass
 
     @commands.command(pass_context=True)
     async def pmall(self, ctx, *args):
@@ -71,7 +46,7 @@ class Commands:
                     await self.bot.send_message(member, ' '.join(message))
                 except Exception:
                     ex_list.append(member.name)
-            if ex_list != []:
+            if not ex_list:
                 await self.bot.say('The pm could not be sent to the following users: {}'.format(', '.join(ex_list)))
             await self.bot.say("Mass pm success!")
 
@@ -85,15 +60,11 @@ class Commands:
     @commands.command(pass_context=True)
     async def kyubey(self, ctx):
         """Madoka is best anime ever"""
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         await self.bot.say('／人◕ ‿‿ ◕人＼')
 
     @commands.command(pass_context=True)
     async def roll(self, ctx, dice: str):
         """Rolls a dice in NdN format."""
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         try:
             rolls, limit = map(int, dice.split('d'))
         except Exception:
@@ -106,8 +77,6 @@ class Commands:
     @commands.command(pass_context=True)
     async def choose(self, ctx, *choices: str):
         """Chooses between multiple choices."""
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         await self.bot.say(random.choice(choices))
 
     @commands.command(pass_context=True)
@@ -125,8 +94,6 @@ class Commands:
         """
         search MAL for anime
         """
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         name = '+'.join(input_) + ' site:https://myanimelist.net'
         for url in search(name, stop=20):
             if 'https://myanimelist.net/anime' in url:
@@ -136,8 +103,6 @@ class Commands:
     @commands.command(pass_context=True)
     async def salt(self, ctx, percentage: str, tries: int):
         """ chance of an event happeneing """
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         percentage = float(percentage.replace('%', ''))/100 if '%' in percentage else float(percentage)
         res = round((1 - (1 - percentage)**tries)*100, 2)
         await self.bot.say('about {}% of dropping'.format(res))
@@ -151,8 +116,6 @@ class Commands:
     @commands.command(pass_context=True)
     async def repeat(self, ctx, n: int, *message: str):
         """ repeat message n times, n <= 5 """
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         if n > 5:
             await self.bot.say("Are you trying to break me?")
             return
@@ -168,8 +131,6 @@ class Commands:
         :return: nothing
         :rtype: None
         """
-        if ctx.message.server is not None and ctx.message.server.id == '229386752861798401':
-            return
         fn = random.choice(self.kanna_files)
         await self.bot.send_file(ctx.message.channel, fn)
 
