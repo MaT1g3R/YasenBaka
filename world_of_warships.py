@@ -18,8 +18,8 @@ class WorldOfWarships:
         write_json('data//na_ships.json', na_ships_json_data)
         self.na_ships = read_json('data//na_ships.json')['data']
 
-    @commands.command(pass_context=True)
-    async def ship(self, ctx, *input_: str):
+    @commands.command()
+    async def ship(self, *input_: str):
         """ look for a ship on the wargaming wiki"""
         ship_dict = None
         ship_name = ' '.join(input_).title()
@@ -71,9 +71,13 @@ class WorldOfWarships:
         if ctx.message.server is not None:
             server_id = ctx.message.server.id
             if user_name.startswith('<@!'):
-                user_name = '<@' + user_name[3:-1] + '>'
+                user_name = user_name[3:-1]
+            elif user_name.startswith('<@'):
+                user_name = user_name[2:-1]
+
             if server_id in self.shame_list and user_name in self.shame_list[server_id]:
-                url = "http://na.warshipstoday.com/signature/{}/dark.png".format(self.shame_list[server_id][user_name])
+                url = "http://{}.warshipstoday.com/signature/{}/dark.png".format(
+                    self.shame_list[server_id][user_name][0], self.shame_list[server_id][user_name][1])
                 fn = generate_image_online(url)
                 await self.bot.send_file(ctx.message.channel, fn)
                 return
@@ -112,37 +116,41 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def shamelist(self, ctx):
         """Get the entire shame shamelist"""
-        res = []
-        server_dict = dict(self.shame_list[get_server_id(ctx)])
-        new_server_dict = {}
-        for key in server_dict.keys():
-            id_ = key[2:-1]
-            try:
-                res.append(ctx.message.server.get_member(id_).name)
-                new_server_dict[key] = server_dict[key]
-            except AttributeError:
-                pass
-
-        self.shame_list[get_server_id(ctx)] = new_server_dict
-        write_json('data//shamelist.json', self.shame_list)
-        self.shame_list = read_json('data//shamelist.json')
-        res_str = '```' + ', '.join(res) + '```'
-        await self.bot.say('You can be shamed by pings if you are in the shamelist! Use the `?addshame` command '
-                           'with your WoWs username to add yourself to '
-                           'the shamelist and use the `?removeshame` command '
-                           'without any other inputs to remove you from the shamelist')
-        await self.bot.say(res_str)
+        server_id = get_server_id(ctx)
+        if server_id in self.shame_list:
+            res = [ctx.message.server.get_member(key).name for key in self.shame_list[server_id]]
+            await self.bot.say('```{}```'.format(', '.join(res))) if res else \
+                await self.bot.say('This server\'s shamelist is empty!')
+        else:
+            await self.bot.say('This server\'s shamelist is empty!')
 
     @commands.command(pass_context=True)
-    async def addshame(self, ctx, user_name: str):
+    async def addshame(self, ctx, user_name: str, region: str= 'NA'):
         """Add you to the shame shamelist"""
+        if region not in ['NA', 'EU', 'RU', 'AS']:
+            await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
+            return
         new_entry = False
-        user_id = "<@" + str(ctx.message.author.id) + ">"
-        server_id = ctx.message.server.id
-        request_url = "https://api.worldofwarships.com/wows/account/list/?" \
-                      "application_id={}&search={}".format(self.wows_api, user_name)
+        user_id = str(ctx.message.author.id)
+        server_id = str(ctx.message.server.id)
+        request_urls = {'NA': 'https://api.worldofwarships.com/wows/account/list/'
+                              '?application_id={}&search={}'.format(self.wows_api, user_name),
+                        'RU': 'https://api.worldofwarships.ru/wows/account/list/'
+                              '?application_id={}&search={}'.format(self.wows_api, user_name),
+                        'EU': 'https://api.worldofwarships.eu/wows/account/list/'
+                              '?application_id={}&search={}'.format(self.wows_api, user_name),
+                        'AS': 'https://api.worldofwarships.asia/wows/account/list/'
+                              '?application_id={}&search={}'.format(self.wows_api, user_name)
+                        }
+        request_url = request_urls[region]
         r = requests.get(request_url).text
         json_data = json.loads(r)
+        region_codes ={
+            'NA': 'na',
+            'EU': 'eu',
+            'RU': 'ru',
+            'AS': 'asia'
+        }
         try:
             if json_data["meta"]["count"] < 1:
                 await self.bot.say("Can't find player")
@@ -157,7 +165,7 @@ class WorldOfWarships:
         if user_id not in self.shame_list[server_id]:
             self.shame_list[server_id][user_id] = None
             new_entry = True
-        self.shame_list[ctx.message.server.id][user_id] = playerid
+        self.shame_list[ctx.message.server.id][user_id] = [region_codes[region], playerid]
         write_json('data//shamelist.json', self.shame_list)
         self.shame_list = read_json('data//shamelist.json')
         await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
@@ -166,8 +174,8 @@ class WorldOfWarships:
     async def removeshame(self, ctx):
         """Remove you from the shame shamelist"""
         server_id = ctx.message.server.id
-        if "<@" + str(ctx.message.author.id) + ">" in self.shame_list[server_id]:
-            self.shame_list[server_id].pop("<@" + str(ctx.message.author.id) + ">", None)
+        if str(ctx.message.author.id) in self.shame_list[server_id]:
+            self.shame_list[server_id].pop(str(ctx.message.author.id), None)
             write_json('data//shamelist.json', self.shame_list)
             self.shame_list = read_json('data//shamelist.json')
             await self.bot.say('Remove success!')
