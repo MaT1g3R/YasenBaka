@@ -12,3 +12,5 @@ __pycache__/
 data/shame\.png
 
 data/na_ships\.json
+
+temp\.py
