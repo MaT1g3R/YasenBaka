@@ -7,7 +7,7 @@ Utility commands:
 anime, avatar, currency, info, joined, latex, pmall, stackoverflow
 
 Fun commands:  
-ayaya, chensaw, choose, kanna, kyubey, lewd, repeat, roll, salt
+ayaya, chensaw, choose, kanna, kyubey, lewd, osu, repeat, roll, salt
 
 World of Warships commands:  
 addshame, removeshame, shame, shamelist, ship

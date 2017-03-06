@@ -18,7 +18,8 @@
     "kanna",
     "chensaw",
     "lewd",
-    "ayaya"
+    "ayaya",
+    "osu"
   ],
   "util": [
     "pmall",
@@ -66,5 +67,6 @@
   "info":"Displays some info about the bot.",
   "chensaw":"Displays a spinning chensaw gif.",
   "lewd":"Displays a random lewd reaction face.",
-  "ayaya":"Ayaya!"
+  "ayaya":"Ayaya!",
+  "osu":"Return information for an osu! user. No filter for searching in standard mode, add one of: `osu, Taiko, CTB, mania` to the end of your search to specify the mode.\nExample usage: `?osu potateau`, `?osu Bukkake Blast CTB`"
 }
