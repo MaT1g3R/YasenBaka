@@ -78,3 +78,7 @@ class Fun:
         """Display lewd reaction face"""
         await self.bot.say(random.choice(self.lewds))
 
+    @commands.command()
+    async def steamymeme(self):
+        await self.bot.say(random.choice(['http://puu.sh/uvS7R/edce92064d.mp4','http://puu.sh/uvSOB/7e0ec82720.mp4']))
+
