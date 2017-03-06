@@ -15,10 +15,10 @@ class Osu:
     async def osu(self, *query: str):
         try:
             mode_dict = {
-                'osu': 0,
-                'Taiko': 1,
-                'CTB': 2,
-                'mania': 3
+                '--osu': 0,
+                '--Taiko': 1,
+                '--CTB': 2,
+                '--mania': 3
             }
             mode = 0
             if query[-1] in mode_dict:

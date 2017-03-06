@@ -68,5 +68,5 @@
   "chensaw":"Displays a spinning chensaw gif.",
   "lewd":"Displays a random lewd reaction face.",
   "ayaya":"Ayaya!",
-  "osu":"Return information for an osu! user. No filter for searching in standard mode, add one of: `osu, Taiko, CTB, mania` to the end of your search to specify the mode.\nExample usage: `?osu potateau`, `?osu Bukkake Blast CTB`"
+  "osu":"Return information for an osu! user. No filter for searching in standard mode, add one of: `--osu, --Taiko, --CTB, --mania` to the end of your search to specify the mode.\nExample usage: `?osu potateau`, `?osu Bukkake Blast --CTB`"
 }
