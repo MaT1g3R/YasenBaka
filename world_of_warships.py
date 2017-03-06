@@ -17,6 +17,7 @@ class WorldOfWarships:
         na_ships_json_data = json.loads(na_ship_api_response)
         write_json('data//na_ships.json', na_ships_json_data)
         self.na_ships = read_json('data//na_ships.json')['data']
+        self.sheet = read_json('data//sheet.json')
 
     @commands.command()
     async def ship(self, *input_: str):
