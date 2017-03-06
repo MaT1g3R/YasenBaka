@@ -81,7 +81,7 @@ def is_admin(ctx, id_):
         return False
 
 
-def generate_image_online(url):
+def generate_image_online(url, fn):
     """
     Generates an image file from a image hot link
     :param url: The url
@@ -89,7 +89,6 @@ def generate_image_online(url):
     :return: The generated image path
     :rtype: str
     """
-    fn = 'data//shame.png'
     urllib.request.urlretrieve(url, fn)
     return fn
 

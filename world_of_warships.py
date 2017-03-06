@@ -78,7 +78,7 @@ class WorldOfWarships:
             if server_id in self.shame_list and user_name in self.shame_list[server_id]:
                 url = "http://{}.warshipstoday.com/signature/{}/dark.png".format(
                     self.shame_list[server_id][user_name][0], self.shame_list[server_id][user_name][1])
-                fn = generate_image_online(url)
+                fn = generate_image_online(url, 'data//shame.png')
                 await self.bot.send_file(ctx.message.channel, fn)
                 return
 
@@ -110,7 +110,7 @@ class WorldOfWarships:
                 'AS': 'http://asia.warshipstoday.com/signature/{}/dark.png'.format(playerid)}
         url = urls[region]
 
-        fn = generate_image_online(url)
+        fn = generate_image_online(url, 'data//shame.png')
         await self.bot.send_file(ctx.message.channel, fn)
 
     @commands.command(pass_context=True)

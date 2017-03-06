@@ -3,6 +3,7 @@ from osu import get_user
 import json
 from discord.ext import commands
 from math import ceil
+from helpers import generate_image_online
 
 
 class Osu:
@@ -11,8 +12,8 @@ class Osu:
         self.bot = bot
         self.key = key
 
-    @commands.command()
-    async def osu(self, *query: str):
+    @commands.command(pass_context=True)
+    async def osu(self, ctx, *query: str):
         try:
             mode_dict = {
                 '--osu': 0,
@@ -57,9 +58,9 @@ class Osu:
                   'Rank: #{}\n'.format(pp_rank) + \
                   'Country: :flag_{}: (#{})\n'.format(country, c_rank) + \
                   'Accuracy: {}%\n'.format(acc) + \
-                  'Avatar: {}\n'.format(avatar) + \
                   'Profile: {}'.format(profile)
             await self.bot.say(out)
+            await self.bot.send_file(ctx.message.channel, generate_image_online(avatar, 'data//osu.jpg'))
         except IndexError:
             await self.bot.say('Player not found!')
 
