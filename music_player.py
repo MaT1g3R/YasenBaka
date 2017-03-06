@@ -118,7 +118,7 @@ class Music:
         queued until the next song is done playing.
 
         This command automatically searches as well from YouTube.
-        The shame_list of supported sites can be found here:
+        The list of supported sites can be found here:
         https://rg3.github.io/youtube-dl/supportedsites.html
         """
         state = self.get_voice_state(ctx.message.server)

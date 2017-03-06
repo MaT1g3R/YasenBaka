@@ -1,7 +1,7 @@
-cleverbot
 discord.py
 google
 html2text
 py-stackexchange
 requests
 youtube-dl
+osuapi
