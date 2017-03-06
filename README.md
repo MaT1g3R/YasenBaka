@@ -13,4 +13,6 @@ World of Warships commands:
 addshame, removeshame, shame, shamelist, ship
 
 Music commadns:  
-pause, play, playing, resume, skip, stop, summon, volume
+pause, play, playing, resume, skip, stop, summon, volume  
+
+You can also talk to the bot by mentioning her!
