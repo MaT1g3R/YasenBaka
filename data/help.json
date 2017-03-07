@@ -79,8 +79,8 @@
   "osu": "Return information for an osu! user. No filter for searching in standard mode, add one of: `--osu, --Taiko, --CTB, --mania` to the end of your search to specify the mode.\nExample usage: `?osu potateau`, `?osu Bukkake Blast --CTB`",
   "sheet":"Displays the current spreadsheet.",
   "newsheet":"Creates a new spreadsheet, this will delete the old one.",
-  "addmatch": "Adds a new match to the current spreadsheet, note this will override any match on the same day.\nExample usage: `?addmatch mon March 6th, 10:00PM EST`, `?addmatch Monday mar.6 10:00AM PST`",
+  "addmatch": "Adds a new match to the current spreadsheet. Note your match name CANNOT have spaces, and the entry after the match name must be a day in the week.\nExample usage: `?addmatch my_match_name Friday Sept.11 4:00PM`",
   "removematch":"Removes a match from the current spreadsheet, note this will remove any data that's associated with that match.",
-  "joinmatch":"Joins a match or multiple matches on the curent spreadsheet.\nExample usage: `?joinmatch mon`, `?joinmatch mon tue wed Thursday`",
-  "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch mon`, `?quitmatch mon tue wed Thursday`"
+  "joinmatch":"Joins a match or multiple matches on the curent spreadsheet.\nExample usage: `?joinmatch match_name1 match_name2`",
+  "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch match_name1 match_name2`"
 }

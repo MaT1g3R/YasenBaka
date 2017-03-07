@@ -18,16 +18,7 @@ class WorldOfWarships:
         write_json('data//na_ships.json', na_ships_json_data)
         self.na_ships = read_json('data//na_ships.json')['data']
         self.ssheet = read_json('data//sheet.json')
-        self.day_list = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat']
-        self.day_dict = {
-                'sun': 'Sunday',
-                'mon': 'Monday',
-                'tue': 'Tuesday',
-                'wed': 'Wednesday',
-                'thu': 'Thursday',
-                'fri': 'Friday',
-                'sat': 'Saturday'
-            }
+        self.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
     @commands.command()
     async def ship(self, *input_: str):
@@ -204,101 +195,73 @@ class WorldOfWarships:
             await self.bot.say('New spread sheet created! The old one has been removed!')
 
     @commands.command(pass_context=True)
-    async def addmatch(self, ctx, dayinweek: str, *datetime):
+    async def addmatch(self, ctx, matchname: str, *datetime):
         if not is_admin(ctx, ctx.message.author.id):
             await self.bot.say('This is an admin only command!')
         elif str(get_server_id(ctx)) not in self.ssheet:
             await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
+        elif not datetime or datetime[0] not in self.days:
+            await self.bot.say('Please enter a valid date!')
         else:
-            dayinweek = dayinweek[:3].lower()
-            if dayinweek not in self.day_list:
-                await self.bot.say('Please enter a vaild day in the week!')
-                return
-            datetime = ' '.join(datetime)
-            self.ssheet[str(get_server_id(ctx))][dayinweek] = {}
-            self.ssheet[str(get_server_id(ctx))][dayinweek]['time'] = datetime
-            self.ssheet[str(get_server_id(ctx))][dayinweek]['players'] = []
+            self.ssheet[str(get_server_id(ctx))][matchname] = {}
+            datetime = list(datetime)
+            datetime[0] += ','
+            self.ssheet[str(get_server_id(ctx))][matchname]['time'] = datetime
+            self.ssheet[str(get_server_id(ctx))][matchname]['players'] = []
             write_json('data//sheet.json', self.ssheet)
             self.ssheet = read_json('data//sheet.json')
-            await self.bot.say('Match on {} added!'.format(self.day_dict[dayinweek]))
+            await self.bot.say('Match on {} added!'.format(' '.join(datetime)))
 
     @commands.command(pass_context=True)
-    async def removematch(self, ctx, dayinweek):
+    async def removematch(self, ctx, matchname):
         if not is_admin(ctx, ctx.message.author.id):
             await self.bot.say('This is an admin only command!')
         elif str(get_server_id(ctx)) not in self.ssheet:
             await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
-        elif dayinweek[:3].lower() not in self.ssheet[str(get_server_id(ctx))]:
-            await self.bot.say('There doesn\'t seem to be a match on that day.')
+        elif matchname not in self.ssheet[str(get_server_id(ctx))]:
+            await self.bot.say('There doesn\'t seem to be a with that name.')
         else:
-            del self.ssheet[str(get_server_id(ctx))][dayinweek]
+            del self.ssheet[str(get_server_id(ctx))][matchname]
             write_json('data//sheet.json', self.ssheet)
             self.ssheet = read_json('data//sheet.json')
-            await self.bot.say('Match on {} removed!'.format(self.day_dict[dayinweek]))
+            await self.bot.say('Match: {} removed!'.format(matchname))
 
     @commands.command(pass_context=True)
-    async def joinmatch(self, ctx, *dayinweek):
+    async def joinmatch(self, ctx, *matchname):
         if str(get_server_id(ctx)) not in self.ssheet:
             await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
             return
-        dayinweek = [s[:3].lower() for s in dayinweek]
-        vaild = dayinweek != []
-        for day in dayinweek:
-            if day not in self.day_list:
-                vaild = False
-                break
-        if not vaild:
-            await self.bot.say('Wrong day in week format, join match aborted, '
-                               'no data has been saved to the spread sheet.')
-            return
         else:
-            no_match_day = [s for s in dayinweek if s not in self.ssheet[str(get_server_id(ctx))]]
-            yes_match_day = [s for s in dayinweek if s in self.ssheet[str(get_server_id(ctx))]]
-
-            for d in yes_match_day:
-                if ctx.message.author.id not in self.ssheet[str(get_server_id(ctx))][d]['players']:
-                    self.ssheet[str(get_server_id(ctx))][d]['players'].append(ctx.message.author.id)
-
-            no_match_day = [self.day_dict[d] for d in no_match_day]
-            yes_match_day = [self.day_dict[d] for d in yes_match_day]
-            yes_str = ' ,'.join(yes_match_day)
-            no_str = ' ,'.join(no_match_day)
+            joined = []
+            for name in matchname:
+                try:
+                    if ctx.message.author.id not in self.ssheet[str(get_server_id(ctx))][name]['players']:
+                        self.ssheet[str(get_server_id(ctx))][name]['players'].append(ctx.message.author.id)
+                        joined.append(name)
+                except KeyError:
+                    continue
             write_json('data//sheet.json', self.ssheet)
             self.ssheet = read_json('data//sheet.json')
-            await self.bot.say('You joined the matches on {}!'.format(yes_str))
-            if no_str != '':
-                await self.bot.say('You couldn\'t join matches on {}'
-                                   ' because there\'re no matches on these days.'.format(no_str))
+            await self.bot.say('You have joined matches: {}'.format(', '.join(joined)))
 
     @commands.command(pass_context=True)
-    async def quitmatch(self, ctx, *dayinweek):
+    async def quitmatch(self, ctx, *matchname):
         if str(get_server_id(ctx)) not in self.ssheet:
             await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
             return
-        dayinweek = [s[:3].lower() for s in dayinweek]
-        vaild = dayinweek != []
-        for day in dayinweek:
-            if day not in self.day_list:
-                vaild = False
-                break
-        if not vaild:
-            await self.bot.say('Wrong day in week format, quit match aborted, '
-                               'no data has been saved to the spread sheet.')
-            return
         else:
-            quit_days = []
-            for day in dayinweek:
-                if day in self.ssheet[str(get_server_id(ctx))]:
+            quits = []
+            for name in matchname:
+                if name in self.ssheet[str(get_server_id(ctx))]:
                     try:
-                        self.ssheet[str(get_server_id(ctx))][day]['players'].remove(ctx.message.author.id)
-                        quit_days.append(day)
+                        self.ssheet[str(get_server_id(ctx))][name]['players'].remove(ctx.message.author.id)
+                        quits.append(name)
                     except ValueError:
                         continue
 
             write_json('data//sheet.json', self.ssheet)
             self.ssheet = read_json('data//sheet.json')
-            quit_days = [self.day_dict[d] for d in quit_days]
-            await self.bot.say('You have quit the matches on: {}'.format(' ,'.join(quit_days)))
+            await self.bot.say('You have quit the matches: {}'.format(' ,'.join(quits)))
 
     @commands.command(pass_context=True)
     async def sheet(self, ctx):
@@ -310,15 +273,13 @@ class WorldOfWarships:
                 await self.bot.say('There doesn\'t seem to be any matches in this spread sheet!')
                 return
             else:
-                res = sorted(
-                    [
+                res = [
                         '{}: {}\nPlayers: {}\nPlayer count: {}'.format(
-                            self.day_dict[key],
-                            val['time'],
+                            ' '.join(val['time']),
+                            key,
                             ', '.join([ctx.message.server.get_member(player).name for player in val['players']]),
                             len(val['players'])
                         )
-                        for key, val in self.ssheet[str(get_server_id(ctx))].items()
-                        ], key=lambda x: self.day_list.index(x[:3].lower()))
-
+                        for key, val in self.ssheet[str(get_server_id(ctx))].items()]
+                res.sort(key=lambda x: self.days.index(x[0:x.find(',')]))
                 await self.bot.say('```{}```'.format('\n\n'.join(res)))
