@@ -156,7 +156,7 @@ class WorldOfWarships:
         request_url = request_urls[region]
         r = requests.get(request_url).text
         json_data = json.loads(r)
-        region_codes ={
+        region_codes = {
             'NA': 'na',
             'EU': 'eu',
             'RU': 'ru',
@@ -319,7 +319,6 @@ class WorldOfWarships:
                             len(val['players'])
                         )
                         for key, val in self.ssheet[str(get_server_id(ctx))].items()
-                        ]
-                    , key=lambda x: self.day_list.index(x[:3].lower()))
+                        ], key=lambda x: self.day_list.index(x[:3].lower()))
 
                 await self.bot.say('```{}```'.format('\n\n'.join(res)))
