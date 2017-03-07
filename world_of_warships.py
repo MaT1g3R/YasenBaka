@@ -265,7 +265,7 @@ class WorldOfWarships:
             no_str = ' ,'.join(no_match_day)
             write_json('data//sheet.json', self.ssheet)
             self.ssheet = read_json('data//sheet.json')
-            await self.bot.say('You joined the matchs on {}!'.format(yes_str))
+            await self.bot.say('You joined the matches on {}!'.format(yes_str))
             if no_str != '':
                 await self.bot.say('You couldn\'t join matches on {}'
                                    ' because there\'re no matches on these days.'.format(no_str))
@@ -312,7 +312,7 @@ class WorldOfWarships:
             else:
                 res = sorted(
                     [
-                        '{}: {}\nPlayes: {}\nPlayer count: {}'.format(
+                        '{}: {}\nPlayers: {}\nPlayer count: {}'.format(
                             self.day_dict[key],
                             val['time'],
                             ', '.join([ctx.message.server.get_member(player).name for player in val['players']]),
