@@ -21,10 +21,12 @@ class Util:
         fun = ', '.join(sorted(self.help_message['fun']))
         util = ', '.join(sorted(self.help_message['util']))
         wows = ', '.join(sorted(self.help_message['wows']))
+        sheet = ', '.join(self.help_message['ssheet'])
 
         if input_ == 'Default':
-            await self.bot.say('Command List:\nUtility:```{}```Fun:```{}```Music:```{}```World of Warships:```{}```'.
-                               format(util, fun, music, wows)
+            await self.bot.say('Command List:\nUtility:```{}```Fun:```{}```Music:```{}```'
+                               'World of Warships:```{}```WoWs match spreadsheet:```{}```'.
+                               format(util, fun, music, wows, sheet)
                                + '?help [command] for more info on that command, such as `?help play`\n'
                                + 'You can also talk to the bot by You can also talk to the bot by mentioning her!'
                                  '\nExample usage: <@243230010532560896> hi')

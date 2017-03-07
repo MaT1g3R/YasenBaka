@@ -38,6 +38,14 @@
     "addshame",
     "removeshame"
   ],
+  "ssheet": [
+    "sheet",
+    "newsheet",
+    "addmatch",
+    "removematch",
+    "joinmatch",
+    "quitmatch"
+  ],
   "shame": "Looks for a player on Warships Today. You can also look up players by pinging them if they are in the shamelist. Support all regions, default is NA. The region codes are: 'NA', 'EU', 'RU', 'AS' \nExample usage: `?shame MaT1g3R`, `?shame flamu EU`",
   "volume": "Sets the volume of the currently playing song.\nExample usage: `?volume 50`",
   "addshame": "Add yourself to the shamelist. If you are already in the shamelist, it will be overwritten by the new player name. Support all regions, default is NA. The region codes are: 'NA', 'EU', 'RU', 'AS'\nExample usage: `?addshame MY_WOWS_USER_NAME`, `?addshame flamu EU`",
@@ -64,9 +72,15 @@
   "pause": "Pauses the currently played song.",
   "latex": "Render a latex equation.\nExample usage: `?latex \\int_0^1 \\frac{log(x)}{x^2 + 1}`",
   "removeshame": "Removes you from the shamelist.",
-  "info":"Displays some info about the bot.",
-  "chensaw":"Displays a spinning chensaw gif.",
-  "lewd":"Displays a random lewd reaction face.",
-  "ayaya":"Ayaya!",
-  "osu":"Return information for an osu! user. No filter for searching in standard mode, add one of: `--osu, --Taiko, --CTB, --mania` to the end of your search to specify the mode.\nExample usage: `?osu potateau`, `?osu Bukkake Blast --CTB`"
+  "info": "Displays some info about the bot.",
+  "chensaw": "Displays a spinning chensaw gif.",
+  "lewd": "Displays a random lewd reaction face.",
+  "ayaya": "Ayaya!",
+  "osu": "Return information for an osu! user. No filter for searching in standard mode, add one of: `--osu, --Taiko, --CTB, --mania` to the end of your search to specify the mode.\nExample usage: `?osu potateau`, `?osu Bukkake Blast --CTB`",
+  "sheet":"Displays the current spreadsheet.",
+  "newsheet":"Creates a new spreadsheet, this will delete the old one.",
+  "addmatch": "Adds a new match to the current spreadsheet, note this will override any match on the same day.\nExample usage: `?addmatch mon March 6th, 10:00PM EST`, `?addmatch Monday mar.6 10:00AM PST`",
+  "removematch":"Removes a match from the current spreadsheet, note this will remove any data that's associated with that match.",
+  "joinmatch":"Joins a match or multiple matches on the curent spreadsheet.\nExample usage: `?joinmatch mon`, `?joinmatch mon tue wed Thursday`",
+  "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch mon`, `?quitmatch mon tue wed Thursday`"
 }
