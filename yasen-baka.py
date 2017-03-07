@@ -11,7 +11,7 @@ from osu_commands import Osu
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
-    yasen_baka = commands.Bot(command_prefix=['pip '], description=description)
+    yasen_baka = commands.Bot(command_prefix=['?'], description=description)
 
     @yasen_baka.event
     async def on_ready():
@@ -24,7 +24,7 @@ if __name__ == '__main__':
         print(yasen_baka.user.name)
         print(yasen_baka.user.id)
         print('------')
-        await yasen_baka.change_presence(game=game.Game(name='pip help'))
+        await yasen_baka.change_presence(game=game.Game(name='?help'))
 
 
     my_apis = read_json('data//api_keys.json')
