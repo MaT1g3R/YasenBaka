@@ -24,7 +24,7 @@ if __name__ == '__main__':
         print(yasen_baka.user.name)
         print(yasen_baka.user.id)
         print('------')
-        await yasen_baka.change_presence(game=game.Game(name='?help'))
+        await yasen_baka.change_presence(game=game.Game(name='pip help'))
 
 
     my_apis = read_json('data//api_keys.json')
