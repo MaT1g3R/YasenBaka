@@ -15,8 +15,6 @@ addshame, removeshame, shame, shamelist, ship
 Music commadns:  
 pause, play, playing, resume, skip, stop, summon, volume  
 
-WoWs match spreadsheet:  
+Match spreadsheet:  
 sheet, newsheet, addmatch, removematch, joinmatch, quitmatch
 
-You can also talk to the bot by mentioning her!
-@
