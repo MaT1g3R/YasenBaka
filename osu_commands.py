@@ -1,6 +1,7 @@
 """Osu commands"""
 from osu import get_user
 import json
+from os.path import join
 from discord.ext import commands
 from math import ceil
 from helpers import generate_image_online
@@ -60,7 +61,7 @@ class Osu:
                   'Accuracy: {}%\n'.format(acc) + \
                   'Profile: {}'.format(profile)
             await self.bot.say(out)
-            await self.bot.send_file(ctx.message.channel, generate_image_online(avatar, 'data//osu.jpg'))
+            await self.bot.send_file(ctx.message.channel, generate_image_online(avatar, join('data', 'osu.jpg')))
         except IndexError:
             await self.bot.say('Player not found!')
 

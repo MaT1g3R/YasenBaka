@@ -1,8 +1,10 @@
 """World of Warships commands for this bot"""
 from discord.ext import commands
 import requests
-import json
-from helpers import format_eq, generate_image_online, read_json, write_json, get_server_id, is_admin
+import json 
+import threading
+from os.path import join
+from helpers import format_eq, generate_image_online, read_json, write_json, get_server_id, is_admin, fopen_generic
 
 
 class WorldOfWarships:
@@ -10,15 +12,30 @@ class WorldOfWarships:
     def __init__(self, bot, wows_api):
         self.bot = bot
         self.wows_api = wows_api
-        self.shame_list = read_json('data//shamelist.json')
+        self.shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
         na_ships_url = 'https://api.worldofwarships.com/wows/' \
                        'encyclopedia/ships/?application_id={}'.format(self.wows_api)
         na_ship_api_response = requests.get(na_ships_url).text
         na_ships_json_data = json.loads(na_ship_api_response)
-        write_json('data//na_ships.json', na_ships_json_data)
-        self.na_ships = read_json('data//na_ships.json')['data']
-        self.ssheet = read_json('data//sheet.json')
+        write_json(fopen_generic(join('data', 'na_ships.json'), 'w'), na_ships_json_data)
+        self.na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))['data']
+        self.ssheet = read_json(fopen_generic(join('data', 'sheet.json')))
         self.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+
+        self.save_sheet_event = Timer(300, self.save_sheet)
+        self.save_shamelist_event = Timer(300, self.save_shamelist)
+
+    def save_sheet(self):
+        """ shortcut for saving sheet """
+        write_json(fopen_generic(join('data', 'sheet.json'), 'w'), self.ssheet)
+        # self.ssheet = read_json(fopen_generic(join('data', 'sheet.json')))
+        self.save_sheet_event = Timer(300, self.save_sheet)
+
+    def save_shamelist(self):
+        """ shortcut for saving shamelist """
+        write_json(fopen_generic(join('data', 'shamelist.json'), 'w'), self.shame_list)
+        # self.shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
+        self.save_sheet_event = Timer(300, self.save_shamelist)
 
     @commands.command()
     async def ship(self, *input_: str):
@@ -80,7 +97,7 @@ class WorldOfWarships:
             if server_id in self.shame_list and user_name in self.shame_list[server_id]:
                 url = "http://{}.warshipstoday.com/signature/{}/dark.png".format(
                     self.shame_list[server_id][user_name][0], self.shame_list[server_id][user_name][1])
-                fn = generate_image_online(url, 'data//shame.png')
+                fn = generate_image_online(url, join('data, shame.png'))
                 await self.bot.send_file(ctx.message.channel, fn)
                 return
 
@@ -112,7 +129,7 @@ class WorldOfWarships:
                 'AS': 'http://asia.warshipstoday.com/signature/{}/dark.png'.format(playerid)}
         url = urls[region]
 
-        fn = generate_image_online(url, 'data//shame.png')
+        fn = generate_image_online(url, join('data', 'shame.png'))
         await self.bot.send_file(ctx.message.channel, fn)
 
     @commands.command(pass_context=True)
@@ -168,8 +185,6 @@ class WorldOfWarships:
             self.shame_list[server_id][user_id] = None
             new_entry = True
         self.shame_list[ctx.message.server.id][user_id] = [region_codes[region], playerid]
-        write_json('data//shamelist.json', self.shame_list)
-        self.shame_list = read_json('data//shamelist.json')
         await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
 
     @commands.command(pass_context=True)
@@ -178,8 +193,6 @@ class WorldOfWarships:
         server_id = ctx.message.server.id
         if str(ctx.message.author.id) in self.shame_list[server_id]:
             self.shame_list[server_id].pop(str(ctx.message.author.id), None)
-            write_json('data//shamelist.json', self.shame_list)
-            self.shame_list = read_json('data//shamelist.json')
             await self.bot.say('Remove success!')
         else:
             await self.bot.say('Removed failed, you were not in the shamelist to begin with.')
@@ -190,8 +203,6 @@ class WorldOfWarships:
             await self.bot.say('This is an admin only command!')
         else:
             self.ssheet[str(get_server_id(ctx))] = {}
-            write_json('data//sheet.json', self.ssheet)
-            self.ssheet = read_json('data//sheet.json')
             await self.bot.say('New spread sheet created! The old one has been removed!')
 
     @commands.command(pass_context=True)
@@ -208,8 +219,6 @@ class WorldOfWarships:
             datetime[0] += ','
             self.ssheet[str(get_server_id(ctx))][matchname]['time'] = datetime
             self.ssheet[str(get_server_id(ctx))][matchname]['players'] = []
-            write_json('data//sheet.json', self.ssheet)
-            self.ssheet = read_json('data//sheet.json')
             await self.bot.say('Match on {} added!'.format(' '.join(datetime)))
 
     @commands.command(pass_context=True)
@@ -222,8 +231,6 @@ class WorldOfWarships:
             await self.bot.say('There doesn\'t seem to be a with that name.')
         else:
             del self.ssheet[str(get_server_id(ctx))][matchname]
-            write_json('data//sheet.json', self.ssheet)
-            self.ssheet = read_json('data//sheet.json')
             await self.bot.say('Match: {} removed!'.format(matchname))
 
     @commands.command(pass_context=True)
@@ -240,8 +247,6 @@ class WorldOfWarships:
                         joined.append(name)
                 except KeyError:
                     continue
-            write_json('data//sheet.json', self.ssheet)
-            self.ssheet = read_json('data//sheet.json')
             await self.bot.say('You have joined matches: {}'.format(', '.join(joined)))
 
     @commands.command(pass_context=True)
@@ -258,9 +263,6 @@ class WorldOfWarships:
                         quits.append(name)
                     except ValueError:
                         continue
-
-            write_json('data//sheet.json', self.ssheet)
-            self.ssheet = read_json('data//sheet.json')
             await self.bot.say('You have quit the matches: {}'.format(' ,'.join(quits)))
 
     @commands.command(pass_context=True)

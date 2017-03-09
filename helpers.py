@@ -2,10 +2,47 @@
 import textwrap
 from os import listdir
 from os.path import isfile, join
+from os.path import sep as pathsep
 import urllib.request
 import urllib.parse
 import json
 import requests
+from codecs import open as copen
+
+def fopen_generic(filepath, filemode = 'rU', coding = 'utf8', buffering = -1):
+    """
+    Reads files using system seperators with friendly encodings
+    :param filepath: file path
+    :type filepath: str
+    :param filemode: file mode (default 'rU')
+    :type filemode: str
+    :param coding: encoding for file (default 'utf8')
+    :type coding: str
+    :param buffering: buffer mode, see https://docs.python.org/2/library/functions.html#open (default -1)
+    :type buffering: int
+    :return file pointer
+    :rtype file
+    """
+    if isfile(fp):
+        return copen(fp, filemode, coding, 'replace', buffering)
+    return None
+
+
+def freadlines(fp, keep_open = False):
+    """
+    Splits file lines
+    :param fp: file pointer
+    :param keep_open: keep fp open (default false)
+    :type fp: file
+    :type keep_open: bool | int
+    :return: file lines
+    :rtype: list
+    """
+    if fp != None:
+        lines = fp.splitlines()
+        if not keep_open: fp.close()
+        return lines
+    return []
 
 
 def split_text(text, i):
@@ -65,8 +102,9 @@ def read_kana_files():
     :return: All path of kanna pics
     :rtype: list
     """
-    return [join('data//kanna_is_cute_af', f) for
-            f in listdir('data//kanna_is_cute_af') if isfile(join('data//kanna_is_cute_af', f))]
+    root = join('data', 'kanna_is_cute_af')
+    return [join(root, f) for
+            f in listdir(root) if isfile(join(root, f))]
 
 
 def is_admin(ctx, id_):
@@ -103,35 +141,43 @@ def generate_latex_online(latex):
     """
     url = 'http://frog.isima.fr/cgi-bin/bruno/tex2png--10.cgi?'
     url += urllib.parse.quote(latex, safe='')
-    fn = 'data//latex.png'
+    fn = join('data', 'latex.png')
     urllib.request.urlretrieve(url, fn)
     return fn
 
 
-def read_json(file_name):
+def read_json(fp, keep_open = False):
     """
     Read a json file into a dictionary
-    :param file_name: the json file name
-    :type file_name: str
+    :param fp: the file pointer
+    :type fp: file
+    :param keep_open: keep file open (default False)
+    :type keep_open: bool | int
     :return: the dictionary
     :rtype: dict
     """
-    with open(file_name, 'r') as file:
-        return json.load(file)
+    if fp != None:
+        data = json.load(file)
+        if not keep_open: file.close()
+        return data
+    return {}
 
 
-def write_json(file, data):
+def write_json(fp, data, keep_open = False):
     """
     Write a dictionary into a json file
     :param file: The json file
-    :type file: str
+    :type file: ffile
     :param data: The dictionary
     :type data: dict
+    :param keep_open: keep file open (default False)
+    :type keep_open: bool | int
     :return: nothing
     :rtype: None
     """
-    with open(file, 'w') as fp:
+    if fp != None:
         json.dump(data, fp)
+        if not keep_open: fp.close()
 
 
 def update_command_blacklist(add, command, id_):
@@ -146,7 +192,7 @@ def update_command_blacklist(add, command, id_):
     :return: nothing
     :rtype: None
     """
-    my_dict = read_json('data//command_blacklist.json')
+    my_dict = read_json(fopen_generic(join('data, command_blacklist.json')))
     if id_ not in my_dict:
         my_dict[id_] = []
     if add is False:
@@ -155,7 +201,7 @@ def update_command_blacklist(add, command, id_):
     else:
         if command not in my_dict[id_]:
             my_dict[id_].append(command)
-    write_json('data//command_blacklist.json', my_dict)
+    write_json(fopen_generic(join('data, command_blacklist.json'), 'w'), my_dict)
 
 
 def is_banned(command, id_):
@@ -168,9 +214,10 @@ def is_banned(command, id_):
     :return: True if it's banned
     :rtype: bool
     """
+    data = read_json(fopen_generic(join('data, command_blacklist.json')))
     try:
-        return True if id_ in read_json('data//command_blacklist.json') and \
-                   command in read_json('data//command_blacklist.json')[id_] else False
+        return True if id_ in data and \
+                   command in data[id_] else False
     except AttributeError:
         return False
 
@@ -197,7 +244,7 @@ def convert_currency(base, amount, target):
     :param target: str
     :return: str
     """
-    key = read_json('data//api_keys.json')['Currency']
+    key = read_json(fopen_generic(join('data, api_keys.json')))['Currency']
     request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1'\
         .format(key, base, target)
     response = requests.get(request_url).text

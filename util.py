@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 from google import search
 import html2text
+from os.path import join
 import stackexchange
 from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency
 
@@ -12,7 +13,7 @@ class Util:
     def __init__(self, bot, stack_api):
         self.bot = bot
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
-        self.help_message = read_json('data//help.json')
+        self.help_message = read_json(fopen_generic(join('data', 'help.json')))
 
     @commands.command()
     async def help(self, input_: str = 'Default'):
