@@ -4,7 +4,7 @@
 ## A simple wrapper module around osu!api. https://github.com/peppy/osu-api/wiki
 
 ## Definitions
-## API key           - An alpha-numeric string given to developers to authenticate their identities when using the API. 
+## API key           - An alpha-numeric string given to developers to authenticate their identities when using the API.
 ##                       NEVER give this to anyone. When using this code or the API directly, avoid putting your API Key directly in your code.
 ## Beatmap set       - A collection of all the difficulties for a particular song.
 ## Beatmap           - A single difficulty within a Beatmap Set.
@@ -45,9 +45,9 @@ def build_request(list_of_params, url):
 ## get_beatmaps - Returns a JSON payload containing information about a beatmap set or beatmap.
 ## key          - Your API key. (Required)
 ## since        - A MYSQL-formatted date which is the cut off for the returned data.
-## set_id       - A beatmap set ID. 
-## beatmap_id   - A beatmap ID. 
-## user_id      - A user ID. 
+## set_id       - A beatmap set ID.
+## beatmap_id   - A beatmap ID.
+## user_id      - A user ID.
 def get_beatmaps(key, since, set_id, beatmap_id, user_id):
     ## Create a list to store the attributes which are present.
     list_of_params = []
@@ -82,9 +82,9 @@ def get_match(key, multi_id):
 
 ## get_scores - Returns information about the top 50 scores of a specified beatmap.
 ## key        - Your API key.
-## beatmap_id - A beatmap ID. 
+## beatmap_id - A beatmap ID.
 ## user_id    - A user ID.
-## mode       - The game mode for which to get info. 
+## mode       - The game mode for which to get info.
 ##                  (0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania, Default = 0)
 def get_scores(key, beatmap_id, user_id, mode):
     ## Create a list to store the attributes which are present.
@@ -104,11 +104,11 @@ def get_scores(key, beatmap_id, user_id, mode):
 ## get_user - Returns a JSON payload containing information about a beatmap set or beatmap.
 ## key        - Your API key. (Required)
 ## user_id    - A user ID. (Required)
-## mode       - The game mode for which to get info. 
+## mode       - The game mode for which to get info.
 ##                  (0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania, Default = 0)
-## type       - Specifies rather the user_id specified is an ID or a username. 
+## type       - Specifies rather the user_id specified is an ID or a username.
 ##                  (id = id, string = username, default = Autodetect)
-## event_days - Maximum number of days between now and last event date. 
+## event_days - Maximum number of days between now and last event date.
 ##                  (1 - 31, default = 1)
 def get_user(key, user_id, mode, type, event_days):
     ## Create a list to store the attributes which are present.
@@ -129,11 +129,11 @@ def get_user(key, user_id, mode, type, event_days):
 ## get_user_best - Returns the top scores for the specified user.
 ## key           - Your API key. (Required)
 ## user_id       - A user ID. (Required)
-## mode          - The game mode for which to get info. 
+## mode          - The game mode for which to get info.
 ##                     (0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania, Default = 0)
-## limit         - # of results to return. 
+## limit         - # of results to return.
 ##                     (1 - 50, Default = 10).
-## type          - Specifies rather the user_id specified is an ID or a username. 
+## type          - Specifies rather the user_id specified is an ID or a username.
 ##                     (id = id, string = username, default = Autodetect)
 def get_user_best(key, user_id, mode, limit, type):
     ## Create a list to store the attributes which are present.
@@ -156,7 +156,7 @@ def get_user_best(key, user_id, mode, limit, type):
 ## user_id         - A user ID. (Required)
 ## mode            - The game mode for which to get info.
 ##                       (0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania, Default = 0)
-## type            - Specifies rather the user_id specified is an ID or a username. 
+## type            - Specifies rather the user_id specified is an ID or a username.
 ##                       (id = id, string = username, default = Autodetect)
 def get_user_recent(key, user_id, mode, type):
     ## Create a list to store the attributes which are present.

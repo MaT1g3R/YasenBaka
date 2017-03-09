@@ -2,14 +2,14 @@
 import textwrap
 from os import listdir
 from os.path import isfile, join
-from os.path import sep as pathsep
 import urllib.request
 import urllib.parse
 import json
 import requests
 from codecs import open as copen
 
-def fopen_generic(filepath, filemode = 'rU', coding = 'utf8', buffering = -1):
+
+def fopen_generic(filepath, filemode='rU', coding='utf8', buffering=-1):
     """
     Reads files using system seperators with friendly encodings
     :param filepath: file path
@@ -23,12 +23,12 @@ def fopen_generic(filepath, filemode = 'rU', coding = 'utf8', buffering = -1):
     :return file pointer
     :rtype file
     """
-    if isfile(fp):
-        return copen(fp, filemode, coding, 'replace', buffering)
+    if isfile(filepath):
+        return copen(filepath, filemode, coding, 'replace', buffering)
     return None
 
 
-def freadlines(fp, keep_open = False):
+def freadlines(fp, keep_open=False):
     """
     Splits file lines
     :param fp: file pointer
@@ -38,9 +38,10 @@ def freadlines(fp, keep_open = False):
     :return: file lines
     :rtype: list
     """
-    if fp != None:
+    if fp is not None:
         lines = fp.splitlines()
-        if not keep_open: fp.close()
+        if not keep_open:
+            fp.close()
         return lines
     return []
 
@@ -57,7 +58,7 @@ def split_text(text, i):
     """
     if isinstance(text, list):
         text = ''.join(text)
-    return textwrap.wrap(text, int(len(text)/i))
+    return textwrap.wrap(text, int(len(text) / i))
 
 
 def format_eq(term1, term2):
@@ -88,9 +89,9 @@ async def try_say(bot, text, i=1):
     try:
         if isinstance(text, list):
             for txt in text:
-                await bot.say('```markdown\n'+txt+'```')
+                await bot.say('```markdown\n' + txt + '```')
         elif isinstance(text, str):
-                await bot.say('```markdown\n' + text + '```')
+            await bot.say('```markdown\n' + text + '```')
     except Exception:
         i += 1
         await try_say(bot, split_text(text, i), i)
@@ -146,7 +147,7 @@ def generate_latex_online(latex):
     return fn
 
 
-def read_json(fp, keep_open = False):
+def read_json(fp, keep_open=False):
     """
     Read a json file into a dictionary
     :param fp: the file pointer
@@ -156,18 +157,19 @@ def read_json(fp, keep_open = False):
     :return: the dictionary
     :rtype: dict
     """
-    if fp != None:
-        data = json.load(file)
-        if not keep_open: file.close()
+    if fp is not None:
+        data = json.load(fp)
+        if not keep_open:
+            fp.close()
         return data
     return {}
 
 
-def write_json(fp, data, keep_open = False):
+def write_json(fp, data, keep_open=False):
     """
     Write a dictionary into a json file
-    :param file: The json file
-    :type file: ffile
+    :param fp: The json file
+    :type fp: ffile
     :param data: The dictionary
     :type data: dict
     :param keep_open: keep file open (default False)
@@ -175,9 +177,10 @@ def write_json(fp, data, keep_open = False):
     :return: nothing
     :rtype: None
     """
-    if fp != None:
+    if fp is not None:
         json.dump(data, fp)
-        if not keep_open: fp.close()
+        if not keep_open:
+            fp.close()
 
 
 def update_command_blacklist(add, command, id_):
@@ -217,7 +220,7 @@ def is_banned(command, id_):
     data = read_json(fopen_generic(join('data, command_blacklist.json')))
     try:
         return True if id_ in data and \
-                   command in data[id_] else False
+                       command in data[id_] else False
     except AttributeError:
         return False
 
@@ -245,7 +248,7 @@ def convert_currency(base, amount, target):
     :return: str
     """
     key = read_json(fopen_generic(join('data, api_keys.json')))['Currency']
-    request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1'\
+    request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1' \
         .format(key, base, target)
     response = requests.get(request_url).text
     try:
@@ -254,6 +257,6 @@ def convert_currency(base, amount, target):
         raise KeyError
     try:
         rate = float(parsed_data['USD{}'.format(target)]) / float(parsed_data['USD{}'.format(base)])
-        return "{0:.2f}".format(float(amount)*rate)
+        return "{0:.2f}".format(float(amount) * rate)
     except KeyError:
         raise KeyError

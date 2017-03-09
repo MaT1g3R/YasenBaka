@@ -5,11 +5,12 @@ from google import search
 import html2text
 from os.path import join
 import stackexchange
-from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency
+from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency, fopen_generic
 
 
 class Util:
     """Utility commands"""
+
     def __init__(self, bot, stack_api):
         self.bot = bot
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
@@ -110,7 +111,7 @@ class Util:
             await self.bot.say('Cannot find answer')
             return
 
-        start_index = q_url.find('questions')+10
+        start_index = q_url.find('questions') + 10
         finish_index = q_url[start_index:].find('/') + start_index
         question_id = int(q_url[start_index:finish_index])
 

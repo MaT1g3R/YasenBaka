@@ -7,28 +7,33 @@ class ChannelReader:
     """
     Channel reading functions
     """
+
     def __init__(self, bot, key):
         self.bot = bot
         self.key = key
         self.surl = 'http://api.simsimi.com/request.p?key={}&ft=1.0&lc=en&text={}'
+
     def bot_id(self):
         """
         Returns bot id
         :rtype str
         """
-        return '<@%s>' % (self.bot.user.id)
+        return '<@%s>' % self.bot.user.id
+
     def bot_nick(self):
         """
-        Returns bot nickname
+        Returns bot nicknameÒ
         :rtype str
         """
-        '<@!%s>' % (self.bot.user.id)
+        return '<@!%s>' % self.bot.user.id
+
     def bot_name(self):
         """
         Returns bot name with discriminator
         :rtype str
         """
-        '%s#%s' % (self.bot.user.name, self.bot.user.discriminator)
+        return '%s#%s' % (self.bot.user.name, self.bot.user.discriminator)
+
     async def on_message(self, message):
         """
         Events for read messages

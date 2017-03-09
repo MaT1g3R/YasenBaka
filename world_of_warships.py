@@ -1,14 +1,15 @@
 """World of Warships commands for this bot"""
 from discord.ext import commands
 import requests
-import json 
-import threading
+import json
+from threading import Timer
 from os.path import join
 from helpers import format_eq, generate_image_online, read_json, write_json, get_server_id, is_admin, fopen_generic
 
 
 class WorldOfWarships:
     """ WoWs commands """
+
     def __init__(self, bot, wows_api):
         self.bot = bot
         self.wows_api = wows_api
@@ -57,7 +58,7 @@ class WorldOfWarships:
         # --------------------------------------------------------------------------------------------------------------
         result.append(ship_dict['name'])
         # --------------------------------------------------------------------------------------------------------------
-        result.append('Tier: {}' .format(ship_dict['tier']))
+        result.append('Tier: {}'.format(ship_dict['tier']))
         # --------------------------------------------------------------------------------------------------------------
         price_val = '0'
         if ship_dict['price_gold'] != 0:
@@ -82,7 +83,7 @@ class WorldOfWarships:
         await self.bot.say('\n'.join(result))
 
     @commands.command(pass_context=True)
-    async def shame(self, ctx, user_name: str, region: str= 'NA'):
+    async def shame(self, ctx, user_name: str, region: str = 'NA'):
         """Get shamed by a bot"""
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
@@ -144,7 +145,7 @@ class WorldOfWarships:
             await self.bot.say('This server\'s shamelist is empty!')
 
     @commands.command(pass_context=True)
-    async def addshame(self, ctx, user_name: str, region: str= 'NA'):
+    async def addshame(self, ctx, user_name: str, region: str = 'NA'):
         """Add you to the shame shamelist"""
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
@@ -276,12 +277,12 @@ class WorldOfWarships:
                 return
             else:
                 res = [
-                        '{}: {}\nPlayers: {}\nPlayer count: {}'.format(
-                            ' '.join(val['time']),
-                            key,
-                            ', '.join([ctx.message.server.get_member(player).name for player in val['players']]),
-                            len(val['players'])
-                        )
-                        for key, val in self.ssheet[str(get_server_id(ctx))].items()]
+                    '{}: {}\nPlayers: {}\nPlayer count: {}'.format(
+                        ' '.join(val['time']),
+                        key,
+                        ', '.join([ctx.message.server.get_member(player).name for player in val['players']]),
+                        len(val['players'])
+                    )
+                    for key, val in self.ssheet[str(get_server_id(ctx))].items()]
                 res.sort(key=lambda x: self.days.index(x[0:x.find(',')]))
                 await self.bot.say('```{}```'.format('\n\n'.join(res)))

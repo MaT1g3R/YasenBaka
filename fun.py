@@ -7,6 +7,7 @@ from helpers import read_kana_files, freadlines, fopen_generic
 
 class Fun:
     """Commands for fun"""
+
     def __init__(self, bot):
         self.kanna_files = read_kana_files()
         self.bot = bot
@@ -38,8 +39,8 @@ class Fun:
     @commands.command()
     async def salt(self, percentage: str, tries: int):
         """ chance of an event happeneing """
-        percentage = float(percentage.replace('%', ''))/100 if '%' in percentage else float(percentage)
-        res = round((1 - (1 - percentage)**tries)*100, 2)
+        percentage = float(percentage.replace('%', '')) / 100 if '%' in percentage else float(percentage)
+        res = round((1 - (1 - percentage) ** tries) * 100, 2)
         await self.bot.say('about {}% of dropping'.format(res))
 
     @commands.command()
@@ -80,5 +81,4 @@ class Fun:
 
     @commands.command()
     async def steamymeme(self):
-        await self.bot.say(random.choice(['http://puu.sh/uvS7R/edce92064d.mp4','http://puu.sh/uvSOB/7e0ec82720.mp4']))
-
+        await self.bot.say(random.choice(['http://puu.sh/uvS7R/edce92064d.mp4', 'http://puu.sh/uvSOB/7e0ec82720.mp4']))

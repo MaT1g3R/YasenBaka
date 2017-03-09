@@ -8,7 +8,6 @@ from helpers import generate_image_online
 
 
 class Osu:
-
     def __init__(self, bot, key):
         self.bot = bot
         self.key = key
@@ -53,8 +52,8 @@ class Osu:
             out = '**{}\'s profile information**\n'.format(name) + \
                   'Username: {} (ID: {})\n'.format(name, id_) + \
                   'Plays: {} (SS: {} | S: {} | A: {})\n'.format(playcount, ss, s, a) + \
-                  'Scoring: (50: {} | 100: {} | 300: {})\n'.format(count50, count100, count300) +\
-                  'Total score: {} ({}% ranked)\n'.format(total, int(int(ranked)/int(total))*100) + \
+                  'Scoring: (50: {} | 100: {} | 300: {})\n'.format(count50, count100, count300) + \
+                  'Total score: {} ({}% ranked)\n'.format(total, int(int(ranked) / int(total)) * 100) + \
                   'PP: {}pp\n'.format(pp) + \
                   'Rank: #{}\n'.format(pp_rank) + \
                   'Country: :flag_{}: (#{})\n'.format(country, c_rank) + \
@@ -64,4 +63,3 @@ class Osu:
             await self.bot.send_file(ctx.message.channel, generate_image_online(avatar, join('data', 'osu.jpg')))
         except IndexError:
             await self.bot.say('Player not found!')
-
