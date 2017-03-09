@@ -1,7 +1,8 @@
 """Commands for fun"""
 from discord.ext import commands
 import random
-from helpers import read_kana_files
+from os.path import join
+from helpers import read_kana_files, freadlines, fopen_generic
 
 
 class Fun:
@@ -9,8 +10,7 @@ class Fun:
     def __init__(self, bot):
         self.kanna_files = read_kana_files()
         self.bot = bot
-        with open('data//lewd.txt') as f:
-            self.lewds = f.read().splitlines()
+        self.lewds = freadlines(fopen_generic(join('data', 'lewd')))
         self.lewds.append('( ͡° ͜ʖ ͡°)')
 
     @commands.command()
@@ -66,12 +66,12 @@ class Fun:
     @commands.command(pass_context=True)
     async def chensaw(self, ctx):
         """Display a chensaw gif"""
-        await self.bot.send_file(ctx.message.channel, 'data//chensaw.gif')
+        await self.bot.send_file(ctx.message.channel, join('data', 'chensaw.gif'))
 
     @commands.command(pass_context=True)
     async def ayaya(self, ctx):
         """Ayaya!"""
-        await self.bot.send_file(ctx.message.channel, 'data//ayaya.png')
+        await self.bot.send_file(ctx.message.channel, join('data', 'ayaya.png'))
 
     @commands.command()
     async def lewd(self):

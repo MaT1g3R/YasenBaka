@@ -5,7 +5,8 @@ from channelreader import ChannelReader
 from discord import game
 from fun import Fun
 from world_of_warships import WorldOfWarships
-from helpers import read_json
+from os.path import join
+from helpers import read_json, fopen_generic
 from util import Util
 from osu_commands import Osu
 
@@ -27,7 +28,7 @@ if __name__ == '__main__':
         await yasen_baka.change_presence(game=game.Game(name='?help'))
 
 
-    my_apis = read_json('data//api_keys.json')
+    my_apis = read_json(fopen_generic(join('data, api_keys.json')))
 
     yasen_baka.remove_command('help')
     yasen_baka.add_cog(Util(yasen_baka, my_apis['StackExchange']))
