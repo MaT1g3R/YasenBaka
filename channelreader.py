@@ -48,11 +48,11 @@ class ChannelReader:
         elif message.content == "\\o\\" and message.author.id != self.bot.user.id:
             await self.bot.send_message(message.channel, '/o/')
 
-        if message.content.startswith(self.bot_id):
+        if message.content.startswith(self.bot_id()):
             msg = message.content[22:]
             r = json.loads(requests.get(self.surl.format(self.key, msg)).text)
             await self.bot.send_message(message.channel, r['response'])
-        elif message.content.startswith(self.bot_nick):
+        elif message.content.startswith(self.bot_nick()):
             msg = message.content[23:]
             r = json.loads(requests.get(self.surl.format(self.key, msg)).text)
             await self.bot.send_message(message.channel, r['response'])

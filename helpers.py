@@ -195,7 +195,7 @@ def update_command_blacklist(add, command, id_):
     :return: nothing
     :rtype: None
     """
-    my_dict = read_json(fopen_generic(join('data, command_blacklist.json')))
+    my_dict = read_json(fopen_generic(join('data', 'command_blacklist.json')))
     if id_ not in my_dict:
         my_dict[id_] = []
     if add is False:
@@ -204,7 +204,7 @@ def update_command_blacklist(add, command, id_):
     else:
         if command not in my_dict[id_]:
             my_dict[id_].append(command)
-    write_json(fopen_generic(join('data, command_blacklist.json'), 'w'), my_dict)
+    write_json(fopen_generic(join('data', 'command_blacklist.json'), 'w'), my_dict)
 
 
 def is_banned(command, id_):
@@ -217,7 +217,7 @@ def is_banned(command, id_):
     :return: True if it's banned
     :rtype: bool
     """
-    data = read_json(fopen_generic(join('data, command_blacklist.json')))
+    data = read_json(fopen_generic(join('data', 'command_blacklist.json')))
     try:
         return True if id_ in data and \
                        command in data[id_] else False
@@ -247,7 +247,7 @@ def convert_currency(base, amount, target):
     :param target: str
     :return: str
     """
-    key = read_json(fopen_generic(join('data, api_keys.json')))['Currency']
+    key = read_json(fopen_generic(join('data', 'api_keys.json')))['Currency']
     request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1' \
         .format(key, base, target)
     response = requests.get(request_url).text

@@ -98,7 +98,7 @@ class WorldOfWarships:
             if server_id in self.shame_list and user_name in self.shame_list[server_id]:
                 url = "http://{}.warshipstoday.com/signature/{}/dark.png".format(
                     self.shame_list[server_id][user_name][0], self.shame_list[server_id][user_name][1])
-                fn = generate_image_online(url, join('data, shame.png'))
+                fn = generate_image_online(url, join('data', 'shame.png'))
                 await self.bot.send_file(ctx.message.channel, fn)
                 return
 
@@ -186,6 +186,7 @@ class WorldOfWarships:
             self.shame_list[server_id][user_id] = None
             new_entry = True
         self.shame_list[ctx.message.server.id][user_id] = [region_codes[region], playerid]
+        self.save_shamelist()
         await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
 
     @commands.command(pass_context=True)
@@ -194,6 +195,7 @@ class WorldOfWarships:
         server_id = ctx.message.server.id
         if str(ctx.message.author.id) in self.shame_list[server_id]:
             self.shame_list[server_id].pop(str(ctx.message.author.id), None)
+            self.save_shamelist()
             await self.bot.say('Remove success!')
         else:
             await self.bot.say('Removed failed, you were not in the shamelist to begin with.')
@@ -204,6 +206,7 @@ class WorldOfWarships:
             await self.bot.say('This is an admin only command!')
         else:
             self.ssheet[str(get_server_id(ctx))] = {}
+            self.save_sheet()
             await self.bot.say('New spread sheet created! The old one has been removed!')
 
     @commands.command(pass_context=True)
@@ -220,6 +223,7 @@ class WorldOfWarships:
             datetime[0] += ','
             self.ssheet[str(get_server_id(ctx))][matchname]['time'] = datetime
             self.ssheet[str(get_server_id(ctx))][matchname]['players'] = []
+            self.save_sheet()
             await self.bot.say('Match on {} added!'.format(' '.join(datetime)))
 
     @commands.command(pass_context=True)
@@ -232,6 +236,7 @@ class WorldOfWarships:
             await self.bot.say('There doesn\'t seem to be a with that name.')
         else:
             del self.ssheet[str(get_server_id(ctx))][matchname]
+            self.save_sheet()
             await self.bot.say('Match: {} removed!'.format(matchname))
 
     @commands.command(pass_context=True)
@@ -248,6 +253,7 @@ class WorldOfWarships:
                         joined.append(name)
                 except KeyError:
                     continue
+            self.save_sheet()
             await self.bot.say('You have joined matches: {}'.format(', '.join(joined)))
 
     @commands.command(pass_context=True)
@@ -264,6 +270,7 @@ class WorldOfWarships:
                         quits.append(name)
                     except ValueError:
                         continue
+            self.save_sheet()
             await self.bot.say('You have quit the matches: {}'.format(' ,'.join(quits)))
 
     @commands.command(pass_context=True)
