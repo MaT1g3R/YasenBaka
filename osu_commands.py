@@ -53,7 +53,7 @@ class Osu:
                   'Username: {} (ID: {})\n'.format(name, id_) + \
                   'Plays: {} (SS: {} | S: {} | A: {})\n'.format(playcount, ss, s, a) + \
                   'Scoring: (50: {} | 100: {} | 300: {})\n'.format(count50, count100, count300) + \
-                  'Total score: {} ({}% ranked)\n'.format(total, int(int(ranked) / int(total)) * 100) + \
+                  'Total score: {} ({}% ranked)\n'.format(total, int(int(ranked) * 100/ int(total))) + \
                   'PP: {}pp\n'.format(pp) + \
                   'Rank: #{}\n'.format(pp_rank) + \
                   'Country: :flag_{}: (#{})\n'.format(country, c_rank) + \
