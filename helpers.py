@@ -39,7 +39,7 @@ def freadlines(fp, keep_open=False):
     :rtype: list
     """
     if fp is not None:
-        lines = fp.splitlines()
+        lines = fp.readlines()
         if not keep_open:
             fp.close()
         return lines
