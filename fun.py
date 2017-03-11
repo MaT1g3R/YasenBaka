@@ -11,7 +11,7 @@ class Fun:
     def __init__(self, bot):
         self.kanna_files = read_kana_files()
         self.bot = bot
-        self.lewds = freadlines(fopen_generic(join('data', 'lewd')))
+        self.lewds = freadlines(fopen_generic(join('data', 'lewd.txt')))
         self.lewds.append('( ͡° ͜ʖ ͡°)')
 
     @commands.command()
