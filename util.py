@@ -57,7 +57,7 @@ class Util:
                     await self.bot.send_message(member, ' '.join(message))
                 except Exception:
                     ex_list.append(member.name)
-            if not ex_list:
+            if ex_list:
                 await self.bot.say('The pm could not be sent to the following users: {}'.format(', '.join(ex_list)))
             await self.bot.say("Mass pm success!")
 
