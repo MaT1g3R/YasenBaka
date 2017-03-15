@@ -50,7 +50,6 @@ class Util:
                     lazy_bums.append(s[2:-1])
                 else:
                     message.append(s)
-            await self.bot.say(lazy_bums)
             members = [member for member in ctx.message.server.members if member.id in lazy_bums]
             ex_list = []
             for member in members:
