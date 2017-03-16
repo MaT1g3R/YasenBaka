@@ -1,6 +1,7 @@
 """Handles mointoring of text channels"""
 import requests
 import json
+import time
 
 
 class ChannelReader:
@@ -12,6 +13,8 @@ class ChannelReader:
         self.bot = bot
         self.key = key
         self.surl = 'http://api.simsimi.com/request.p?key={}&ft=1.0&lc=en&text={}'
+        self.start_time = None
+        self.end_time = None
 
     def bot_id(self):
         """
@@ -56,3 +59,8 @@ class ChannelReader:
             msg = message.content[23:]
             r = json.loads(requests.get(self.surl.format(self.key, msg)).text)
             await self.bot.send_message(message.channel, r['response'])
+        elif message.content == '?ping':
+            self.start_time = int(round(time.time() * 1000))
+            msg = await self.bot.send_message(message.channel, 'Pong! :hourglass:')
+            self.end_time = int(round(time.time() * 1000))
+            await self.bot.edit_message(msg, 'Pong! | :timer: {}ms'.format(self.end_time - self.start_time))
