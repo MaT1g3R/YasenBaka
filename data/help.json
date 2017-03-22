@@ -29,7 +29,8 @@
     "avatar",
     "stackoverflow",
     "currency",
-    "info"
+    "info",
+    "ping"
   ],
   "wows": [
     "ship",
@@ -82,5 +83,6 @@
   "addmatch": "Adds a new match to the current spreadsheet. Note your match name CANNOT have spaces, and the entry after the match name must be a day in the week.\nExample usage: `?addmatch my_match_name Friday Sept.11 4:00PM`",
   "removematch":"Removes a match from the current spreadsheet, note this will remove any data that's associated with that match.",
   "joinmatch":"Joins a match or multiple matches on the curent spreadsheet.\nExample usage: `?joinmatch match_name1 match_name2`",
-  "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch match_name1 match_name2`"
+  "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch match_name1 match_name2`",
+  "ping": "Shows the response time of the bot."
 }

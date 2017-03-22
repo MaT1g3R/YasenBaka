@@ -8,6 +8,7 @@ import stackexchange
 from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency, fopen_generic
 import time
 
+
 class Util:
     """Utility commands"""
 
@@ -145,3 +146,10 @@ class Util:
               "Source code: <https://github.com/MaT1g3R/YasenBaka>"
 
         await self.bot.say(res)
+
+    @commands.command()
+    async def ping(self):
+        start_time = int(round(time.time() * 1000))
+        msg = await self.bot.say('Pong! :hourglass:')
+        end_time = int(round(time.time() * 1000))
+        await self.bot.edit_message(msg, 'Pong! | :timer: {}ms'.format(end_time - start_time))
