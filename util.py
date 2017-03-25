@@ -30,9 +30,7 @@ class Util:
             await self.bot.say('Command List:\nUtility:```{}```Fun:```{}```Music:```{}```'
                                'World of Warships:```{}```WoWs match spreadsheet:```{}```'.
                                format(util, fun, music, wows, sheet)
-                               + '?help [command] for more info on that command, such as `?help play`\n'
-                               + 'You can also talk to the bot by You can also talk to the bot by mentioning her!'
-                                 '\nExample usage: <@243230010532560896> hi')
+                               + '?help [command] for more info on that command, such as `?help play`')
         elif input_ in self.help_message:
             await self.bot.say(self.help_message[input_])
 
