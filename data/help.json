@@ -19,7 +19,8 @@
     "chensaw",
     "lewd",
     "ayaya",
-    "osu"
+    "osu",
+    "umi"
   ],
   "util": [
     "pmall",
@@ -84,5 +85,6 @@
   "removematch":"Removes a match from the current spreadsheet, note this will remove any data that's associated with that match.",
   "joinmatch":"Joins a match or multiple matches on the curent spreadsheet.\nExample usage: `?joinmatch match_name1 match_name2`",
   "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch match_name1 match_name2`",
-  "ping": "Shows the response time of the bot."
+  "ping": "Shows the response time of the bot.",
+  "umi":"Umi is a vile ocean."
 }

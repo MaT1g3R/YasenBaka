@@ -7,6 +7,7 @@ import urllib.parse
 import json
 import requests
 from codecs import open as copen
+import xml.etree.ElementTree as ET
 
 
 def fopen_generic(filepath, filemode='rU', coding='utf8', buffering=-1):
@@ -260,3 +261,15 @@ def convert_currency(base, amount, target):
         return "{0:.2f}".format(float(amount) * rate)
     except KeyError:
         raise KeyError
+
+
+def safebooru(tag):
+    """
+    Get a list of pictures from safebooru based on tag
+    :param tag: the tag to search for 
+    :return: a list of picture links based on the tag
+    """
+    url = "https://safebooru.org//index.php?page=dapi&s=post&q=index&tags={}".format(tag)
+    result = requests.get(url).content
+    root = ET.fromstring(result)
+    return ['https:' + child.attrib['file_url'] for child in root]

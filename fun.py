@@ -2,12 +2,11 @@
 from discord.ext import commands
 import random
 from os.path import join
-from helpers import read_kana_files, freadlines, fopen_generic
+from helpers import read_kana_files, freadlines, fopen_generic, safebooru
 
 
 class Fun:
     """Commands for fun"""
-
     def __init__(self, bot):
         self.kanna_files = read_kana_files()
         self.bot = bot
@@ -61,8 +60,21 @@ class Fun:
         :return: nothing
         :rtype: None
         """
-        fn = random.choice(self.kanna_files)
-        await self.bot.send_file(ctx.message.channel, fn)
+        kanna_list = safebooru("kanna_kamui")
+        kanna_total = kanna_list + self.kanna_files
+        fn = random.choice(kanna_total)
+        if fn in self.kanna_files:
+            await  self.bot.send_file(ctx.message.channel, fn)
+        else:
+            await self.bot.say(fn)
+
+    @commands.command()
+    async def umi(self):
+        """
+        Umi is love
+        :return: None
+        """
+        await self.bot.say(random.choice(safebooru('sonoda_umi')))
 
     @commands.command(pass_context=True)
     async def chensaw(self, ctx):
@@ -82,3 +94,4 @@ class Fun:
     @commands.command()
     async def steamymeme(self):
         await self.bot.say(random.choice(['http://puu.sh/uvS7R/edce92064d.mp4', 'http://puu.sh/uvSOB/7e0ec82720.mp4']))
+
