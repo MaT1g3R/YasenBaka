@@ -52,7 +52,7 @@ class Fun:
             await self.bot.say(' '.join(message))
 
     @commands.command(pass_context=True)
-    async def kanna(self, ctx):
+    async def shame(self, ctx):
         """
         Randomly display a kanna image to the channel
         :param ctx: Context
