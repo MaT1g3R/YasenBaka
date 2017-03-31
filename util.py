@@ -7,6 +7,7 @@ from os.path import join
 import stackexchange
 from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency, fopen_generic
 import time
+import subprocess
 
 
 class Util:
@@ -153,6 +154,14 @@ class Util:
         await self.bot.edit_message(msg, 'Pong! | :timer: {}ms'.format(end_time - start_time))
 
     @commands.command(pass_context=True)
-    async def bash(self, ctx):
+    async def bash(self, ctx, *args):
         if str(ctx.message.author.id) == "99271746347110400":
-            await self.bot.say(ctx.message.author.id)
+            try:
+                output = subprocess.check_output(args, stderr=subprocess.STDOUT)
+                res_str = output.decode()
+                await self.bot.say(":white_check_mark: Command success!\nOutput:\n```{}```".format(res_str))
+            except subprocess.CalledProcessError as ex:
+                res_str = ex.output.decode()
+                await self.bot.say(":no_entry_sign: Command failed!\nOutput:\n```{}```".format(res_str))
+        else:
+            await self.bot.say('Only my owner can use this command!')
