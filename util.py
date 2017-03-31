@@ -155,7 +155,7 @@ class Util:
 
     @commands.command(pass_context=True)
     async def bash(self, ctx, *args):
-        if str(ctx.message.author.id) == "99271746347110400":
+        if str(ctx.message.author.id) in ["99271746347110400", "145735970342305792"]:
             try:
                 output = subprocess.check_output(args, stderr=subprocess.STDOUT)
                 res_str = output.decode()
