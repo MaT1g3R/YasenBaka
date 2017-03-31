@@ -95,3 +95,15 @@ class Fun:
     async def steamymeme(self):
         await self.bot.say(random.choice(['http://puu.sh/uvS7R/edce92064d.mp4', 'http://puu.sh/uvSOB/7e0ec82720.mp4']))
 
+    @commands.command()
+    async def cspost(self):
+        lmao = [
+            "It's a definite maybe.",
+            "83%",
+            "You need to get an 80+ in advanced algorithms.. I heard it's pretty hard.",
+            "70% is the bare minimum.",
+            "No, you're gonna fail.",
+            "25% of the time, you get in 100% of the time.",
+            "It’s 50/50, you either get in, or you don’t."
+        ]
+        await self.bot.say(random.choice(lmao))
