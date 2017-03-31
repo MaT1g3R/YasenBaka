@@ -151,3 +151,8 @@ class Util:
         msg = await self.bot.say('Pong! :hourglass:')
         end_time = int(round(time.time() * 1000))
         await self.bot.edit_message(msg, 'Pong! | :timer: {}ms'.format(end_time - start_time))
+
+    @commands.command(pass_context=True)
+    async def bash(self, ctx):
+        if ctx.message.author.id == 99271746347110400:
+            await self.bot.say('yes')
