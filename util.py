@@ -165,7 +165,3 @@ class Util:
                 await self.bot.say(":no_entry_sign: Command failed!\nOutput:\n```{}```".format(res_str))
         else:
             await self.bot.say('Only my owner can use this command!')
-
-    @commands.command()
-    async def test(self):
-        await self.bot.say("test")
