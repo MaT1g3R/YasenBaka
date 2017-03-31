@@ -18,22 +18,25 @@ class Util:
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
         self.help_message = read_json(fopen_generic(join('data', 'help.json')))
 
-    @commands.command()
-    async def help(self, input_: str = 'Default'):
-        """Help messages"""
-        music = ', '.join(sorted(self.help_message['music']))
-        fun = ', '.join(sorted(self.help_message['fun']))
-        util = ', '.join(sorted(self.help_message['util']))
-        wows = ', '.join(sorted(self.help_message['wows']))
-        sheet = ', '.join(self.help_message['ssheet'])
-
-        if input_ == 'Default':
-            await self.bot.say('Command List:\nUtility:```{}```Fun:```{}```Music:```{}```'
-                               'World of Warships:```{}```WoWs match spreadsheet:```{}```'.
-                               format(util, fun, music, wows, sheet)
-                               + '?help [command] for more info on that command, such as `?help play`')
-        elif input_ in self.help_message:
-            await self.bot.say(self.help_message[input_])
+    # @commands.command()
+    # async def help(self, input_: str = 'Default'):
+    #     """Help messages"""
+    #     music = ', '.join(sorted(self.help_message['music']))
+    #     fun = ', '.join(sorted(self.help_message['fun']))
+    #     util = ', '.join(sorted(self.help_message['util']))
+    #     wows = ', '.join(sorted(self.help_message['wows']))
+    #     sheet = ', '.join(self.help_message['ssheet'])
+    #
+    #     if input_ == 'Default':
+    #         await self.bot.say('Command List:\nUtility:```{}```Fun:```{}```Music:```{}```'
+    #                            'World of Warships:```{}```WoWs match spreadsheet:```{}```'.
+    #                            format(util, fun, music, wows, sheet)
+    #                            + '?help [command] for more info on that command, such as `?help play`')
+    #     elif input_ in self.help_message:
+    #         await self.bot.say(self.help_message[input_])
+    @commands.command(pass_context=True)
+    async def help(self, ctx):
+        await self.bot.send_message(ctx.message.author, 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
 
     @commands.command(pass_context=True)
     async def pmall(self, ctx, *args):
