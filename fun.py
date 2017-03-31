@@ -107,3 +107,7 @@ class Fun:
             "It’s 50/50, you either get in, or you don’t."
         ]
         await self.bot.say(random.choice(lmao))
+
+    @commands.command()
+    async def underforest(self):
+        await self.bot.say("Forest is love")
