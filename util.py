@@ -154,5 +154,5 @@ class Util:
 
     @commands.command(pass_context=True)
     async def bash(self, ctx):
-        if ctx.message.author.id == '99271746347110400':
-            await self.bot.say('yes')
+        if str(ctx.message.author.id) == "99271746347110400":
+            await self.bot.say(ctx.message.author.id)
