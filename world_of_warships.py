@@ -83,7 +83,7 @@ class WorldOfWarships:
         await self.bot.say('\n'.join(result))
 
     @commands.command(pass_context=True)
-    async def kanna(self, ctx, user_name: str, region: str = 'NA'):
+    async def shame(self, ctx, user_name: str, region: str = 'NA'):
         """Get shamed by a bot"""
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
