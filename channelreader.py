@@ -56,7 +56,7 @@ class ChannelReader:
             await self.bot.send_message(message.channel, '\\o\\')
         elif self.check_message(message, '\\o\\'):
             await self.bot.send_message(message.channel, '/o/')
-        elif self.check_message(message, 'o7'):
+        elif self.check_message(message, 'o7'):  # Yousoro!
             await self.bot.send_message(message.channel, 'http://i.imgur.com/Pudz3G4.gif')
         #
         # if message.content.startswith(self.bot_id()):
