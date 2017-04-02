@@ -52,7 +52,7 @@ class ChannelReader:
         :rtype: None
         """
         # Respnods to /o/ and \o\
-        if self.check_message(message,'/o/'):
+        if self.check_message(message, '/o/'):
             await self.bot.send_message(message.channel, '\\o\\')
         elif self.check_message(message, '\\o\\'):
             await self.bot.send_message(message.channel, '/o/')
