@@ -35,6 +35,6 @@ if __name__ == '__main__':
     yasen_baka.add_cog(Fun(yasen_baka))
     yasen_baka.add_cog(WorldOfWarships(yasen_baka, my_apis['WoWs']))
     yasen_baka.add_cog(Music(yasen_baka))
-    yasen_baka.add_cog(ChannelReader(yasen_baka, my_apis['SimSimi']))
+    yasen_baka.add_cog(ChannelReader(yasen_baka))
     yasen_baka.add_cog(Osu(yasen_baka, my_apis['Osu']))
     yasen_baka.run(my_apis['Discord'])
