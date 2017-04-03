@@ -12,7 +12,6 @@ import subprocess
 import resource
 import math
 import sys
-import datetime
 
 
 class Util:
@@ -163,10 +162,14 @@ class Util:
         res.add_field(name='Library', value='Discord.py v{}.{}.{}'.format(lib_ver.major, lib_ver.minor, lib_ver.micro))
         res.add_field(name='System', value=' '.join([str.title(str(x)) for x in get_distro()]))
         res.add_field(name='Developers', value='ラブアローシュート#6728')
-        res.add_field(name='Source code and invite link', value='https://github.com/MaT1g3R/YasenBaka')
-        res.set_footer(text='Requested by {} | {}'.format(
-            ctx.message.author.display_name + '#' +ctx.message.author.discriminator,
-            datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")))
+        res.add_field(name='Servers', value=str(len([s for s in self.bot.servers])))
+        res.add_field(name='Users', value=str(len([s for s in self.bot.get_all_members()])))
+        res.add_field(name='Text channels',
+                      value=str(len([s for s in self.bot.get_all_channels() if s.type == discord.ChannelType.text])))
+        res.add_field(name='Voice channels', value=str(len([s for s in self.bot.voice_clients])))
+        res.add_field(name='Source code and invite link', value='https://github.com/MaT1g3R/YasenBaka', inline=False)
+        res.set_footer(text='Requested by {}'
+                       .format(ctx.message.author.display_name + '#' + ctx.message.author.discriminator))
         await self.bot.send_message(ctx.message.channel, embed=res)
 
     @commands.command()
