@@ -25,9 +25,9 @@ class Util:
     def get_uptime(self):
         time_elapsed = int(time.time() - self.start_time)
         hours = math.floor(time_elapsed/(60*60))  # How the fuck do i math
-        time_elapsed -= hours*60*60
+        time_elapsed -= hours*3600
         minutes = math.floor(time_elapsed/60)
-        time_elapsed -= minutes
+        time_elapsed -= minutes*60
         minutes_str = str(minutes) if minutes >= 10 else '0' + str(minutes)
         seconds_str = str(time_elapsed) if time_elapsed >= 10 else '0' + str(time_elapsed)
         return '{}:{}:{}'.format(str(hours), minutes_str, seconds_str)
