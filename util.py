@@ -161,7 +161,7 @@ class Util:
         lib_ver = discord.version_info
         res.add_field(name='Library', value='Discord.py v{}.{}.{}'.format(lib_ver.major, lib_ver.minor, lib_ver.micro))
         res.add_field(name='System', value=' '.join([str.title(str(x)) for x in get_distro()]))
-        res.add_field(name='Developers', value='ラブアローシュート#6728')
+        res.add_field(name='Developers', value='ラブアローシュート#6728\nNaomi#3264')
         res.add_field(name='Servers', value=str(len([s for s in self.bot.servers])))
         res.add_field(name='Users', value=str(len([s for s in self.bot.get_all_members()])))
         res.add_field(name='Text channels',
