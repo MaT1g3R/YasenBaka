@@ -168,6 +168,7 @@ class Util:
                       value=str(len([s for s in self.bot.get_all_channels() if s.type == discord.ChannelType.text])))
         res.add_field(name='Voice channels', value=str(len([s for s in self.bot.voice_clients])))
         res.add_field(name='Source code and invite link', value='https://github.com/MaT1g3R/YasenBaka', inline=False)
+        res.add_field(name='Support server', value='https://discord.gg/BnPbz6q')
         res.set_footer(text='Requested by {}'
                        .format(ctx.message.author.display_name + '#' + ctx.message.author.discriminator))
         await self.bot.send_message(ctx.message.channel, embed=res)
