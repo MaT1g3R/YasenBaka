@@ -273,3 +273,11 @@ def safebooru(tag):
     result = requests.get(url).content
     root = ET.fromstring(result)
     return ['https:' + child.attrib['file_url'] for child in root]
+
+
+def get_distro():
+    """
+    Name of your Linux distro (in lowercase).
+    """
+    with open("/etc/issue") as f:
+        return f.read().lower().split()[:2]

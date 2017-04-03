@@ -1,6 +1,4 @@
 """Handles mointoring of text channels"""
-import requests
-import json
 
 
 class ChannelReader:

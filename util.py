@@ -5,17 +5,33 @@ from google import search
 import html2text
 from os.path import join
 import stackexchange
-from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency, fopen_generic
+from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency, fopen_generic\
+    , get_distro
 import time
 import subprocess
+import resource
+import math
+import sys
+import datetime
 
 
 class Util:
     """Utility commands"""
     def __init__(self, bot, stack_api):
+        self.start_time = time.time()
         self.bot = bot
         self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
         self.help_message = read_json(fopen_generic(join('data', 'help.json')))
+
+    def get_uptime(self):
+        time_elapsed = int(time.time() - self.start_time)
+        hours = math.floor(time_elapsed/(60*60))  # How the fuck do i math
+        time_elapsed -= hours*60*60
+        minutes = math.floor(time_elapsed/60)
+        time_elapsed -= minutes
+        minutes_str = str(minutes) if minutes >= 10 else '0' + str(minutes)
+        seconds_str = str(time_elapsed) if time_elapsed >= 10 else '0' + str(time_elapsed)
+        return '{}:{}:{}'.format(str(hours), minutes_str, seconds_str)
 
     @commands.command()
     async def help(self, input_: str = 'Default'):
@@ -135,15 +151,23 @@ class Util:
         except KeyError:
             await self.bot.say('Please enter valid currency codes!')
 
-    @commands.command()
-    async def info(self):
-        res = "Developed and maintained by <@99271746347110400> using the discord.py api. If you have any feature " \
-              "requests or bug reports please pm them to me.\n" \
-              "Invite the bot to your server using this link: " \
-              "<https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=-1>\n" \
-              "Source code: <https://github.com/MaT1g3R/YasenBaka>"
-
-        await self.bot.say(res)
+    @commands.command(pass_context=True)
+    async def info(self, ctx):
+        res = discord.Embed(colour=0x4286f4)
+        res.set_author(name=self.bot.user.name, icon_url='{0.avatar_url}'.format(self.bot.user))
+        ram = "{0:.2f}".format(float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024))
+        res.add_field(name='RAM used', value=str(ram) + 'MB')
+        res.add_field(name='Uptime', value=self.get_uptime())
+        res.add_field(name='Python version', value=sys.version[:5])
+        lib_ver = discord.version_info
+        res.add_field(name='Library', value='Discord.py v{}.{}.{}'.format(lib_ver.major, lib_ver.minor, lib_ver.micro))
+        res.add_field(name='System', value=' '.join([str.title(str(x)) for x in get_distro()]))
+        res.add_field(name='Developers', value='ラブアローシュート#6728')
+        res.add_field(name='Source code and invite link', value='https://github.com/MaT1g3R/YasenBaka')
+        res.set_footer(text='Requested by {} | {}'.format(
+            ctx.message.author.display_name + '#' +ctx.message.author.discriminator,
+            datetime.datetime.now().strftime("%I:%M%p on %B %d, %Y")))
+        await self.bot.send_message(ctx.message.channel, embed=res)
 
     @commands.command()
     async def ping(self):
