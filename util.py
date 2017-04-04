@@ -192,3 +192,17 @@ class Util:
                 await self.bot.say(":no_entry_sign: Command failed!\nOutput:\n```{}```".format(res_str))
         else:
             await self.bot.say('Only my owner can use this command!')
+
+    @commands.command(pass_context=True)
+    async def update(self, ctx):
+        if str(ctx.message.author.id) in ["99271746347110400", "145735970342305792"]:
+            try:
+                output = subprocess.check_output(['git', 'pull'], stderr=subprocess.STDOUT)
+                res_str = output.decode()
+                await self.bot.say(":white_check_mark: Update success!\nOutput:\n```{}```".format(res_str))
+                subprocess.call(['pm2', 'restart', '8'])
+            except subprocess.CalledProcessError as ex:
+                res_str = ex.output.decode()
+                await self.bot.say(":no_entry_sign: Update failed!\nOutput:\n```{}```".format(res_str))
+        else:
+            await self.bot.say('Only my owner can use this command!')
