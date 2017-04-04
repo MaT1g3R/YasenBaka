@@ -20,7 +20,8 @@
     "lewd",
     "ayaya",
     "osu",
-    "umi"
+    "umi",
+    "place"
   ],
   "util": [
     "pmall",
@@ -86,5 +87,6 @@
   "joinmatch":"Joins a match or multiple matches on the curent spreadsheet.\nExample usage: `?joinmatch match_name1 match_name2`",
   "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch match_name1 match_name2`",
   "ping": "Shows the response time of the bot.",
-  "umi":"Umi is a vile ocean."
+  "umi":"Umi is a vile ocean.",
+  "place": "Let us marvel at the greatness of the internet. \n `?place clean` for the cleaned up version."
 }

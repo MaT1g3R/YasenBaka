@@ -111,3 +111,8 @@ class Fun:
     @commands.command()
     async def underforest(self):
         await self.bot.say("Forest is love")
+
+    @commands.command()
+    async def place(self, arg):
+        res = 'https://i.imgur.com/7E3bAnE.png' if arg == 'clean' else 'https://i.imgur.com/ajWiAYi.png'
+        await self.bot.say(res)
