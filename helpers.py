@@ -280,4 +280,4 @@ def get_distro():
     Name of your Linux distro (in lowercase).
     """
     with open("/etc/issue") as f:
-        return f.read().lower().split()[:3]
+        return f.read().lower().split()[:4]
