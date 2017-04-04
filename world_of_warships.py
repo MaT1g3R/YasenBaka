@@ -4,7 +4,7 @@ import requests
 import json
 from threading import Timer
 from os.path import join
-from helpers import format_eq, generate_image_online, read_json, write_json, get_server_id, is_admin, fopen_generic
+from helpers import format_eq, read_json, write_json, get_server_id, is_admin, fopen_generic
 from discord import Embed
 
 
@@ -23,9 +23,14 @@ class WorldOfWarships:
         self.na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))['data']
         self.ssheet = read_json(fopen_generic(join('data', 'sheet.json')))
         self.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
-
         self.save_sheet_event = Timer(300, self.save_sheet)
         self.save_shamelist_event = Timer(300, self.save_shamelist)
+        self.region_dict = {
+            'NA': ['com', 'na'],
+            'EU': ['eu'],
+            'AS': ['asia'],
+            'RU': ['ru']
+        }
 
     def save_sheet(self):
         """ shortcut for saving sheet """
@@ -38,6 +43,14 @@ class WorldOfWarships:
         write_json(fopen_generic(join('data', 'shamelist.json'), 'w'), self.shame_list)
         # self.shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
         self.save_sheet_event = Timer(300, self.save_shamelist)
+
+    def wows_region(self, region):
+        """Return the wows region of a player"""
+        return self.region_dict[region][0]
+
+    def warships_region(self, region):
+        """Return the warships today region of a player"""
+        return self.region_dict[region][-1]
 
     @commands.command()
     async def ship(self, *input_: str):
@@ -89,18 +102,11 @@ class WorldOfWarships:
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
-
-        region_dict = {
-            'NA': ['com', 'na'],
-            'EU': ['eu'],
-            'AS': ['asia'],
-            'RU': ['ru']
-        }
         in_list = False
         found = True
-        warships_region = None
         player_id = None
-        wows_region = region_dict[region][0]
+        warships_region = self.warships_region(region)
+        wows_region = self.wows_region(region)
         if ctx.message.server is not None and user_name.startswith('<@'):
             server_id = ctx.message.server.id
             if user_name.startswith('<@!'):
@@ -108,29 +114,19 @@ class WorldOfWarships:
             else:
                 user_name = user_name[2:-1]
             if server_id in self.shame_list and user_name in self.shame_list[server_id]:
-                warships_region = self.shame_list[server_id][user_name][0]
                 player_id = self.shame_list[server_id][user_name][1]
+                warships_region = self.shame_list[server_id][user_name][0]
+                wows_region = warships_region if warships_region != 'na' else 'com'
                 in_list = True
         if not in_list:
-            warships_region = region_dict[region][-1]
-            wows_api_url = 'https://api.worldofwarships.{}/wows/account/list/' \
-                           '?application_id={}&search={}'.format(region_dict[region][0], self.wows_api, user_name)
-            r = requests.get(wows_api_url).text
-            warships_api_respose = json.loads(r)
-            try:
-                if warships_api_respose["meta"]["count"] < 1:
-                    await self.bot.say("Can't find player")
-                    found = False
-            except KeyError:
-                await self.bot.say("Can't find player")
-                found = False
-            player_id = warships_api_respose["data"][0]["account_id"]
+            player_id = find_player_id(wows_region, self.wows_api, user_name)
+            found = player_id is not None
         if found:
-            warships_today_url = "http://{}.warshipstoday.com/signature/{}/dark.png".format(warships_region, player_id)
-            fn = generate_image_online(warships_today_url, join('data', 'shame.png'))
             result = detailed_shame(self.wows_api, player_id, wows_region)
-            result.set_image(url=warships_today_url)
+            result.set_image(url=warships_today_url(warships_region, player_id))
             await self.bot.send_message(ctx.message.channel, embed=result)
+        else:
+            await self.bot.say('Player not found!')
 
     @commands.command(pass_context=True)
     async def shamelist(self, ctx):
@@ -152,39 +148,14 @@ class WorldOfWarships:
         new_entry = False
         user_id = str(ctx.message.author.id)
         server_id = str(ctx.message.server.id)
-        request_urls = {'NA': 'https://api.worldofwarships.com/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name),
-                        'RU': 'https://api.worldofwarships.ru/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name),
-                        'EU': 'https://api.worldofwarships.eu/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name),
-                        'AS': 'https://api.worldofwarships.asia/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name)
-                        }
-        request_url = request_urls[region]
-        r = requests.get(request_url).text
-        json_data = json.loads(r)
-        region_codes = {
-            'NA': 'na',
-            'EU': 'eu',
-            'RU': 'ru',
-            'AS': 'asia'
-        }
-        try:
-            if json_data["meta"]["count"] < 1:
-                await self.bot.say("Can't find player")
-                return
-        except KeyError:
-            await self.bot.say("Can't find player")
-            return
-        playerid = json_data["data"][0]["account_id"]
+        playerid = find_player_id(self.wows_region(region), self.wows_api, user_name)
         if ctx.message.server.id not in self.shame_list:
             self.shame_list[server_id] = {}
             new_entry = True
         if user_id not in self.shame_list[server_id]:
             self.shame_list[server_id][user_id] = None
             new_entry = True
-        self.shame_list[ctx.message.server.id][user_id] = [region_codes[region], playerid]
+        self.shame_list[ctx.message.server.id][user_id] = [self.warships_region(region), playerid]
         self.save_shamelist()
         await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
 
@@ -295,6 +266,13 @@ class WorldOfWarships:
 
 
 def detailed_shame(api, id_, region):
+    """
+    Returns a discord embed object of detailed wows player info
+    :param api: the wows api key
+    :param id_: the player id
+    :param region: the region
+    :return: a discord embed object of detailed wows player info
+    """
     request_url = 'https://api.worldofwarships.{}/wows/account/info/' \
                   '?application_id={}&fields=statistics.pvp,nickname&account_id='.format(region, api)
     result = json.loads(requests.get(request_url + str(id_)).content)['data'][str(id_)]
@@ -356,3 +334,33 @@ def detailed_shame(api, id_, region):
         eb.add_field(name='Error', value='The player doesn\'t have any battles played')
 
     return eb
+
+
+def warships_today_url(region, player_id):
+    """
+    Generate a warships today signiture url for a player
+    :param region: the region the player is in
+    :param player_id: the player id
+    :return: the sig url
+    """
+    return 'http://{}.warshipstoday.com/signature/{}/dark.png'.format(region, player_id)
+
+
+def find_player_id(region, api, name):
+    """
+    Search wows for a player based on name
+    :param region: the region the player is in 
+    :param api: the wows api key
+    :param name: the name of the player
+    :return: the player's id if found else none
+    """
+    wows_api_url = \
+        'https://api.worldofwarships.{}/wows/account/list/?application_id={}&search={}'.format(region, api, name)
+    r = requests.get(wows_api_url).text
+    warships_api_respose = json.loads(r)
+    try:
+        if warships_api_respose["meta"]["count"] < 1:
+            return None
+    except KeyError:
+        return None
+    return warships_api_respose["data"][0]["account_id"]
