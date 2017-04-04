@@ -336,36 +336,26 @@ def detailed_shame(api, id_, region):
         second_hitrate = "{0:.2f}".format((second_hits/second_shots)*100) + "%" if second_shots > 0 else '0%'
         torp_hitrate = "{0:.2f}".format((torp_hits/torp_shots)*100) + "%" if torp_shots > 0 else '0%'
 
-        eb.add_field(name='Battles', value=str(battles))
+        eb.add_field(name='Battles', value=str(battles))  # 0
+        eb.add_field(name='Max Experience', value=max_xp)  # 5
+        eb.add_field(name='Main Battery Hit Rate', value=main_hitrate)  # 10
 
-        eb.add_field(name='Win Rate', value=win_rate)
+        eb.add_field(name='Win Rate', value=win_rate)  # 1
+        eb.add_field(name='Average Kills', value=avg_kills)  # 6
+        eb.add_field(name='Secondary Battery Hit Rate', value=second_hitrate)  # 11
 
-        eb.add_field(name='Average Damage', value=avg_dmg)
+        eb.add_field(name='Average Damage', value=avg_dmg)  # 2
+        eb.add_field(name='Average Plane Kills', value=avg_plane_kills)  # 7
+        eb.add_field(name='Torpedo Hit Rate', value=torp_hitrate)  # 12
 
-        eb.add_field(name='Max Damage', value=max_damage_dealt)
+        eb.add_field(name='Max Damage', value=max_damage_dealt)  # 3
+        eb.add_field(name='Max Planes Killed', value=max_planes_killed)  # 8
+        eb.add_field(name='Survival Rate', value=survival_rate)  # 13
 
-        eb.add_field(name='Average Experience', value=avg_exp)
+        eb.add_field(name='Average Experience', value=avg_exp)  # 4
+        eb.add_field(name='Average Ships Spotted', value=avg_spotted)  # 9
+        eb.add_field(name='Kills/Deaths', value=kda)  # 14
 
-        eb.add_field(name='Max Experience', value=max_xp)
-
-        eb.add_field(name='Average Kills', value=avg_kills)
-
-        eb.add_field(name='Average Plane Kills', value=avg_plane_kills)
-
-        eb.add_field(name='Max Planes Killed', value=max_planes_killed)
-
-        eb.add_field(name='Average Ships Spotted', value=avg_spotted)
-
-        eb.add_field(name='Main Battery Hit Rate', value=main_hitrate)
-
-        eb.add_field(name='Secondary Battery Hit Rate', value=second_hitrate)
-
-        eb.add_field(name='Torpedo Hit Rate', value=torp_hitrate)
-
-        eb.add_field(name='Survival Rate', value=survival_rate)
-
-        eb.add_field(name='Kills/Deaths', value=kda)
-        
     else:
         eb.add_field(name='Error', value='The player doesn\'t have any battles played')
 
