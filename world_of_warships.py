@@ -6,11 +6,11 @@ from threading import Timer
 from os.path import join
 from helpers import format_eq, read_json, write_json, get_server_id, is_admin, fopen_generic
 from discord import Embed
+from wows_helpers import find_player_id, warships_today_url
 
 
 class WorldOfWarships:
     """ WoWs commands """
-
     def __init__(self, bot, wows_api):
         self.bot = bot
         self.wows_api = wows_api
@@ -123,7 +123,6 @@ class WorldOfWarships:
             found = player_id is not None
         if found:
             result = detailed_shame(self.wows_api, player_id, wows_region)
-            result.set_image(url=warships_today_url(warships_region, player_id))
             await self.bot.send_message(ctx.message.channel, embed=result)
         else:
             await self.bot.say('Player not found!')
@@ -329,38 +328,9 @@ def detailed_shame(api, id_, region):
         eb.add_field(name='Torpedo Hit Rate', value=torp_hitrate)  # 12
         eb.add_field(name='Survival Rate', value=survival_rate)  # 13
         eb.add_field(name='Kills/Deaths', value=kda)  # 14
-
+        warships_regon = region if region != 'com' else 'na'
+        eb.set_image(url=warships_today_url(warships_regon, id_))
     else:
         eb.add_field(name='Error', value='The player doesn\'t have any battles played')
 
     return eb
-
-
-def warships_today_url(region, player_id):
-    """
-    Generate a warships today signiture url for a player
-    :param region: the region the player is in
-    :param player_id: the player id
-    :return: the sig url
-    """
-    return 'http://{}.warshipstoday.com/signature/{}/dark.png'.format(region, player_id)
-
-
-def find_player_id(region, api, name):
-    """
-    Search wows for a player based on name
-    :param region: the region the player is in 
-    :param api: the wows api key
-    :param name: the name of the player
-    :return: the player's id if found else none
-    """
-    wows_api_url = \
-        'https://api.worldofwarships.{}/wows/account/list/?application_id={}&search={}'.format(region, api, name)
-    r = requests.get(wows_api_url).text
-    warships_api_respose = json.loads(r)
-    try:
-        if warships_api_respose["meta"]["count"] < 1:
-            return None
-    except KeyError:
-        return None
-    return warships_api_respose["data"][0]["account_id"]

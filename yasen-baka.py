@@ -25,7 +25,7 @@ if __name__ == '__main__':
         print(yasen_baka.user.name)
         print(yasen_baka.user.id)
         print('------')
-        await yasen_baka.change_presence(game=game.Game(name='?help'))
+        await yasen_baka.change_presence(game=game.Game(name='?help | ?info'))
 
 
     my_apis = read_json(fopen_generic(join('data', 'api_keys.json')))
