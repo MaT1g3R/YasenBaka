@@ -199,7 +199,7 @@ class Util:
             try:
                 output = subprocess.check_output(['git', 'pull'], stderr=subprocess.STDOUT)
                 res_str = output.decode()
-                await self.bot.say(":white_check_mark: Update success!\nOutput:\n```{}```".format(res_str))
+                await self.bot.say("```{}```".format(res_str))
                 subprocess.call(['pm2', 'restart', '8'])
             except subprocess.CalledProcessError as ex:
                 res_str = ex.output.decode()
