@@ -152,6 +152,19 @@ class Util:
 
     @commands.command(pass_context=True)
     async def info(self, ctx):
+        server_count = 0
+        user_count = 0
+        text_channel_count = 0
+        voice_count = 0
+        for _ in self.bot.servers:
+            server_count += 1
+        for _ in self.bot.get_all_members():
+            user_count += 1
+        for channel in self.bot.get_all_channels():
+            if channel.type == discord.ChannelType.text:
+                text_channel_count += 1
+        for _ in self.bot.voice_clients:
+            voice_count += 1
         res = discord.Embed(colour=0x4286f4)
         res.set_author(name=self.bot.user.name, icon_url='{0.avatar_url}'.format(self.bot.user))
         ram = "{0:.2f}".format(float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024))
@@ -162,11 +175,10 @@ class Util:
         res.add_field(name='Library', value='Discord.py v{}.{}.{}'.format(lib_ver.major, lib_ver.minor, lib_ver.micro))
         res.add_field(name='System', value=' '.join([str.title(str(x)) for x in get_distro()]))
         res.add_field(name='Developers', value='ラブアローシュート#6728\nNaomi#3264')
-        res.add_field(name='Servers', value=str(len([s for s in self.bot.servers])))
-        res.add_field(name='Users', value=str(len([s for s in self.bot.get_all_members()])))
-        res.add_field(name='Text channels',
-                      value=str(len([s for s in self.bot.get_all_channels() if s.type == discord.ChannelType.text])))
-        res.add_field(name='Voice channels', value=str(len([s for s in self.bot.voice_clients])))
+        res.add_field(name='Servers', value=str(server_count))
+        res.add_field(name='Users', value=str(user_count))
+        res.add_field(name='Text channels', value=str(text_channel_count))
+        res.add_field(name='Voice channels', value=str(voice_count))
         res.add_field(name='Source code and invite link', value='https://github.com/MaT1g3R/YasenBaka', inline=False)
         res.add_field(name='Support server', value='https://discord.gg/BnPbz6q')
         res.set_footer(text='Requested by {}'
