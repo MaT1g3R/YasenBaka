@@ -5,6 +5,7 @@ import json
 from threading import Timer
 from os.path import join
 from helpers import format_eq, generate_image_online, read_json, write_json, get_server_id, is_admin, fopen_generic
+from discord import Embed
 
 
 class WorldOfWarships:
@@ -88,50 +89,48 @@ class WorldOfWarships:
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
-        if ctx.message.server is not None:
+
+        region_dict = {
+            'NA': ['com', 'na'],
+            'EU': ['eu'],
+            'AS': ['asia'],
+            'RU': ['ru']
+        }
+        in_list = False
+        found = True
+        warships_region = None
+        player_id = None
+        wows_region = region_dict[region][0]
+        if ctx.message.server is not None and user_name.startswith('<@'):
             server_id = ctx.message.server.id
             if user_name.startswith('<@!'):
                 user_name = user_name[3:-1]
-            elif user_name.startswith('<@'):
+            else:
                 user_name = user_name[2:-1]
-
             if server_id in self.shame_list and user_name in self.shame_list[server_id]:
-                url = "http://{}.warshipstoday.com/signature/{}/dark.png".format(
-                    self.shame_list[server_id][user_name][0], self.shame_list[server_id][user_name][1])
-                fn = generate_image_online(url, join('data', 'shame.png'))
-                await self.bot.send_file(ctx.message.channel, fn)
-                return
-
-        request_urls = {'NA': 'https://api.worldofwarships.com/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name),
-                        'RU': 'https://api.worldofwarships.ru/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name),
-                        'EU': 'https://api.worldofwarships.eu/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name),
-                        'AS': 'https://api.worldofwarships.asia/wows/account/list/'
-                              '?application_id={}&search={}'.format(self.wows_api, user_name)
-                        }
-        request_url = request_urls[region]
-        r = requests.get(request_url).text
-        json_data = json.loads(r)
-        try:
-            if json_data["meta"]["count"] < 1:
+                warships_region = self.shame_list[server_id][user_name][0]
+                player_id = self.shame_list[server_id][user_name][1]
+                in_list = True
+        if not in_list:
+            warships_region = region_dict[region][-1]
+            wows_api_url = 'https://api.worldofwarships.{}/wows/account/list/' \
+                           '?application_id={}&search={}'.format(region_dict[region][0], self.wows_api, user_name)
+            r = requests.get(wows_api_url).text
+            warships_api_respose = json.loads(r)
+            try:
+                if warships_api_respose["meta"]["count"] < 1:
+                    await self.bot.say("Can't find player")
+                    found = False
+            except KeyError:
                 await self.bot.say("Can't find player")
-                return
-        except KeyError:
-            await self.bot.say("Can't find player")
-            return
-
-        playerid = json_data["data"][0]["account_id"]
-
-        urls = {'NA': "http://na.warshipstoday.com/signature/{}/dark.png".format(playerid),
-                'EU': 'http://eu.warshipstoday.com/signature/{}/dark.png'.format(playerid),
-                'RU': 'http://ru.warshipstoday.com/signature/{}/dark.png'.format(playerid),
-                'AS': 'http://asia.warshipstoday.com/signature/{}/dark.png'.format(playerid)}
-        url = urls[region]
-
-        fn = generate_image_online(url, join('data', 'shame.png'))
-        await self.bot.send_file(ctx.message.channel, fn)
+                found = False
+            player_id = warships_api_respose["data"][0]["account_id"]
+        if found:
+            warships_today_url = "http://{}.warshipstoday.com/signature/{}/dark.png".format(warships_region, player_id)
+            fn = generate_image_online(warships_today_url, join('data', 'shame.png'))
+            await self.bot.send_file(ctx.message.channel, fn)
+            await self.bot.send_message(ctx.message.channel,
+                                        embed=detailed_shame(self.wows_api, player_id, wows_region))
 
     @commands.command(pass_context=True)
     async def shamelist(self, ctx):
@@ -293,3 +292,66 @@ class WorldOfWarships:
                     for key, val in self.ssheet[str(get_server_id(ctx))].items()]
                 res.sort(key=lambda x: self.days.index(x[0:x.find(',')]))
                 await self.bot.say('```{}```'.format('\n\n'.join(res)))
+
+
+def detailed_shame(api, id_, region):
+    request_url = 'https://api.worldofwarships.{}/wows/account/info/' \
+                  '?application_id={}&fields=statistics.pvp,nickname&account_id='.format(region, api)
+    result = json.loads(requests.get(request_url + str(id_)).content)['data'][str(id_)]
+    nick_name = result['nickname']
+    stats = result['statistics']['pvp']
+    main_hits = stats['main_battery']['hits']
+    main_shots = stats['main_battery']['shots']
+    second_hits = stats['second_battery']['hits']
+    second_shots = stats['second_battery']['shots']
+    torp_hits = stats['torpedoes']['hits']
+    torp_shots = stats['torpedoes']['shots']
+
+    battles = stats['battles']
+    damage_dealt = stats['damage_dealt']
+    planes_killed = stats['planes_killed']
+    wins = stats['wins']
+    xp = stats['xp']
+    survived_battles = stats['survived_battles']
+    ships_spotted = stats['ships_spotted']
+    warships_killed = stats['frags']
+    deaths = battles - survived_battles
+
+    max_damage_dealt = str(stats['max_damage_dealt'])
+    max_xp = str(stats['max_xp'])
+    max_planes_killed = str(stats['max_planes_killed'])
+
+    eb = Embed(colour=0x4286f4)
+    eb.set_author(name=nick_name)
+    if battles > 0:
+        win_rate = "{0:.2f}".format((wins/battles)*100) + "%"
+        avg_dmg = str(int(damage_dealt/battles))
+        avg_exp = str(int(xp/battles))
+        survival_rate = "{0:.2f}".format((survived_battles/battles)*100) + "%"
+        avg_kills = str("{0:.2f}".format(warships_killed/battles))
+        avg_plane_kills = str("{0:.2f}".format(planes_killed/battles))
+        avg_spotted = str("{0:.2f}".format(ships_spotted/battles))
+        kda = "{0:.2f}".format(warships_killed/deaths) if deaths > 0 else '\u221E'
+        main_hitrate = "{0:.2f}".format((main_hits/main_shots)*100) + "%" if main_shots > 0 else '0%'
+        second_hitrate = "{0:.2f}".format((second_hits/second_shots)*100) + "%" if second_shots > 0 else '0%'
+        torp_hitrate = "{0:.2f}".format((torp_hits/torp_shots)*100) + "%" if torp_shots > 0 else '0%'
+
+        eb.add_field(name='Battles', value=str(battles))
+        eb.add_field(name='Win Rate', value=win_rate)
+        eb.add_field(name='Average Damage', value=avg_dmg)
+        eb.add_field(name='Max Damage', value=max_damage_dealt)
+        eb.add_field(name='Average Experience', value=avg_exp)
+        eb.add_field(name='Max Experience', value=max_xp)
+        eb.add_field(name='Average Kills', value=avg_kills)
+        eb.add_field(name='Average Plane Kills', value=avg_plane_kills)
+        eb.add_field(name='Max Planes Killed', value=max_planes_killed)
+        eb.add_field(name='Average Ships Spotted', value=avg_spotted)
+        eb.add_field(name='Main Battery Hit Rate', value=main_hitrate)
+        eb.add_field(name='Secondary Battery Hit Rate', value=second_hitrate)
+        eb.add_field(name='Torpedo Hit Rate', value=torp_hitrate)
+        eb.add_field(name='Survival Rate', value=survival_rate)
+        eb.add_field(name='Kills/Deaths', value=kda)
+    else:
+        eb.add_field(name='Error', value='The player doesn\'t have any battles played')
+
+    return eb
