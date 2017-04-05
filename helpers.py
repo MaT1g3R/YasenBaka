@@ -8,6 +8,7 @@ import json
 import requests
 from codecs import open as copen
 import xml.etree.ElementTree as ET
+from datetime import date, timedelta
 
 
 def fopen_generic(filepath, filemode='rU', coding='utf8', buffering=-1):
@@ -281,3 +282,22 @@ def get_distro():
     """
     with open("/etc/issue") as f:
         return f.read().lower().split()[:3]
+
+
+def split_list(lst, max_length):
+    """
+    Split a list into sublists
+    :param lst: the list to be split
+    :param max_length: the max allowed length of the result
+    :return: a list of split up lists
+    """
+    return [lst[i:i + max_length] for i in range(0, len(lst), max_length)]
+
+
+def yesterday_date():
+    """
+    Return yesterday's date in YYYYMMDD format
+    :return: yesterday's date in YYYYMMDD format
+    """
+    yesterday = date.today() - timedelta(1)
+    return yesterday.strftime('%Y%m%d')

@@ -12,7 +12,7 @@ from osu_commands import Osu
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
-    yasen_baka = commands.Bot(command_prefix=['?'], description=description)
+    yasen_baka = commands.Bot(command_prefix=['!'], description=description)
 
     @yasen_baka.event
     async def on_ready():
@@ -28,7 +28,7 @@ if __name__ == '__main__':
         await yasen_baka.change_presence(game=game.Game(name='?help | ?info'))
 
 
-    my_apis = read_json(fopen_generic(join('data', 'api_keys.json')))
+    my_apis = read_json(fopen_generic(join('data', 'beta_api_keys.json')))
 
     yasen_baka.remove_command('help')
     yasen_baka.add_cog(Util(yasen_baka, my_apis['StackExchange']))

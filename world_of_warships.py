@@ -4,9 +4,9 @@ import requests
 import json
 from threading import Timer
 from os.path import join
-from helpers import format_eq, read_json, write_json, get_server_id, is_admin, fopen_generic
+from helpers import format_eq, read_json, write_json, get_server_id, is_admin, fopen_generic, generate_image_online
 from discord import Embed
-from wows_helpers import find_player_id, warships_today_url
+from wows_helpers import find_player_id, warships_today_url, build_embed, calculate_coeff, get_ship_tier_dict
 
 
 class WorldOfWarships:
@@ -31,6 +31,12 @@ class WorldOfWarships:
             'AS': ['asia'],
             'RU': ['ru']
         }
+        self.coefficients = None
+        self.expected = None
+        self.ship_dict = None
+        self.ship_list = None
+        self.update_warships_coeff()
+        self.update_ship_list()
 
     def save_sheet(self):
         """ shortcut for saving sheet """
@@ -51,6 +57,24 @@ class WorldOfWarships:
     def warships_region(self, region):
         """Return the warships today region of a player"""
         return self.region_dict[region][-1]
+
+    def update_warships_coeff(self):
+        res = calculate_coeff()
+        self.coefficients = res[0]
+        self.expected = res[1]
+
+    def update_ship_list(self):
+        self.ship_dict = get_ship_tier_dict('com', self.wows_api)
+        ship_list = []
+        for key in self.ship_dict:
+            ship_list.append(str(key))
+        self.ship_list = ship_list
+
+    @commands.command()
+    async def update_wows(self):
+        self.update_warships_coeff()
+        self.update_ship_list()
+        await self.bot.say('Update Success!')
 
     @commands.command()
     async def ship(self, *input_: str):
@@ -105,8 +129,8 @@ class WorldOfWarships:
         in_list = False
         found = True
         player_id = None
-        warships_region = self.warships_region(region)
         wows_region = self.wows_region(region)
+        warships_region = self.warships_region(region)
         if ctx.message.server is not None and user_name.startswith('<@'):
             server_id = ctx.message.server.id
             if user_name.startswith('<@!'):
@@ -122,8 +146,13 @@ class WorldOfWarships:
             player_id = find_player_id(wows_region, self.wows_api, user_name)
             found = player_id is not None
         if found:
-            result = detailed_shame(self.wows_api, player_id, wows_region)
-            await self.bot.send_message(ctx.message.channel, embed=result)
+            result = build_embed(wows_region, self.wows_api, player_id, self.coefficients,
+                                 self.expected, self.ship_dict, self.ship_list)
+            if result is not None:
+                await self.bot.send_message(ctx.message.channel, embed=result)
+            else:
+                fn = generate_image_online(warships_today_url(warships_region, player_id), join('data', 'dark.png'))
+                await self.bot.send_file(ctx.message.channel, fn)
         else:
             await self.bot.say('Player not found!')
 
