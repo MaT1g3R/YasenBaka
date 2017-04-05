@@ -128,7 +128,7 @@ def player_stats(region, api, id_):
             recent_url = 'https://api.worldofwarships.{}/wows/account/statsbydate' \
                          '/?application_id={}&dates={}&account_id={}&fields=pvp'.format(region, api, date, id_)
             sliced_stats = json.loads(requests.get(recent_url).content)['data'][id_]['pvp'][date]
-        except Exception:
+        except KeyError and TypeError:
             continue
         else:
             if all_time_stats['battles'] - sliced_stats['battles'] > 0:
