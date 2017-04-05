@@ -128,7 +128,7 @@ def player_stats(region, api, id_):
     for date in dates:
         try:
             sliced_stats = json.loads(requests.get(recent_url).content)['data'][id_]['pvp'][date]
-        except TypeError:
+        except KeyError or TypeError:
             continue
         else:
             break
