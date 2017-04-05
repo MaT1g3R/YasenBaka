@@ -1,6 +1,6 @@
 import json
 import requests
-from helpers import split_list, yesterday_date
+from helpers import split_list, get_date
 from discord import Embed
 
 
@@ -112,18 +112,27 @@ def player_stats(region, api, id_):
     :param id_: the player id
     :return: the player's stats in a dicionary
     """
+    dates = []
+    for i in range(1, 6):
+        dates.append(get_date(i))
     id_ = str(id_)
     all_time_url = 'https://api.worldofwarships.{}/wows/account/info/' \
                    '?application_id={}&fields=hidden_profile,statistics.pvp&account_id={}'.format(region, api, id_)
     recent_url = 'https://api.worldofwarships.{}/wows/account/statsbydate' \
-                 '/?application_id={}&dates={}&account_id={}&fields=pvp'.format(region, api, yesterday_date(), id_)
+                 '/?application_id={}&dates={}&account_id={}&fields=pvp'.format(region, api, ','.join(dates), id_)
     response = json.loads(requests.get(all_time_url).content)['data'][id_]
     if response['hidden_profile']:
         return None
     all_time_stats = response['statistics']['pvp']
-    try:
-        sliced_stats = json.loads(requests.get(recent_url).content)['data'][id_]['pvp'][yesterday_date()]
-    except TypeError:
+    sliced_stats = None
+    for date in dates:
+        try:
+            sliced_stats = json.loads(requests.get(recent_url).content)['data'][id_]['pvp'][date]
+        except TypeError:
+            continue
+        else:
+            break
+    if sliced_stats is None:
         return all_time_stats, None
     res = {}
     for key, val in sliced_stats.items():

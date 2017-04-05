@@ -126,6 +126,7 @@ def generate_image_online(url, fn):
     """
     Generates an image file from a image hot link
     :param url: The url
+    :param fn: the file name
     :type url: str
     :return: The generated image path
     :rtype: str
@@ -294,10 +295,10 @@ def split_list(lst, max_length):
     return [lst[i:i + max_length] for i in range(0, len(lst), max_length)]
 
 
-def yesterday_date():
+def get_date(diff):
     """
     Return yesterday's date in YYYYMMDD format
     :return: yesterday's date in YYYYMMDD format
     """
-    yesterday = date.today() - timedelta(1.5)
+    yesterday = date.today() - timedelta(diff)
     return yesterday.strftime('%Y%m%d')
