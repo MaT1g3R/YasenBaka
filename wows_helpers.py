@@ -192,8 +192,11 @@ def player_ship_stats(region, api, id_, ship_list):
         request_url = url + request_ship_param
         resonse = json.loads(requests.get(request_url).content)
         response_list = resonse['data'][id_]
-        for d in response_list:
-            res[d['ship_id']] = d
+        try:
+            for d in response_list:
+                res[d['ship_id']] = d
+        except TypeError:
+            continue
     return res
 
 
