@@ -327,7 +327,7 @@ def build_embed(region, api, id_, coefficients, expected, ship_dict, ship_list):
                     "wins": recent_stats['wins'] / recent_battles if recent_battles > 0 else 0
                 }
                 recent_wtr_val = calc_wtr(expected, recent_actual, coefficients, average_tier)
-                eb.add_field(name='1 Day Stats', value=str(recent_battles) + ' Battles', inline=False)
+                eb.add_field(name='Recent Stats', value=str(recent_battles) + ' Battles', inline=False)
                 eb.add_field(name='WTR', value=str(recent_wtr_val))
                 eb.add_field(name='Win Rate', value=str("{0:.2f}".format(recent_actual['wins']*100)) + '%')
                 eb.add_field(name='Average Damage', value=str(int(recent_actual['damage_dealt'])))

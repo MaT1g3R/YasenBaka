@@ -299,5 +299,5 @@ def yesterday_date():
     Return yesterday's date in YYYYMMDD format
     :return: yesterday's date in YYYYMMDD format
     """
-    yesterday = date.today() - timedelta(1)
+    yesterday = date.today() - timedelta(1.5)
     return yesterday.strftime('%Y%m%d')
