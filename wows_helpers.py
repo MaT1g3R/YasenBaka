@@ -118,8 +118,6 @@ def player_stats(region, api, id_):
     id_ = str(id_)
     all_time_url = 'https://api.worldofwarships.{}/wows/account/info/' \
                    '?application_id={}&fields=hidden_profile,statistics.pvp&account_id={}'.format(region, api, id_)
-    recent_url = 'https://api.worldofwarships.{}/wows/account/statsbydate' \
-                 '/?application_id={}&dates={}&account_id={}&fields=pvp'.format(region, api, ','.join(dates), id_)
     response = json.loads(requests.get(all_time_url).content)['data'][id_]
     if response['hidden_profile']:
         return None
@@ -127,8 +125,10 @@ def player_stats(region, api, id_):
     sliced_stats = None
     for date in dates:
         try:
+            recent_url = 'https://api.worldofwarships.{}/wows/account/statsbydate' \
+                         '/?application_id={}&dates={}&account_id={}&fields=pvp'.format(region, api, date, id_)
             sliced_stats = json.loads(requests.get(recent_url).content)['data'][id_]['pvp'][date]
-        except KeyError and TypeError:
+        except Exception:
             continue
         else:
             if all_time_stats['battles'] - sliced_stats['battles'] > 0:
