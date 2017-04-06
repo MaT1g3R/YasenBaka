@@ -1,11 +1,10 @@
 """Osu commands"""
 from osu import get_user
 import json
-from os.path import join
 from discord.ext import commands
 from math import ceil
-from helpers import generate_image_online
 from osu_sig import generate, Mode
+from discord import Embed
 
 
 class Osu:
@@ -17,12 +16,12 @@ class Osu:
     async def osu(self, ctx, *query: str):
         try:
             mode_dict = {
-                '--osu': 0,
-                '--Taiko': 1,
-                '--CTB': 2,
-                '--mania': 3
+                '--osu': Mode.osu,
+                '--Taiko': Mode.taiko,
+                '--CTB': Mode.ctb,
+                '--mania': Mode.mania
             }
-            mode = 0
+            mode = Mode.osu
             if query[-1] in mode_dict:
                 mode = mode_dict[query[-1]]
                 query = ' '.join(query[:-1])
@@ -30,7 +29,7 @@ class Osu:
                 query = ' '.join(query)
 
             # (0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania)
-            res = json.loads(get_user(self.key, query, mode, '', 31))[0]
+            res = json.loads(get_user(self.key, query, mode.value, '', 31))[0]
             name = res['username']
             id_ = res['user_id']
             playcount = res['playcount']
@@ -44,25 +43,31 @@ class Osu:
             country = res['country'].lower()
             c_rank = res['pp_country_rank']
             acc = "{0:.2f}".format(float(res['accuracy']))
-            avatar = 'https://a.ppy.sh/{}'.format(id_)
             profile = 'https://osu.ppy.sh/u/{}'.format(id_)
             ss = res['count_rank_ss']
             s = res['count_rank_s']
             a = res['count_rank_a']
+            sig = generate(name, '4286f4', mode, 1, xpbar=True,
+                           xpbarhex=True, onlineindicator=3)
 
-            out = '**{}\'s profile information**\n'.format(name) + \
-                  'Username: {} (ID: {})\n'.format(name, id_) + \
-                  'Plays: {} (SS: {} | S: {} | A: {})\n'.format(playcount, ss, s, a) + \
-                  'Scoring: (50: {} | 100: {} | 300: {})\n'.format(count50, count100, count300) + \
-                  'Total score: {} ({}% ranked)\n'.format(total, int(int(ranked) * 100/ int(total))) + \
-                  'PP: {}pp\n'.format(pp) + \
-                  'Rank: #{}\n'.format(pp_rank) + \
-                  'Country: :flag_{}: (#{})\n'.format(country, c_rank) + \
-                  'Accuracy: {}%\n'.format(acc) + \
-                  'Profile: {}'.format(profile)
-            await self.bot.say(out)
-            await self.bot.send_file(ctx.message.channel,
-                                     generate_image_online(
-                                         avatar, join('data', 'osu.jpg')))
+            res = Embed(colour=0x4286f4)
+            res.set_author(name=name)
+            res.add_field(name='Plays: {}'.format(playcount),
+                          value='SS: {} | S: {} | A: {}'.format(ss, s, a),
+                          inline=False)
+            res.add_field(name='Scoring',
+                          value='50: {} | 100: {} | 300: {}'
+                          .format(count50, count100, count300))
+            ranked_rate = int(int(ranked) * 100 / int(total))
+            res.add_field(name='Total score', value='{} ({}% ranked)'.format(
+                "{:,}".format(int(total)), ranked_rate))
+            res.add_field(name='PP', value='{}pp'.format(pp), inline=False)
+            res.add_field(name='Rank', value='#{}'.format(pp_rank))
+            res.add_field(name='Country', value=':flag_{}: (#{})'.format(
+                country, c_rank))
+            res.add_field(name='Accuracy', value='{}%'.format(acc))
+            res.add_field(name='Profile', value=profile)
+            res.set_image(url=sig)
+            await self.bot.send_message(ctx.message.channel, embed=res)
         except IndexError:
             await self.bot.say('Player not found!')
