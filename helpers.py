@@ -8,8 +8,8 @@ from codecs import open as copen
 from datetime import date, timedelta
 from os import listdir
 from os.path import isfile, join
-
 import requests
+import shutil
 
 
 def fopen_generic(filepath, filemode='rU', coding='utf8', buffering=-1):
@@ -136,7 +136,11 @@ def generate_image_online(url, fn):
     :return: The generated image path
     :rtype: str
     """
-    urllib.request.urlretrieve(url, fn)
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(fn, 'wb') as f:
+            response.raw.decode_content = True
+            shutil.copyfileobj(response.raw, f)
     return fn
 
 

@@ -5,7 +5,8 @@ from discord.ext import commands
 from math import ceil
 from osu_sig import generate, Mode
 from discord import Embed
-from helpers import comma
+from helpers import comma, generate_image_online
+from os import path
 
 
 class Osu:
@@ -71,9 +72,9 @@ class Osu:
                 country, comma(c_rank)))
             res.add_field(name='Accuracy', value='{}%'.format(acc))
             res.add_field(name='Profile', value=profile)
-            # try:
-            res.set_image(url=sig)
+            fn = generate_image_online(sig, path.join('data', 'osu.png'))
             await self.bot.send_message(ctx.message.channel, embed=res)
+            await  self.bot.send_file(ctx.message.channel, fn)
         except IndexError:
             await self.bot.say('Player not found!')
         except TypeError:
