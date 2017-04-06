@@ -71,7 +71,11 @@ class Osu:
                 country, comma(c_rank)))
             res.add_field(name='Accuracy', value='{}%'.format(acc))
             res.add_field(name='Profile', value=profile)
+            # try:
             res.set_image(url=sig)
             await self.bot.send_message(ctx.message.channel, embed=res)
         except IndexError:
             await self.bot.say('Player not found!')
+        except TypeError:
+            await self.bot.say(
+                'The player do not have any games in that game mode!')
