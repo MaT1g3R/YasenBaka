@@ -5,6 +5,7 @@ from discord.ext import commands
 from math import ceil
 from osu_sig import generate, Mode
 from discord import Embed
+from helpers import comma
 
 
 class Osu:
@@ -52,21 +53,24 @@ class Osu:
 
             res = Embed(colour=0x4286f4)
             res.set_author(name=name)
-            res.add_field(name='Plays: {}'.format(playcount),
-                          value='SS: {} | S: {} | A: {}'.format(ss, s, a),
+            res.add_field(name='Plays: {}'.format(comma(playcount)),
+                          value='SS: {} | S: {} | A: {}'.format(comma(ss),
+                                                                comma(s),
+                                                                comma(a)),
                           inline=False)
             res.add_field(name='Scoring',
                           value='50: {} | 100: {} | 300: {}'
-                          .format("{:,}".format(int(count50)), 
-                                  "{:,}".format(int(count100)),
-                                  "{:,}".format(int(count300))))
+                          .format(comma(count50),
+                                  comma(count100),
+                                  comma(count300)))
             ranked_rate = int(int(ranked) * 100 / int(total))
             res.add_field(name='Total score', value='{} ({}% ranked)'.format(
-                "{:,}".format(int(total)), ranked_rate))
-            res.add_field(name='PP', value='{}pp'.format(pp), inline=False)
-            res.add_field(name='Rank', value='#{}'.format(pp_rank))
+                comma(total), ranked_rate))
+            res.add_field(name='PP', value='{}pp'.format(comma(pp)),
+                          inline=False)
+            res.add_field(name='Rank', value='#{}'.format(comma(pp_rank)))
             res.add_field(name='Country', value=':flag_{}: (#{})'.format(
-                country, c_rank))
+                country, comma(c_rank)))
             res.add_field(name='Accuracy', value='{}%'.format(acc))
             res.add_field(name='Profile', value=profile)
             res.set_image(url=sig)

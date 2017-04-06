@@ -310,3 +310,12 @@ def get_date(diff):
     """
     yesterday = date.today() - timedelta(diff)
     return yesterday.strftime('%Y%m%d')
+
+
+def comma(val):
+    """
+    Return a comma seprated number
+    :param val: the number
+    :return: the comma seprated number
+    """
+    return "{:,}".format(int(val))
