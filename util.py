@@ -86,6 +86,9 @@ class Util:
     @commands.command(pass_context=True)
     async def latex(self, ctx, *input_: str):
         """Renders the input LaTeX equation"""
+        if len(input_) <= 0:
+            await self.bot.say("Please enter a valid input.")
+            return
         l = " ".join(input_)
         fn = generate_latex_online(l)
         await self.bot.send_file(ctx.message.channel, fn)
