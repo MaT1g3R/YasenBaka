@@ -5,6 +5,7 @@ from os.path import join
 from discord.ext import commands
 from math import ceil
 from helpers import generate_image_online
+from osu_sig import generate, Mode
 
 
 class Osu:

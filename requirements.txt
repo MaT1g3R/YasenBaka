@@ -19,3 +19,4 @@ six
 websockets
 yarl
 youtube-dl
+osu_sig
