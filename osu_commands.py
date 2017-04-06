@@ -54,12 +54,10 @@ class Osu:
             res = Embed(colour=0x4286f4)
             res.set_author(name=name)
             res.add_field(name='Plays: {}'.format(comma(playcount)),
-                          value='SS: {} | S: {} | A: {}'.format(comma(ss),
-                                                                comma(s),
-                                                                comma(a)),
-                          inline=False)
+                          value='**SS**: {} | **S**: {} | **A**: {}'.format(
+                              comma(ss), comma(s), comma(a)), inline=False)
             res.add_field(name='Scoring',
-                          value='50: {} | 100: {} | 300: {}'
+                          value='**50**: {} | **100**: {} | **300**: {}'
                           .format(comma(count50),
                                   comma(count100),
                                   comma(count300)))
