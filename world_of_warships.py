@@ -19,8 +19,8 @@ class WorldOfWarships:
         self.shame_list = read_json(
             fopen_generic(join('data', 'shamelist.json')))
         na_ships_url = 'https://api.worldofwarships.com/wows/' \
-                       'encyclopedia/ships/?application_id={}'.format(
-            self.wows_api)
+                       'encyclopedia/ships/?application_id={}'\
+            .format(self.wows_api)
         na_ship_api_response = requests.get(na_ships_url).text
         na_ships_json_data = json.loads(na_ship_api_response)
         write_json(fopen_generic(join('data', 'na_ships.json'), 'w'),
