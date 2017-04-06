@@ -1,14 +1,15 @@
 """A file of all helper functions"""
+import json
 import textwrap
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
+from codecs import open as copen
+from datetime import date, timedelta
 from os import listdir
 from os.path import isfile, join
-import urllib.request
-import urllib.parse
-import json
+
 import requests
-from codecs import open as copen
-import xml.etree.ElementTree as ET
-from datetime import date, timedelta
 
 
 def fopen_generic(filepath, filemode='rU', coding='utf8', buffering=-1):
@@ -20,7 +21,8 @@ def fopen_generic(filepath, filemode='rU', coding='utf8', buffering=-1):
     :type filemode: str
     :param coding: encoding for file (default 'utf8')
     :type coding: str
-    :param buffering: buffer mode, see https://docs.python.org/2/library/functions.html#open (default -1)
+    :param buffering: buffer mode, 
+    see https://docs.python.org/2/library/functions.html#open (default -1)
     :type buffering: int
     :return file pointer
     :rtype file
@@ -65,7 +67,8 @@ def split_text(text, i):
 
 def format_eq(term1, term2):
     """
-    checks if the value of term1 and term2 are equal, and return the range between them
+    checks if the value of term1 and term2 are equal, 
+    and return the range between them
     :param term1: the first term
     :type term1: object
     :param term2: the second term
@@ -73,7 +76,8 @@ def format_eq(term1, term2):
     :return: the range between them
     :rtype: str
     """
-    return str(term1) if term1 == term2 else str(min(term1, term2)) + '-' + str(max(term1, term2))
+    return str(term1) if term1 == term2 else str(min(term1, term2)) + '-' + str(
+        max(term1, term2))
 
 
 async def try_say(bot, text, i=1):
@@ -117,7 +121,8 @@ def is_admin(ctx, id_):
     :rtype: bool
     """
     try:
-        return ctx.message.server.get_member(id_).server_permissions.administrator
+        return ctx.message.server.get_member(
+            id_).server_permissions.administrator
     except AttributeError:
         return False
 
@@ -207,7 +212,8 @@ def update_command_blacklist(add, command, id_):
     else:
         if command not in my_dict[id_]:
             my_dict[id_].append(command)
-    write_json(fopen_generic(join('data', 'command_blacklist.json'), 'w'), my_dict)
+    write_json(fopen_generic(join('data', 'command_blacklist.json'), 'w'),
+               my_dict)
 
 
 def is_banned(command, id_):
@@ -251,15 +257,16 @@ def convert_currency(base, amount, target):
     :return: str
     """
     key = read_json(fopen_generic(join('data', 'api_keys.json')))['Currency']
-    request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1' \
-        .format(key, base, target)
+    request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies' \
+                  '=USD,{}{}&format=1'.format(key, base, target)
     response = requests.get(request_url).text
     try:
         parsed_data = json.loads(response)['quotes']
     except KeyError:
         raise KeyError
     try:
-        rate = float(parsed_data['USD{}'.format(target)]) / float(parsed_data['USD{}'.format(base)])
+        rate = float(parsed_data['USD{}'.format(target)]) / float(
+            parsed_data['USD{}'.format(base)])
         return "{0:.2f}".format(float(amount) * rate)
     except KeyError:
         raise KeyError
@@ -271,7 +278,8 @@ def safebooru(tag):
     :param tag: the tag to search for 
     :return: a list of picture links based on the tag
     """
-    url = "https://safebooru.org//index.php?page=dapi&s=post&q=index&tags={}".format(tag)
+    url = "https://safebooru.org//index.php?page=dapi&s=post&q=index&tags={}"\
+        .format(tag)
     result = requests.get(url).content
     root = ET.fromstring(result)
     return ['https:' + child.attrib['file_url'] for child in root]

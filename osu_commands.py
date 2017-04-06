@@ -60,6 +60,8 @@ class Osu:
                   'Accuracy: {}%\n'.format(acc) + \
                   'Profile: {}'.format(profile)
             await self.bot.say(out)
-            await self.bot.send_file(ctx.message.channel, generate_image_online(avatar, join('data', 'osu.jpg')))
+            await self.bot.send_file(ctx.message.channel,
+                                     generate_image_online(
+                                         avatar, join('data', 'osu.jpg')))
         except IndexError:
             await self.bot.say('Player not found!')

@@ -1,28 +1,35 @@
 """World of Warships commands for this bot"""
-from discord.ext import commands
-import requests
 import json
-from threading import Timer
 from os.path import join
-from helpers import format_eq, read_json, write_json, get_server_id, is_admin, fopen_generic, generate_image_online
-from discord import Embed
-from wows_helpers import find_player_id, warships_today_url, build_embed, calculate_coeff, get_ship_tier_dict
+from threading import Timer
+import requests
+from discord.ext import commands
+from helpers import format_eq, read_json, write_json, get_server_id, is_admin, \
+    fopen_generic, generate_image_online
+from wows_helpers import find_player_id, warships_today_url, build_embed, \
+    calculate_coeff, get_ship_tier_dict
 
 
 class WorldOfWarships:
     """ WoWs commands """
+
     def __init__(self, bot, wows_api):
         self.bot = bot
         self.wows_api = wows_api
-        self.shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
+        self.shame_list = read_json(
+            fopen_generic(join('data', 'shamelist.json')))
         na_ships_url = 'https://api.worldofwarships.com/wows/' \
-                       'encyclopedia/ships/?application_id={}'.format(self.wows_api)
+                       'encyclopedia/ships/?application_id={}'.format(
+            self.wows_api)
         na_ship_api_response = requests.get(na_ships_url).text
         na_ships_json_data = json.loads(na_ship_api_response)
-        write_json(fopen_generic(join('data', 'na_ships.json'), 'w'), na_ships_json_data)
-        self.na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))['data']
+        write_json(fopen_generic(join('data', 'na_ships.json'), 'w'),
+                   na_ships_json_data)
+        self.na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))[
+            'data']
         self.ssheet = read_json(fopen_generic(join('data', 'sheet.json')))
-        self.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+        self.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+                     'Friday', 'Saturday']
         self.save_sheet_event = Timer(300, self.save_sheet)
         self.save_shamelist_event = Timer(300, self.save_shamelist)
         self.region_dict = {
@@ -46,7 +53,8 @@ class WorldOfWarships:
 
     def save_shamelist(self):
         """ shortcut for saving shamelist """
-        write_json(fopen_generic(join('data', 'shamelist.json'), 'w'), self.shame_list)
+        write_json(fopen_generic(join('data', 'shamelist.json'), 'w'),
+                   self.shame_list)
         # self.shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
         self.save_sheet_event = Timer(300, self.save_shamelist)
 
@@ -105,17 +113,22 @@ class WorldOfWarships:
             price_val = str(ship_dict['price_credit']) + ' Credits'
         result.append('Price: {}'.format(price_val))
         # --------------------------------------------------------------------------------------------------------------
-        result.append('Hit Points: {}'.format(ship_dict['default_profile']['hull']['health']))
+        result.append('Hit Points: {}'.format(
+            ship_dict['default_profile']['hull']['health']))
         # --------------------------------------------------------------------------------------------------------------
-        result.append('Citadel armor: {} mm'.format(format_eq(armour['citadel']['min'], armour['citadel']['max'])))
+        result.append('Citadel armor: {} mm'.format(
+            format_eq(armour['citadel']['min'], armour['citadel']['max'])))
         # --------------------------------------------------------------------------------------------------------------
         result.append('Gun Casemate Armor: {} mm'.format
-                      (format_eq(armour['casemate']['min'], armour['casemate']['max'])))
+                      (format_eq(armour['casemate']['min'],
+                                 armour['casemate']['max'])))
         # --------------------------------------------------------------------------------------------------------------
-        result.append('Armoured Deck: {} mm'.format(format_eq(armour['deck']['min'], armour['deck']['max'])))
+        result.append('Armoured Deck: {} mm'.format(
+            format_eq(armour['deck']['min'], armour['deck']['max'])))
         # --------------------------------------------------------------------------------------------------------------
         result.append('Forward and After Ends Armor: {} mm'.format
-                      (format_eq(armour['extremities']['min'], armour['extremities']['max'])))
+                      (format_eq(armour['extremities']['min'],
+                                 armour['extremities']['max'])))
         # --------------------------------------------------------------------------------------------------------------
         result.append('```')
         await self.bot.say('\n'.join(result))
@@ -124,7 +137,8 @@ class WorldOfWarships:
     async def shame(self, ctx, user_name: str, region: str = 'NA'):
         """Get shamed by a bot"""
         if region not in ['NA', 'EU', 'RU', 'AS']:
-            await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
+            await self.bot.say('Region must be in ' + str(
+                ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
         in_list = False
         found = True
@@ -137,21 +151,26 @@ class WorldOfWarships:
                 user_name = user_name[3:-1]
             else:
                 user_name = user_name[2:-1]
-            if server_id in self.shame_list and user_name in self.shame_list[server_id]:
+            if server_id in self.shame_list \
+                    and user_name in self.shame_list[server_id]:
                 player_id = self.shame_list[server_id][user_name][1]
                 warships_region = self.shame_list[server_id][user_name][0]
-                wows_region = warships_region if warships_region != 'na' else 'com'
+                wows_region = warships_region if \
+                    warships_region != 'na' else 'com'
                 in_list = True
         if not in_list:
             player_id = find_player_id(wows_region, self.wows_api, user_name)
             found = player_id is not None
         if found:
-            result = build_embed(wows_region, self.wows_api, player_id, self.coefficients,
+            result = build_embed(wows_region, self.wows_api, player_id,
+                                 self.coefficients,
                                  self.expected, self.ship_dict, self.ship_list)
             if result is not None:
                 await self.bot.send_message(ctx.message.channel, embed=result)
             else:
-                fn = generate_image_online(warships_today_url(warships_region, player_id), join('data', 'dark.png'))
+                fn = generate_image_online(
+                    warships_today_url(warships_region, player_id),
+                    join('data', 'dark.png'))
                 await self.bot.send_file(ctx.message.channel, fn)
         else:
             await self.bot.say('Player not found!')
@@ -161,7 +180,8 @@ class WorldOfWarships:
         """Get the entire shame shamelist"""
         server_id = get_server_id(ctx)
         if server_id in self.shame_list:
-            res = [ctx.message.server.get_member(key).name for key in self.shame_list[server_id]]
+            res = [ctx.message.server.get_member(key).name for key in
+                   self.shame_list[server_id]]
             await self.bot.say('```{}```'.format(', '.join(res))) if res else \
                 await self.bot.say('This server\'s shamelist is empty!')
         else:
@@ -171,21 +191,25 @@ class WorldOfWarships:
     async def addshame(self, ctx, user_name: str, region: str = 'NA'):
         """Add you to the shame shamelist"""
         if region not in ['NA', 'EU', 'RU', 'AS']:
-            await self.bot.say('Region must be in ' + str(['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
+            await self.bot.say('Region must be in ' + str(
+                ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
         new_entry = False
         user_id = str(ctx.message.author.id)
         server_id = str(ctx.message.server.id)
-        playerid = find_player_id(self.wows_region(region), self.wows_api, user_name)
+        playerid = find_player_id(self.wows_region(region), self.wows_api,
+                                  user_name)
         if ctx.message.server.id not in self.shame_list:
             self.shame_list[server_id] = {}
             new_entry = True
         if user_id not in self.shame_list[server_id]:
             self.shame_list[server_id][user_id] = None
             new_entry = True
-        self.shame_list[ctx.message.server.id][user_id] = [self.warships_region(region), playerid]
+        self.shame_list[ctx.message.server.id][user_id] = [
+            self.warships_region(region), playerid]
         self.save_shamelist()
-        await self.bot.say('Add success!') if new_entry else await self.bot.say('Edit Success!')
+        await self.bot.say('Add success!') if new_entry else await self.bot.say(
+            'Edit Success!')
 
     @commands.command(pass_context=True)
     async def removeshame(self, ctx):
@@ -196,7 +220,8 @@ class WorldOfWarships:
             self.save_shamelist()
             await self.bot.say('Remove success!')
         else:
-            await self.bot.say('Removed failed, you were not in the shamelist to begin with.')
+            await self.bot.say(
+                'Removed failed, you were not in the shamelist to begin with.')
 
     @commands.command(pass_context=True)
     async def newsheet(self, ctx):
@@ -205,14 +230,16 @@ class WorldOfWarships:
         else:
             self.ssheet[str(get_server_id(ctx))] = {}
             self.save_sheet()
-            await self.bot.say('New spread sheet created! The old one has been removed!')
+            await self.bot.say(
+                'New spread sheet created! The old one has been removed!')
 
     @commands.command(pass_context=True)
     async def addmatch(self, ctx, matchname: str, *datetime):
         if not is_admin(ctx, ctx.message.author.id):
             await self.bot.say('This is an admin only command!')
         elif str(get_server_id(ctx)) not in self.ssheet:
-            await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
+            await self.bot.say('Your server doesn\'t seem to have a spreadsheet'
+                               ', please consult `?help newsheet`')
         elif not datetime or datetime[0] not in self.days:
             await self.bot.say('Please enter a valid date!')
         else:
@@ -229,7 +256,8 @@ class WorldOfWarships:
         if not is_admin(ctx, ctx.message.author.id):
             await self.bot.say('This is an admin only command!')
         elif str(get_server_id(ctx)) not in self.ssheet:
-            await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
+            await self.bot.say('Your server doesn\'t seem to have a '
+                               'spreadsheet, please consult `?help newsheet`')
         elif matchname not in self.ssheet[str(get_server_id(ctx))]:
             await self.bot.say('There doesn\'t seem to be a with that name.')
         else:
@@ -240,54 +268,70 @@ class WorldOfWarships:
     @commands.command(pass_context=True)
     async def joinmatch(self, ctx, *matchname):
         if str(get_server_id(ctx)) not in self.ssheet:
-            await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
+            await self.bot.say(
+                'Your server doesn\'t seem to have a spreadsheet, '
+                'please consult `?help newsheet`')
             return
         else:
             joined = []
             for name in matchname:
                 try:
-                    if ctx.message.author.id not in self.ssheet[str(get_server_id(ctx))][name]['players']:
-                        self.ssheet[str(get_server_id(ctx))][name]['players'].append(ctx.message.author.id)
+                    if ctx.message.author.id not in \
+                            self.ssheet[str(get_server_id(ctx))][name][
+                                'players']:
+                        self.ssheet[str(get_server_id(ctx))][name][
+                            'players'].append(ctx.message.author.id)
                         joined.append(name)
                 except KeyError:
                     continue
             self.save_sheet()
-            await self.bot.say('You have joined matches: {}'.format(', '.join(joined)))
+            await self.bot.say(
+                'You have joined matches: {}'.format(', '.join(joined)))
 
     @commands.command(pass_context=True)
     async def quitmatch(self, ctx, *matchname):
         if str(get_server_id(ctx)) not in self.ssheet:
-            await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
+            await self.bot.say(
+                'Your server doesn\'t seem to have a spreadsheet,'
+                ' please consult `?help newsheet`')
             return
         else:
             quits = []
             for name in matchname:
                 if name in self.ssheet[str(get_server_id(ctx))]:
                     try:
-                        self.ssheet[str(get_server_id(ctx))][name]['players'].remove(ctx.message.author.id)
+                        self.ssheet[str(get_server_id(ctx))][name][
+                            'players'].remove(ctx.message.author.id)
                         quits.append(name)
                     except ValueError:
                         continue
             self.save_sheet()
-            await self.bot.say('You have quit the matches: {}'.format(' ,'.join(quits)))
+            await self.bot.say(
+                'You have quit the matches: {}'.format(' ,'.join(quits)))
 
     @commands.command(pass_context=True)
     async def sheet(self, ctx):
         if str(get_server_id(ctx)) not in self.ssheet:
-            await self.bot.say('Your server doesn\'t seem to have a spreadsheet, please consult `?help newsheet`')
+            await self.bot.say(
+                'Your server doesn\'t seem to have a spreadsheet, '
+                'please consult `?help newsheet`')
             return
         else:
             if self.ssheet[str(get_server_id(ctx))] == {}:
-                await self.bot.say('There doesn\'t seem to be any matches in this spread sheet!')
+                await self.bot.say('There doesn\'t seem to be any '
+                                   'matches in this spread sheet!')
                 return
             else:
                 res = [
                     '{}: {}\nPlayers: {}\nPlayer count: {}'.format(
                         ' '.join(val['time']),
                         key,
-                        ', '.join([ctx.message.server.get_member(player).name for player in val['players']]),
+                        ', '.join(
+                            [ctx.message.server.get_member(player).name for
+                             player in val['players']]),
                         len(val['players'])
                     )
-                    for key, val in self.ssheet[str(get_server_id(ctx))].items()]
+                    for key, val in
+                    self.ssheet[str(get_server_id(ctx))].items()]
                 res.sort(key=lambda x: self.days.index(x[0:x.find(',')]))
                 await self.bot.say('```{}```'.format('\n\n'.join(res)))

@@ -5,8 +5,8 @@ from google import search
 import html2text
 from os.path import join
 import stackexchange
-from helpers import read_json, generate_latex_online, try_say, get_server_id, is_admin, convert_currency, fopen_generic\
-    , get_distro
+from helpers import read_json, generate_latex_online, try_say, get_server_id, \
+    is_admin, convert_currency, fopen_generic, get_distro
 import time
 import subprocess
 import resource
@@ -19,7 +19,8 @@ class Util:
     def __init__(self, bot, stack_api):
         self.start_time = time.time()
         self.bot = bot
-        self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api, impose_throttling=True)
+        self.so = stackexchange.Site(stackexchange.StackOverflow, stack_api,
+                                     impose_throttling=True)
         self.help_message = read_json(fopen_generic(join('data', 'help.json')))
 
     def get_uptime(self):
@@ -29,7 +30,8 @@ class Util:
         minutes = math.floor(time_elapsed/60)
         time_elapsed -= minutes*60
         minutes_str = str(minutes) if minutes >= 10 else '0' + str(minutes)
-        seconds_str = str(time_elapsed) if time_elapsed >= 10 else '0' + str(time_elapsed)
+        seconds_str = str(time_elapsed) if time_elapsed >= 10 \
+            else '0' + str(time_elapsed)
         return '{}:{}:{}'.format(str(hours), minutes_str, seconds_str)
 
     @commands.command()
@@ -42,10 +44,13 @@ class Util:
         sheet = ', '.join(self.help_message['ssheet'])
 
         if input_ == 'Default':
-            await self.bot.say('Command List:\nUtility:```{}```Fun:```{}```Music:```{}```'
-                               'World of Warships:```{}```WoWs match spreadsheet:```{}```'.
+            await self.bot.say('Command List:\nUtility:```{}```Fun:```{}'
+                               '```Music:```{}```'
+                               'World of Warships:```{}'
+                               '```WoWs match spreadsheet:```{}```'.
                                format(util, fun, music, wows, sheet)
-                               + '?help [command] for more info on that command, such as `?help play`')
+                               + '?help [command] for more info'
+                                 ' on that command, such as `?help play`')
         elif input_ in self.help_message:
             await self.bot.say(self.help_message[input_])
 
@@ -64,7 +69,8 @@ class Util:
                     lazy_bums.append(s[2:-1])
                 else:
                     message.append(s)
-            members = [member for member in ctx.message.server.members if member.id in lazy_bums]
+            members = [member for member in ctx.message.server.members
+                       if member.id in lazy_bums]
             ex_list = []
             for member in members:
                 try:
@@ -72,7 +78,9 @@ class Util:
                 except Exception:
                     ex_list.append(member.name)
             if ex_list:
-                await self.bot.say('The pm could not be sent to the following users: {}'.format(', '.join(ex_list)))
+                await self.bot.say(
+                    'The pm could not be sent to the following users:'
+                    ' {}'.format(', '.join(ex_list)))
             await self.bot.say("Mass pm success!")
 
     @commands.command(pass_context=True)
@@ -166,23 +174,31 @@ class Util:
         for _ in self.bot.voice_clients:
             voice_count += 1
         res = discord.Embed(colour=0x4286f4)
-        res.set_author(name=self.bot.user.name, icon_url='{0.avatar_url}'.format(self.bot.user))
-        ram = "{0:.2f}".format(float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024))
+        res.set_author(name=self.bot.user.name,
+                       icon_url='{0.avatar_url}'.format(self.bot.user))
+        ram = "{0:.2f}".format(
+            float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024))
         res.add_field(name='RAM used', value=str(ram) + 'MB')
         res.add_field(name='Uptime', value=self.get_uptime())
         res.add_field(name='Python version', value=sys.version[:5])
         lib_ver = discord.version_info
-        res.add_field(name='Library', value='Discord.py v{}.{}.{}'.format(lib_ver.major, lib_ver.minor, lib_ver.micro))
-        res.add_field(name='System', value=' '.join([str.title(str(x)) for x in get_distro()]))
-        res.add_field(name='Developers', value='ラブアローシュート#6728\nNaomi#3264')
+        res.add_field(name='Library', value='Discord.py v{}.{}.{}'
+                      .format(lib_ver.major, lib_ver.minor, lib_ver.micro))
+        res.add_field(name='System', value=' '
+                      .join([str.title(str(x)) for x in get_distro()]))
+        res.add_field(name='Developers',
+                      value='ラブアローシュート#6728\nNaomi#3264')
         res.add_field(name='Servers', value=str(server_count))
         res.add_field(name='Users', value=str(user_count))
         res.add_field(name='Text channels', value=str(text_channel_count))
         res.add_field(name='Voice channels', value=str(voice_count))
-        res.add_field(name='Source code and invite link', value='https://github.com/MaT1g3R/YasenBaka', inline=False)
+        res.add_field(name='Source code and invite link',
+                      value='https://github.com/MaT1g3R/YasenBaka',
+                      inline=False)
         res.add_field(name='Support server', value='https://discord.gg/BnPbz6q')
-        res.set_footer(text='Requested by {}'
-                       .format(ctx.message.author.display_name + '#' + ctx.message.author.discriminator))
+        res.set_footer(text='Requested by {}'.format(
+            ctx.message.author.display_name + '#' +
+            ctx.message.author.discriminator))
         await self.bot.send_message(ctx.message.channel, embed=res)
 
     @commands.command()
@@ -190,31 +206,41 @@ class Util:
         start_time = int(round(time.time() * 1000))
         msg = await self.bot.say('Pong! :hourglass:')
         end_time = int(round(time.time() * 1000))
-        await self.bot.edit_message(msg, 'Pong! | :timer: {}ms'.format(end_time - start_time))
+        await self.bot.edit_message(
+            msg, 'Pong! | :timer: {}ms'.format(end_time - start_time))
 
     @commands.command(pass_context=True)
     async def bash(self, ctx, *args):
-        if str(ctx.message.author.id) in ["99271746347110400", "145735970342305792"]:
+        if str(ctx.message.author.id) \
+                in ["99271746347110400", "145735970342305792"]:
             try:
                 output = subprocess.check_output(args, stderr=subprocess.STDOUT)
                 res_str = output.decode()
-                await self.bot.say(":white_check_mark: Command success!\nOutput:\n```{}```".format(res_str))
+                await self.bot.say(
+                    ":white_check_mark: Command success!\nOutput:\n"
+                    "```{}```".format(res_str))
             except subprocess.CalledProcessError as ex:
                 res_str = ex.output.decode()
-                await self.bot.say(":no_entry_sign: Command failed!\nOutput:\n```{}```".format(res_str))
+                await self.bot.say(
+                    ":no_entry_sign: Command failed!\nOutput:"
+                    "\n```{}```".format(res_str))
         else:
             await self.bot.say('Only my owner can use this command!')
 
     @commands.command(pass_context=True)
     async def update(self, ctx):
-        if str(ctx.message.author.id) in ["99271746347110400", "145735970342305792"]:
+        if str(ctx.message.author.id) \
+                in ["99271746347110400", "145735970342305792"]:
             try:
-                output = subprocess.check_output(['git', 'pull'], stderr=subprocess.STDOUT)
+                output = subprocess.check_output(['git', 'pull'],
+                                                 stderr=subprocess.STDOUT)
                 res_str = output.decode()
                 await self.bot.say("```{}```".format(res_str))
                 subprocess.call(['pm2', 'restart', '8'])
             except subprocess.CalledProcessError as ex:
                 res_str = ex.output.decode()
-                await self.bot.say(":no_entry_sign: Update failed!\nOutput:\n```{}```".format(res_str))
+                await self.bot.say(
+                    ":no_entry_sign: Update failed!\n"
+                    "Output:\n```{}```".format(res_str))
         else:
             await self.bot.say('Only my owner can use this command!')

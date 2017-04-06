@@ -38,7 +38,8 @@ class Fun:
     @commands.command()
     async def salt(self, percentage: str, tries: int):
         """ chance of an event happeneing """
-        percentage = float(percentage.replace('%', '')) / 100 if '%' in percentage else float(percentage)
+        percentage = float(percentage.replace('%', '')) / 100 \
+            if '%' in percentage else float(percentage)
         res = round((1 - (1 - percentage) ** tries) * 100, 2)
         await self.bot.say('about {}% of dropping'.format(res))
 
@@ -79,7 +80,8 @@ class Fun:
     @commands.command(pass_context=True)
     async def chensaw(self, ctx):
         """Display a chensaw gif"""
-        await self.bot.send_file(ctx.message.channel, join('data', 'chensaw.gif'))
+        await self.bot.send_file(
+            ctx.message.channel, join('data', 'chensaw.gif'))
 
     @commands.command(pass_context=True)
     async def ayaya(self, ctx):
@@ -93,14 +95,17 @@ class Fun:
 
     @commands.command()
     async def steamymeme(self):
-        await self.bot.say(random.choice(['http://puu.sh/uvS7R/edce92064d.mp4', 'http://puu.sh/uvSOB/7e0ec82720.mp4']))
+        await self.bot.say(random.choice(
+            ['http://puu.sh/uvS7R/edce92064d.mp4',
+             'http://puu.sh/uvSOB/7e0ec82720.mp4']))
 
     @commands.command()
     async def cspost(self):
         lmao = [
             "It's a definite maybe.",
             "83%",
-            "You need to get an 80+ in advanced algorithms.. I heard it's pretty hard.",
+            "You need to get an 80+ in advanced algorithms.. "
+            "I heard it's pretty hard.",
             "70% is the bare minimum.",
             "No, you're gonna fail.",
             "25% of the time, you get in 100% of the time.",
@@ -114,5 +119,6 @@ class Fun:
 
     @commands.command()
     async def place(self, arg=''):
-        res = 'https://i.imgur.com/7E3bAnE.png' if arg == 'clean' else 'https://i.imgur.com/ajWiAYi.png'
+        res = 'https://i.imgur.com/7E3bAnE.png' if arg == 'clean' \
+            else 'https://i.imgur.com/ajWiAYi.png'
         await self.bot.say(res)
