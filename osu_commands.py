@@ -57,7 +57,9 @@ class Osu:
                           inline=False)
             res.add_field(name='Scoring',
                           value='50: {} | 100: {} | 300: {}'
-                          .format(count50, count100, count300))
+                          .format("{:,}".format(int(count50)), 
+                                  "{:,}".format(int(count100)),
+                                  "{:,}".format(int(count300))))
             ranked_rate = int(int(ranked) * 100 / int(total))
             res.add_field(name='Total score', value='{} ({}% ranked)'.format(
                 "{:,}".format(int(total)), ranked_rate))
