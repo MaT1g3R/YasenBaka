@@ -313,6 +313,7 @@ def build_embed(region, api, id_, coefficients, expected, ship_dict, ship_list):
         torp_shots = all_time_stats['torpedoes']['shots']
 
         damage_dealt = all_time_stats['damage_dealt']
+        max_damage_dealt = all_time_stats['max_damage_dealt']
         planes_killed = all_time_stats['planes_killed']
         wins = all_time_stats['wins']
         xp = all_time_stats['xp']
@@ -348,6 +349,7 @@ def build_embed(region, api, id_, coefficients, expected, ship_dict, ship_list):
                          value=str(battles) + ' Battles', inline=False)
             eb.add_field(name='WTR', value=str(all_time_wtr_val))
             eb.add_field(name='Win Rate', value=win_rate)  # 1
+            eb.add_field(name='Max Damage Dealt', value=str(max_damage_dealt))
             eb.add_field(name='Average Damage', value=avg_dmg)  # 2
             eb.add_field(name='Average Experience', value=avg_exp)  # 4
             eb.add_field(name='Average Kills', value=avg_kills)  # 6
