@@ -261,16 +261,17 @@ def convert_currency(base, amount, target):
     :return: str
     """
     key = read_json(fopen_generic(join('data', 'api_keys.json')))['Currency']
-    request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies' \
-                  '=USD,{}{}&format=1'.format(key, base, target)
-    response = requests.get(request_url).text
+    request_url = \
+        'http://www.apilayer.net/api/live?access_key={}' \
+        '&currencies={},{}&source=USD&format=1'.format(key, base, target)
+    response = requests.get(request_url).content
     try:
         parsed_data = json.loads(response)['quotes']
     except KeyError:
         raise KeyError
     try:
-        rate = float(parsed_data['USD{}'.format(target)]) / float(
-            parsed_data['USD{}'.format(base)])
+        rate = float(parsed_data['USD{}'.format(target)]) \
+               / float(parsed_data['USD{}'.format(base)])
         return "{0:.2f}".format(float(amount) * rate)
     except KeyError:
         raise KeyError
