@@ -239,7 +239,7 @@ class Util:
                                                  stderr=subprocess.STDOUT)
                 res_str = output.decode()
                 await self.bot.say("```{}```".format(res_str))
-                subprocess.call(['pm2', 'restart', '8'])
+                subprocess.call(['pm2', 'restart', '16'])
             except subprocess.CalledProcessError as ex:
                 res_str = ex.output.decode()
                 await self.bot.say(
