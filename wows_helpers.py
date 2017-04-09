@@ -122,7 +122,7 @@ def player_stats(region, api, id_):
     :return: the player's stats in a dicionary
     """
     dates = []
-    for i in range(1, 6):
+    for i in range(0, 6):
         dates.append(get_date(i))
     id_ = str(id_)
     all_time_url = 'https://api.worldofwarships.{}/wows/account/info/' \
@@ -142,10 +142,10 @@ def player_stats(region, api, id_):
                                       )['data'][id_]['pvp'][date]
         except KeyError and TypeError:
             continue
-        else:
-            if all_time_stats['battles'] - sliced_stats['battles'] > 0:
-                break
-    if sliced_stats is None:
+        if all_time_stats['battles'] - sliced_stats['battles'] > 0:
+            break
+    if sliced_stats is None \
+            or all_time_stats['battles'] - sliced_stats['battles'] == 0:
         return all_time_stats, None
     res = {}
     for key, val in sliced_stats.items():
