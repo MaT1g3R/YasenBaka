@@ -38,8 +38,18 @@ class WorldOfWarships:
             'AS': ['asia'],
             'RU': ['ru']
         }
-        self.coefficients = None
-        self.expected = None
+        self.coefficients = {
+            'na': None,
+            'eu': None,
+            'asia': None,
+            'ru': None
+        }
+        self.expected = {
+            'na': None,
+            'eu': None,
+            'asia': None,
+            'ru': None
+        }
         self.ship_dict = None
         self.ship_list = None
         self.update_warships_coeff()
@@ -67,9 +77,21 @@ class WorldOfWarships:
         return self.region_dict[region][-1]
 
     def update_warships_coeff(self):
-        res = calculate_coeff()
-        self.coefficients = res[0]
-        self.expected = res[1]
+        na = calculate_coeff('na')
+        self.coefficients['na'] = na[0]
+        self.expected['na'] = na[1]
+
+        eu = calculate_coeff('eu')
+        self.coefficients['eu'] = eu[0]
+        self.expected['eu'] = eu[1]
+
+        asia = calculate_coeff('asia')
+        self.coefficients['asia'] = asia[0]
+        self.expected['asia'] = asia[1]
+
+        ru = calculate_coeff('ru')
+        self.coefficients['ru'] = ru[0]
+        self.expected['ru'] = ru[1]
 
     def update_ship_list(self):
         self.ship_dict = get_ship_tier_dict('com', self.wows_api)
@@ -163,8 +185,9 @@ class WorldOfWarships:
             found = player_id is not None
         if found:
             result = build_embed(wows_region, self.wows_api, player_id,
-                                 self.coefficients,
-                                 self.expected, self.ship_dict, self.ship_list)
+                                 self.coefficients[warships_region],
+                                 self.expected[warships_region], self.ship_dict,
+                                 self.ship_list)
             if result is not None:
                 await self.bot.send_message(ctx.message.channel, embed=result)
             else:

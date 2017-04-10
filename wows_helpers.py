@@ -214,13 +214,13 @@ def player_ship_stats(region, api, id_, ship_list):
     return res
 
 
-def calculate_coeff():
+def calculate_coeff(region):
     """
     Calculated the average expected server wide
     :return: the average expected in a dictionary format same as expected
     """
-    coeff_url = 'https://api.na.warships.today/json/wows/' \
-                'ratings/warships-today-rating/coefficients'
+    coeff_url = 'https://api.{}.warships.today/json/wows/' \
+                'ratings/warships-today-rating/coefficients'.format(region)
     coeff_res = json.loads(requests.get(coeff_url).content)
     expected = coeff_res['expected']
     n = len(expected)
