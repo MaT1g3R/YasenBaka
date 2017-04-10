@@ -27,7 +27,7 @@ class WorldOfWarships:
                    na_ships_json_data)
         self.na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))[
             'data']
-        self.ssheet = read_json(fopen_generic(join('data', 'sheet.json')))
+        self.sheet_data = read_json(fopen_generic(join('data', 'sheet.json')))
         self.days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday',
                      'Friday', 'Saturday']
         self.save_sheet_event = Timer(300, self.save_sheet)
@@ -57,8 +57,8 @@ class WorldOfWarships:
 
     def save_sheet(self):
         """ shortcut for saving sheet """
-        write_json(fopen_generic(join('data', 'sheet.json'), 'w'), self.ssheet)
-        # self.ssheet = read_json(fopen_generic(join('data', 'sheet.json')))
+        write_json(fopen_generic(join('data', 'sheet.json'), 'w'), self.sheet_data)
+        # self.sheet_data = read_json(fopen_generic(join('data', 'sheet.json')))
         self.save_sheet_event = Timer(300, self.save_sheet)
 
     def save_shamelist(self):
@@ -251,7 +251,7 @@ class WorldOfWarships:
         if not is_admin(ctx, ctx.message.author.id):
             await self.bot.say('This is an admin only command!')
         else:
-            self.ssheet[str(get_server_id(ctx))] = {}
+            self.sheet_data[str(get_server_id(ctx))] = {}
             self.save_sheet()
             await self.bot.say(
                 'New spread sheet created! The old one has been removed!')
@@ -260,17 +260,17 @@ class WorldOfWarships:
     async def addmatch(self, ctx, matchname: str, *datetime):
         if not is_admin(ctx, ctx.message.author.id):
             await self.bot.say('This is an admin only command!')
-        elif str(get_server_id(ctx)) not in self.ssheet:
+        elif str(get_server_id(ctx)) not in self.sheet_data:
             await self.bot.say('Your server doesn\'t seem to have a spreadsheet'
                                ', please consult `?help newsheet`')
         elif not datetime or datetime[0] not in self.days:
             await self.bot.say('Please enter a valid date!')
         else:
-            self.ssheet[str(get_server_id(ctx))][matchname] = {}
+            self.sheet_data[str(get_server_id(ctx))][matchname] = {}
             datetime = list(datetime)
             datetime[0] += ','
-            self.ssheet[str(get_server_id(ctx))][matchname]['time'] = datetime
-            self.ssheet[str(get_server_id(ctx))][matchname]['players'] = []
+            self.sheet_data[str(get_server_id(ctx))][matchname]['time'] = datetime
+            self.sheet_data[str(get_server_id(ctx))][matchname]['players'] = []
             self.save_sheet()
             await self.bot.say('Match on {} added!'.format(' '.join(datetime)))
 
@@ -278,19 +278,19 @@ class WorldOfWarships:
     async def removematch(self, ctx, matchname):
         if not is_admin(ctx, ctx.message.author.id):
             await self.bot.say('This is an admin only command!')
-        elif str(get_server_id(ctx)) not in self.ssheet:
+        elif str(get_server_id(ctx)) not in self.sheet_data:
             await self.bot.say('Your server doesn\'t seem to have a '
                                'spreadsheet, please consult `?help newsheet`')
-        elif matchname not in self.ssheet[str(get_server_id(ctx))]:
+        elif matchname not in self.sheet_data[str(get_server_id(ctx))]:
             await self.bot.say('There doesn\'t seem to be a with that name.')
         else:
-            del self.ssheet[str(get_server_id(ctx))][matchname]
+            del self.sheet_data[str(get_server_id(ctx))][matchname]
             self.save_sheet()
             await self.bot.say('Match: {} removed!'.format(matchname))
 
     @commands.command(pass_context=True)
     async def joinmatch(self, ctx, *matchname):
-        if str(get_server_id(ctx)) not in self.ssheet:
+        if str(get_server_id(ctx)) not in self.sheet_data:
             await self.bot.say(
                 'Your server doesn\'t seem to have a spreadsheet, '
                 'please consult `?help newsheet`')
@@ -300,9 +300,9 @@ class WorldOfWarships:
             for name in matchname:
                 try:
                     if ctx.message.author.id not in \
-                            self.ssheet[str(get_server_id(ctx))][name][
+                            self.sheet_data[str(get_server_id(ctx))][name][
                                 'players']:
-                        self.ssheet[str(get_server_id(ctx))][name][
+                        self.sheet_data[str(get_server_id(ctx))][name][
                             'players'].append(ctx.message.author.id)
                         joined.append(name)
                 except KeyError:
@@ -313,7 +313,7 @@ class WorldOfWarships:
 
     @commands.command(pass_context=True)
     async def quitmatch(self, ctx, *matchname):
-        if str(get_server_id(ctx)) not in self.ssheet:
+        if str(get_server_id(ctx)) not in self.sheet_data:
             await self.bot.say(
                 'Your server doesn\'t seem to have a spreadsheet,'
                 ' please consult `?help newsheet`')
@@ -321,9 +321,9 @@ class WorldOfWarships:
         else:
             quits = []
             for name in matchname:
-                if name in self.ssheet[str(get_server_id(ctx))]:
+                if name in self.sheet_data[str(get_server_id(ctx))]:
                     try:
-                        self.ssheet[str(get_server_id(ctx))][name][
+                        self.sheet_data[str(get_server_id(ctx))][name][
                             'players'].remove(ctx.message.author.id)
                         quits.append(name)
                     except ValueError:
@@ -334,13 +334,13 @@ class WorldOfWarships:
 
     @commands.command(pass_context=True)
     async def sheet(self, ctx):
-        if str(get_server_id(ctx)) not in self.ssheet:
+        if str(get_server_id(ctx)) not in self.sheet_data:
             await self.bot.say(
                 'Your server doesn\'t seem to have a spreadsheet, '
                 'please consult `?help newsheet`')
             return
         else:
-            if self.ssheet[str(get_server_id(ctx))] == {}:
+            if self.sheet_data[str(get_server_id(ctx))] == {}:
                 await self.bot.say('There doesn\'t seem to be any '
                                    'matches in this spread sheet!')
                 return
@@ -355,6 +355,6 @@ class WorldOfWarships:
                         len(val['players'])
                     )
                     for key, val in
-                    self.ssheet[str(get_server_id(ctx))].items()]
+                    self.sheet_data[str(get_server_id(ctx))].items()]
                 res.sort(key=lambda x: self.days.index(x[0:x.find(',')]))
                 await self.bot.say('```{}```'.format('\n\n'.join(res)))

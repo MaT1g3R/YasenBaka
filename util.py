@@ -41,7 +41,7 @@ class Util:
         fun = ', '.join(sorted(self.help_message['fun']))
         util = ', '.join(sorted(self.help_message['util']))
         wows = ', '.join(sorted(self.help_message['wows']))
-        sheet = ', '.join(self.help_message['ssheet'])
+        sheet = ', '.join(self.help_message['sheet_data'])
 
         if input_ == 'Default':
             await self.bot.say('Command List:\nUtility:```{}```Fun:```{}'
