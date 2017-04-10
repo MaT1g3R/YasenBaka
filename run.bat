@@ -1,1 +1,0 @@
-python yasen-baka.py

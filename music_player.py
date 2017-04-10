@@ -10,6 +10,7 @@ if not discord.opus.is_loaded():
     # note that on windows this DLL is automatically provided for you
     discord.opus.load_opus('')
 
+
 class VoiceEntry:
     def __init__(self, message, player):
         self.requester = message.author
@@ -23,6 +24,7 @@ class VoiceEntry:
             fmt = fmt + ' [length: {0[0]}m {0[1]}s]'.format(divmod(duration, 60))
         return fmt.format(self.player, self.requester)
 
+
 class VoiceState:
     def __init__(self, bot):
         self.current = None
@@ -30,7 +32,7 @@ class VoiceState:
         self.bot = bot
         self.play_next_song = asyncio.Event()
         self.songs = asyncio.Queue()
-        self.skip_votes = set() # a set of user_ids that voted
+        self.skip_votes = set()  # a set of user_ids that voted
         self.audio_player = self.bot.loop.create_task(self.audio_player_task())
 
     def is_playing(self):
@@ -60,11 +62,13 @@ class VoiceState:
             self.current.player.start()
             await self.play_next_song.wait()
 
+
 class Music:
     """Voice related commands.
 
     Works in multiple servers at once.
     """
+
     def __init__(self, bot):
         self.bot = bot
         self.voice_states = {}
@@ -108,14 +112,14 @@ class Music:
         return True
 
     @commands.command(pass_context=True, no_pm=True)
-    async def play(self, ctx, *, song : str):
+    async def play(self, ctx, *, song: str):
         """Plays a song.
 
         If there is a song currently in the queue, then it is
         queued until the next song is done playing.
 
         This command automatically searches as well from YouTube.
-        The shame_list of supported sites can be found here:
+        The list of supported sites can be found here:
         https://rg3.github.io/youtube-dl/supportedsites.html
         """
         state = self.get_voice_state(ctx.message.server)
@@ -141,7 +145,7 @@ class Music:
             await state.songs.put(entry)
 
     @commands.command(pass_context=True, no_pm=True)
-    async def volume(self, ctx, value : int):
+    async def volume(self, ctx, value: int):
         """Sets the volume of the currently playing song."""
 
         state = self.get_voice_state(ctx.message.server)

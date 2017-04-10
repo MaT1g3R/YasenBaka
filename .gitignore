@@ -8,3 +8,18 @@ api_keys\.json
 __pycache__/
 
 .idea/
+
+data/shame\.png
+
+data/na_ships\.json
+
+temp\.py
+
+data/osu\.jpg
+
+data/sheet\.json
+
+data/beta_api_keys\.json
+
+data/shamelist\.json
+data/osu.png

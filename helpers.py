@@ -1,11 +1,53 @@
 """A file of all helper functions"""
+import json
 import textwrap
+import urllib.parse
+import urllib.request
+import xml.etree.ElementTree as ET
+from codecs import open as copen
+from datetime import date, timedelta
 from os import listdir
 from os.path import isfile, join
-import urllib.request
-import urllib.parse
-import json
 import requests
+import shutil
+
+
+def fopen_generic(filepath, filemode='rU', coding='utf8', buffering=-1):
+    """
+    Reads files using system seperators with friendly encodings
+    :param filepath: file path
+    :type filepath: str
+    :param filemode: file mode (default 'rU')
+    :type filemode: str
+    :param coding: encoding for file (default 'utf8')
+    :type coding: str
+    :param buffering: buffer mode, 
+    see https://docs.python.org/2/library/functions.html#open (default -1)
+    :type buffering: int
+    :return file pointer
+    :rtype file
+    """
+    if isfile(filepath):
+        return copen(filepath, filemode, coding, 'replace', buffering)
+    return None
+
+
+def freadlines(fp, keep_open=False):
+    """
+    Splits file lines
+    :param fp: file pointer
+    :param keep_open: keep fp open (default false)
+    :type fp: file
+    :type keep_open: bool | int
+    :return: file lines
+    :rtype: list
+    """
+    if fp is not None:
+        lines = fp.readlines()
+        if not keep_open:
+            fp.close()
+        return lines
+    return []
 
 
 def split_text(text, i):
@@ -20,12 +62,13 @@ def split_text(text, i):
     """
     if isinstance(text, list):
         text = ''.join(text)
-    return textwrap.wrap(text, int(len(text)/i))
+    return textwrap.wrap(text, int(len(text) / i))
 
 
 def format_eq(term1, term2):
     """
-    checks if the value of term1 and term2 are equal, and return the range between them
+    checks if the value of term1 and term2 are equal, 
+    and return the range between them
     :param term1: the first term
     :type term1: object
     :param term2: the second term
@@ -33,7 +76,8 @@ def format_eq(term1, term2):
     :return: the range between them
     :rtype: str
     """
-    return str(term1) if term1 == term2 else str(min(term1, term2)) + '-' + str(max(term1, term2))
+    return str(term1) if term1 == term2 else str(min(term1, term2)) + '-' + str(
+        max(term1, term2))
 
 
 async def try_say(bot, text, i=1):
@@ -51,9 +95,9 @@ async def try_say(bot, text, i=1):
     try:
         if isinstance(text, list):
             for txt in text:
-                await bot.say('```markdown\n'+txt+'```')
+                await bot.say('```markdown\n' + txt + '```')
         elif isinstance(text, str):
-                await bot.say('```markdown\n' + text + '```')
+            await bot.say('```markdown\n' + text + '```')
     except Exception:
         i += 1
         await try_say(bot, split_text(text, i), i)
@@ -65,8 +109,9 @@ def read_kana_files():
     :return: All path of kanna pics
     :rtype: list
     """
-    return [join('kanna_is_cute_af', f) for
-            f in listdir('kanna_is_cute_af') if isfile(join('kanna_is_cute_af', f))]
+    root = join('data', 'kanna_is_cute_af')
+    return [join(root, f) for
+            f in listdir(root) if isfile(join(root, f))]
 
 
 def is_admin(ctx, id_):
@@ -76,21 +121,26 @@ def is_admin(ctx, id_):
     :rtype: bool
     """
     try:
-        return ctx.message.server.get_member(id_).server_permissions.administrator
+        return ctx.message.server.get_member(
+            id_).server_permissions.administrator
     except AttributeError:
         return False
 
 
-def generate_image_online(url):
+def generate_image_online(url, fn):
     """
     Generates an image file from a image hot link
     :param url: The url
+    :param fn: the file name
     :type url: str
     :return: The generated image path
     :rtype: str
     """
-    fn = url.split('/')[-1]
-    urllib.request.urlretrieve(url, fn)
+    response = requests.get(url, stream=True)
+    if response.status_code == 200:
+        with open(fn, 'wb') as f:
+            response.raw.decode_content = True
+            shutil.copyfileobj(response.raw, f)
     return fn
 
 
@@ -104,35 +154,45 @@ def generate_latex_online(latex):
     """
     url = 'http://frog.isima.fr/cgi-bin/bruno/tex2png--10.cgi?'
     url += urllib.parse.quote(latex, safe='')
-    fn = 'latex.png'
+    fn = join('data', 'latex.png')
     urllib.request.urlretrieve(url, fn)
     return fn
 
 
-def read_json(file_name):
+def read_json(fp, keep_open=False):
     """
     Read a json file into a dictionary
-    :param file_name: the json file name
-    :type file_name: str
+    :param fp: the file pointer
+    :type fp: file
+    :param keep_open: keep file open (default False)
+    :type keep_open: bool | int
     :return: the dictionary
     :rtype: dict
     """
-    with open(file_name, 'r') as file:
-        return json.load(file)
+    if fp is not None:
+        data = json.load(fp)
+        if not keep_open:
+            fp.close()
+        return data
+    return {}
 
 
-def write_json(file, data):
+def write_json(fp, data, keep_open=False):
     """
     Write a dictionary into a json file
-    :param file: The json file
-    :type file: str
+    :param fp: The json file
+    :type fp: ffile
     :param data: The dictionary
     :type data: dict
+    :param keep_open: keep file open (default False)
+    :type keep_open: bool | int
     :return: nothing
     :rtype: None
     """
-    with open(file, 'w') as fp:
+    if fp is not None:
         json.dump(data, fp)
+        if not keep_open:
+            fp.close()
 
 
 def update_command_blacklist(add, command, id_):
@@ -147,7 +207,7 @@ def update_command_blacklist(add, command, id_):
     :return: nothing
     :rtype: None
     """
-    my_dict = read_json('command_blacklist.json')
+    my_dict = read_json(fopen_generic(join('data', 'command_blacklist.json')))
     if id_ not in my_dict:
         my_dict[id_] = []
     if add is False:
@@ -156,7 +216,8 @@ def update_command_blacklist(add, command, id_):
     else:
         if command not in my_dict[id_]:
             my_dict[id_].append(command)
-    write_json('command_blacklist.json', my_dict)
+    write_json(fopen_generic(join('data', 'command_blacklist.json'), 'w'),
+               my_dict)
 
 
 def is_banned(command, id_):
@@ -169,9 +230,10 @@ def is_banned(command, id_):
     :return: True if it's banned
     :rtype: bool
     """
+    data = read_json(fopen_generic(join('data', 'command_blacklist.json')))
     try:
-        return True if id_ in read_json('command_blacklist.json') and \
-                   command in read_json('command_blacklist.json')[id_] else False
+        return True if id_ in data and \
+                       command in data[id_] else False
     except AttributeError:
         return False
 
@@ -198,16 +260,67 @@ def convert_currency(base, amount, target):
     :param target: str
     :return: str
     """
-    key = read_json('api_keys.json')['Currency']
-    request_url = 'http://www.apilayer.net/api/live?access_key={}& currencies =USD,{}{}&format=1'\
-        .format(key, base, target)
-    response = requests.get(request_url).text
+    key = read_json(fopen_generic(join('data', 'api_keys.json')))['Currency']
+    request_url = \
+        'http://www.apilayer.net/api/live?access_key={}' \
+        '&currencies={},{}&source=USD&format=1'.format(key, base, target)
+    response = requests.get(request_url).content
     try:
         parsed_data = json.loads(response)['quotes']
     except KeyError:
         raise KeyError
     try:
-        rate = float(parsed_data['USD{}'.format(target)]) / float(parsed_data['USD{}'.format(base)])
-        return "{0:.2f}".format(float(amount)*rate)
+        rate = float(parsed_data['USD{}'.format(target)]) \
+               / float(parsed_data['USD{}'.format(base)])
+        return "{0:.2f}".format(float(amount) * rate)
     except KeyError:
         raise KeyError
+
+
+def safebooru(tag):
+    """
+    Get a list of pictures from safebooru based on tag
+    :param tag: the tag to search for 
+    :return: a list of picture links based on the tag
+    """
+    url = "https://safebooru.org//index.php?page=dapi&s=post&q=index&tags={}"\
+        .format(tag)
+    result = requests.get(url).content
+    root = ET.fromstring(result)
+    return ['https:' + child.attrib['file_url'] for child in root]
+
+
+def get_distro():
+    """
+    Name of your Linux distro (in lowercase).
+    """
+    with open("/etc/issue") as f:
+        return f.read().lower().split()[:3]
+
+
+def split_list(lst, max_length):
+    """
+    Split a list into sublists
+    :param lst: the list to be split
+    :param max_length: the max allowed length of the result
+    :return: a list of split up lists
+    """
+    return [lst[i:i + max_length] for i in range(0, len(lst), max_length)]
+
+
+def get_date(diff):
+    """
+    Return yesterday's date in YYYYMMDD format
+    :return: yesterday's date in YYYYMMDD format
+    """
+    yesterday = date.today() - timedelta(diff)
+    return yesterday.strftime('%Y%m%d')
+
+
+def comma(val):
+    """
+    Return a comma seprated number
+    :param val: the number
+    :return: the comma seprated number
+    """
+    return "{:,}".format(int(val))

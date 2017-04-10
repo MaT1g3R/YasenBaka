@@ -1,19 +1,46 @@
 """Handles mointoring of text channels"""
-from random import choice
 
 
 class ChannelReader:
     """
     Channel reading functions
     """
+
     def __init__(self, bot):
-        self.bot_id = '<@243230010532560896>'
-        self.bot_nick = '<@!243230010532560896>'
-        self.bot_name = 'Yasen-Baka#6539'
         self.bot = bot
-        with open('lewd.txt') as f:
-            self.lewd = f.read().splitlines()
-        self.lewd.append('( ͡° ͜ʖ ͡°)')
+        # self.key = key
+        # self.surl = 'http://api.simsimi.com/request.p?key={}&ft=1.0&lc=en&text={}'
+
+    def bot_id(self):
+        """
+        Returns bot id
+        :rtype str
+        """
+        return '<@%s>' % self.bot.user.id
+
+    def bot_nick(self):
+        """
+        Returns bot nicknameÒ
+        :rtype str
+        """
+        return '<@!%s>' % self.bot.user.id
+
+    def bot_name(self):
+        """
+        Returns bot name with discriminator
+        :rtype str
+        """
+        return '%s#%s' % (self.bot.user.name, self.bot.user.discriminator)
+
+    def check_message(self, message, expected):
+        """
+        A helper method to check if a message's content matches with expected result and the author isn't the bot.
+        :param message: the message to be checked
+        :param expected: the expected result
+        :return: true if the message's content equals the expected result and the author isn't the bot
+        """
+        return message.content == expected and message.author.id != self.bot.user.id
+
     async def on_message(self, message):
         """
         Events for read messages
@@ -22,17 +49,19 @@ class ChannelReader:
         :return: nothing
         :rtype: None
         """
-        # Local vars
-        lowerstr = message.content.lower()
-        # Sends ayaya pic when someone says ayaya
-        if "ayaya" in lowerstr and not lowerstr.startswith("enqueued ") and not lowerstr.startswith("now playing "):
-            await self.bot.send_message(message.channel, "http://i.imgur.com/g3Qi8Ft.png")
         # Respnods to /o/ and \o\
-        elif message.content == "/o/" and str(message.author) != self.bot_name:
+        if self.check_message(message, '/o/'):
             await self.bot.send_message(message.channel, '\\o\\')
-        elif message.content == "\\o\\" and str(message.author) != self.bot_name:
+        elif self.check_message(message, '\\o\\'):
             await self.bot.send_message(message.channel, '/o/')
-        # Sends a random lewd pic when someone says lewd
-        elif message.content.lower() == "lewd" and str(message.author) != self.bot_name:
-            await self.bot.send_message(message.channel, choice(self.lewd))
-
+        elif self.check_message(message, 'o7'):  # Yousoro!
+            await self.bot.send_message(message.channel, 'http://i.imgur.com/Pudz3G4.gif')
+        #
+        # if message.content.startswith(self.bot_id()):
+        #     msg = message.content[22:]
+        #     r = json.loads(requests.get(self.surl.format(self.key, msg)).text)
+        #     await self.bot.send_message(message.channel, r['response'])
+        # elif message.content.startswith(self.bot_nick()):
+        #     msg = message.content[23:]
+        #     r = json.loads(requests.get(self.surl.format(self.key, msg)).text)
+        #     await self.bot.send_message(message.channel, r['response'])
