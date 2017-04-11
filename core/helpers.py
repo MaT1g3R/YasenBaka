@@ -1,6 +1,9 @@
 import textwrap
 from os.path import join
 from file_system import freadlines, fopen_generic
+from requests import get
+import xml.etree.ElementTree as et
+from shutil import copyfileobj
 
 
 def split_text(text, i):
@@ -48,5 +51,41 @@ def get_server_id(ctx):
     except AttributeError:
         return None
 
-if __name__ == '__main__':
-    print(get_distro())
+
+def safebooru(tag):
+    """
+    Get a list of pictures from safebooru based on tag
+    :param tag: the tag to search for 
+    :return: a list of picture links based on the tag
+    """
+    url = "https://safebooru.org//index.php?page=dapi&s=post&q=index&tags={}"\
+        .format(tag)
+    result = get(url).content
+    root = et.fromstring(result)
+    return ['https:' + child.attrib['file_url'] for child in root]
+
+
+def generate_image_online(url, fn):
+    """
+    Generates an image file from a image hot link
+    :param url: The url
+    :param fn: the file name
+    :type url: str
+    :return: The generated image path
+    :rtype: str
+    """
+    response = get(url, stream=True)
+    if response.status_code == 200:
+        with open(fn, 'wb') as f:
+            response.raw.decode_content = True
+            copyfileobj(response.raw, f)
+    return fn
+
+
+def comma(val):
+    """
+    Return a comma seprated number
+    :param val: the number
+    :return: the comma seprated number
+    """
+    return "{:,}".format(int(val))

@@ -2,13 +2,17 @@
 from os.path import join
 from discord import game
 import stackexchange
-from wowspy.wowspy import Wows
-from yasen import Yasen
-from util import Util
 from data_class import Data
 from file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
+from wowspy.wowspy import Wows
+from yasen import Yasen
 from wows_core import coeff_all_region
+
+# Bot cog imports
+from util import Util
+from fun import Fun
+from osu_commands import Osu
 
 
 def data_factory():
@@ -50,7 +54,7 @@ if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
     prefix = '!'
     bot = Yasen(prefix, description, data_factory())
-    cogs = [Util(bot)]
+    cogs = [Util(bot), Fun(bot), Osu(bot)]
 
     @bot.event
     async def on_ready():
