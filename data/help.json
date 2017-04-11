@@ -42,7 +42,7 @@
     "addshame",
     "removeshame"
   ],
-  "ssheet": [
+  "sheet_commands": [
     "sheet",
     "newsheet",
     "addmatch",

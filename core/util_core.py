@@ -44,7 +44,7 @@ def default_help(help_dict):
     fun = ', '.join(sorted(help_dict['fun']))
     util = ', '.join(sorted(help_dict['util']))
     wows = ', '.join(sorted(help_dict['wows']))
-    sheet = ', '.join(help_dict['sheet_data'])
+    sheet = ', '.join(help_dict['sheet_commands'])
 
     return \
         'Command List:\nUtility:```{}```Fun:```{}```Music:```{}```' \
@@ -62,17 +62,18 @@ def process_pmall(ctx, message_in: list):
     :rtype: tuple
     """
     message = message_in[:]
-    members = []
-    member_ids = [member.id for member in ctx.message.server.members]
+    m_d = {member.id: member for member in ctx.message.server.members}
+    member_ids = []
     while len(message) > 0:
         s = message[0]
-        if s.startswith('<@!') and s.endswith('>') and s[3:-1] in member_ids:
-            members.append(message.pop(0)[3:-1])
-        elif s.startswith('<@') and s.endswith('>') and s[2:-1] in member_ids:
-            members.append(message.pop(0)[2:-1])
+        if s.startswith('<@!') and s.endswith('>') and s[3:-1] in m_d:
+            member_ids.append(message.pop(0)[3:-1])
+        elif s.startswith('<@') and s.endswith('>') and s[2:-1] in m_d:
+            member_ids.append(message.pop(0)[2:-1])
         else:
             break
-    return members, ' '.join(message)
+    return [member for member in m_d.values() if member.id in member_ids], ' '\
+        .join(message)
 
 
 def generate_latex_online(latex):
@@ -194,8 +195,7 @@ def info_builder(ctx, servers, all_members, all_channels, voice_clients,
     lib_ver = version_info
     res.add_field(name='Library', value='Discord.py v{}.{}.{}'
                   .format(lib_ver.major, lib_ver.minor, lib_ver.micro))
-    res.add_field(name='System', value=' '
-                  .join([str.title(str(x)) for x in get_distro()]))
+    res.add_field(name='System', value=get_distro())
     res.add_field(name='Developers',
                   value='ラブアローシュート#6728\nNaomi#3264')
     res.add_field(name='Servers', value=str(server_count))

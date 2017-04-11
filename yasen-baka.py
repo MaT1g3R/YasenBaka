@@ -4,6 +4,7 @@ from discord import game
 import stackexchange
 from wowspy.wowspy import Wows
 from yasen import Yasen
+from util import Util
 from data_class import Data
 from file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
@@ -49,7 +50,7 @@ if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
     prefix = '!'
     bot = Yasen(prefix, description, data_factory())
-    cogs = []
+    cogs = [Util(bot)]
 
     @bot.event
     async def on_ready():

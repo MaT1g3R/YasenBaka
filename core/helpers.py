@@ -48,15 +48,5 @@ def get_server_id(ctx):
     except AttributeError:
         return None
 
-
-def is_admin(ctx):
-    """
-    Check if an user is an admin
-    :return: True if the user is an admin
-    :rtype: bool
-    """
-    try:
-        return ctx.message.server.get_member(ctx.message.author.id)\
-            .server_permissions.administrator
-    except AttributeError:
-        return False
+if __name__ == '__main__':
+    print(get_distro())

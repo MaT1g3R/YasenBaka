@@ -4,7 +4,7 @@ from os.path import join
 from threading import Timer
 import requests
 from discord.ext import commands
-from helpers import format_eq, read_json, write_json, get_server_id, is_admin, \
+from helpers import format_eq, read_json, write_json, get_server_id, \
     fopen_generic, generate_image_online
 from wows_helpers import find_player_id, warships_today_url, build_embed, \
     calculate_coeff, get_ship_tier_dict
@@ -247,20 +247,17 @@ class WorldOfWarships:
                 'Removed failed, you were not in the shamelist to begin with.')
 
     @commands.command(pass_context=True)
+    @commands.has_permissions(administrator=True)
     async def newsheet(self, ctx):
-        if not is_admin(ctx, ctx.message.author.id):
-            await self.bot.say('This is an admin only command!')
-        else:
-            self.sheet_data[str(get_server_id(ctx))] = {}
-            self.save_sheet()
-            await self.bot.say(
-                'New spread sheet created! The old one has been removed!')
+        self.sheet_data[str(get_server_id(ctx))] = {}
+        self.save_sheet()
+        await self.bot.say(
+            'New spread sheet created! The old one has been removed!')
 
     @commands.command(pass_context=True)
+    @commands.has_permissions(administrator=True)
     async def addmatch(self, ctx, matchname: str, *datetime):
-        if not is_admin(ctx, ctx.message.author.id):
-            await self.bot.say('This is an admin only command!')
-        elif str(get_server_id(ctx)) not in self.sheet_data:
+        if str(get_server_id(ctx)) not in self.sheet_data:
             await self.bot.say('Your server doesn\'t seem to have a spreadsheet'
                                ', please consult `?help newsheet`')
         elif not datetime or datetime[0] not in self.days:
@@ -275,10 +272,9 @@ class WorldOfWarships:
             await self.bot.say('Match on {} added!'.format(' '.join(datetime)))
 
     @commands.command(pass_context=True)
+    @commands.has_permissions(administrator=True)
     async def removematch(self, ctx, matchname):
-        if not is_admin(ctx, ctx.message.author.id):
-            await self.bot.say('This is an admin only command!')
-        elif str(get_server_id(ctx)) not in self.sheet_data:
+        if str(get_server_id(ctx)) not in self.sheet_data:
             await self.bot.say('Your server doesn\'t seem to have a '
                                'spreadsheet, please consult `?help newsheet`')
         elif matchname not in self.sheet_data[str(get_server_id(ctx))]:

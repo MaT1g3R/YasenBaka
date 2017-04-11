@@ -3,8 +3,7 @@ import time
 import util_core
 import discord
 from discord.ext import commands
-from discord.errors import Forbidden
-from helpers import get_server_id, is_admin
+from discord.errors import Forbidden, HTTPException
 
 
 class Util:
@@ -21,12 +20,10 @@ class Util:
         elif input_ in self.data.help_message:
             await self.bot.say(self.data.help_message[input_])
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, no_pm=True)
+    @commands.has_permissions(administrator=True)
     async def pmall(self, ctx, *args):
-        server_id = get_server_id(ctx)
-        if server_id is None or not is_admin(ctx):
-            await self.bot.say("Cannot use this command, not admin")
-        elif len(args) <= 0:
+        if len(args) <= 0:
             await self.bot.say('Please enter a valid message.')
         else:
             members, content = util_core.process_pmall(ctx, list(args))
@@ -36,7 +33,7 @@ class Util:
                 try:
                     await self.bot.send_message(member, content)
                     succ_list.append(member.name)
-                except Forbidden:
+                except Forbidden and HTTPException:
                     ex_list.append(member.name)
             if len(ex_list) > 0:
                 await self.bot.say(
@@ -54,7 +51,7 @@ class Util:
             fn = util_core.generate_latex_online(l)
             await self.bot.send_file(ctx.message.channel, fn)
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, no_pm=True)
     async def joined(self, ctx, member: discord.Member):
         """Says when a member joined."""
         if ctx.message.channel.name is not None:
@@ -67,7 +64,7 @@ class Util:
         """
         await self.bot.say(util_core.anime_search(' '.join(input_)))
 
-    @commands.command(pass_context=True)
+    @commands.command(pass_context=True, no_pm=True)
     async def avatar(self, ctx, member: discord.Member):
         """ get user avatar """
         if ctx.message.channel.name is not None:
