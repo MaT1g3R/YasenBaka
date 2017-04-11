@@ -3,6 +3,7 @@ import time
 import util_core
 import discord
 from discord.ext import commands
+from discord.errors import Forbidden
 from helpers import get_server_id, is_admin
 
 
@@ -30,16 +31,18 @@ class Util:
         else:
             members, content = util_core.process_pmall(ctx, list(args))
             ex_list = []
+            succ_list = []
             for member in members:
                 try:
                     await self.bot.send_message(member, content)
-                except Exception:
+                    succ_list.append(member.name)
+                except Forbidden:
                     ex_list.append(member.name)
             if len(ex_list) > 0:
                 await self.bot.say(
-                    'The pm could not be sent to the following users:'
+                    'The PM could not be sent to the following users:'
                     ' {}'.format(', '.join(ex_list)))
-            await self.bot.say("Mass pm success!")
+            await self.bot.say('PM sent to: {}'.format(', '.join(succ_list)))
 
     @commands.command(pass_context=True)
     async def latex(self, ctx, *input_: str):
