@@ -21,7 +21,8 @@
     "ayaya",
     "osu",
     "umi",
-    "place"
+    "place",
+    "joke"
   ],
   "util": [
     "pmall",
@@ -88,5 +89,6 @@
   "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch match_name1 match_name2`",
   "ping": "Shows the response time of the bot.",
   "umi":"Umi is a vile ocean.",
-  "place": "Let us marvel at the greatness of the internet. \n `?place clean` for the cleaned up version."
+  "place": "Let us marvel at the greatness of the internet. \n `?place clean`for the cleaned up version.",
+  "joke": "It's joke!"
 }
