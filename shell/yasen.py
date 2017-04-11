@@ -8,16 +8,14 @@ class Yasen(Bot):
     """
     The yasen bot object
     """
-    def __init__(self, prefix, description, api_keys: dict, data):
+    def __init__(self, prefix, description, data):
         """
         Initialize a bot object
         :param prefix the prefix this bot will use
         :param description the description of this bot
-        :param api_keys: the api keys used by this bot
         :param data: the data this bot will store
         """
         super().__init__(command_prefix=prefix, description=description)
-        self.api_keys = api_keys
         self.data = data
 
     def start_bot(self, cogs):
@@ -28,4 +26,4 @@ class Yasen(Bot):
         self.remove_command('help')
         for cog in cogs:
             self.add_cog(cog)
-        self.run(self.api_keys['Discord'])
+        self.run(self.data.api_keys['Discord'])

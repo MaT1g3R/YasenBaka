@@ -1,14 +1,54 @@
 """The main bot run file"""
-from discord import game
 from os.path import join
-from helpers import read_json, fopen_generic
+from discord import game
+import stackexchange
+from wowspy.wowspy import Wows
 from shell.yasen import Yasen
+from core.data import Data
+from core.file_system import read_all_files, read_json, write_json, \
+    fopen_generic, freadlines
+from core.wows_core import coeff_all_region
+
+
+def data_factory():
+    """
+    Creates an instance of Data 
+    :rtype: Data
+    """
+    api_keys = read_json(fopen_generic(join('data', 'beta_api_keys.json')))
+    wows_api = Wows(api_keys['WoWs'])
+
+    write_json(fopen_generic(join('data', 'na_ships.json'), 'w'),
+               wows_api.warships(wows_api.region.NA))
+
+    kanna_files = read_all_files(join('data', 'kanna_is_cute_af'))
+    lewds = freadlines(fopen_generic(join('data', 'lewd.txt')))
+    lewds.append('( ͡° ͜ʖ ͡°)')
+    so = stackexchange.Site(stackexchange.StackOverflow, api_keys[
+        'StackExchange'], impose_throttling=True)
+    help_message = read_json(fopen_generic(join('data', 'help.json')))
+    shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
+    na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))['data']
+    sheet_data = read_json(fopen_generic(join('data', 'sheet.json')))
+
+    c_a_r = coeff_all_region()
+    coefficients = c_a_r[0]
+    expected = c_a_r[1]
+
+    ship_dict = wows_api.warships(wows_api.region.NA, fields='tier')['data']
+    ship_list = [k for k in ship_dict.keys()]
+
+    data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
+                help_message=help_message, shame_list=shame_list,
+                na_ships=na_ships, sheet_data=sheet_data,
+                coefficients=coefficients, expected=expected,
+                ship_dict=ship_dict, ship_list=ship_list, wows_api=wows_api)
+    return data
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
     prefix = '!'
-    my_apis = read_json(fopen_generic(join('data', 'beta_api_keys.json')))
-    bot = Yasen(prefix, description, my_apis, None)
+    bot = Yasen(prefix, description, data_factory())
     cogs = []
 
     @bot.event
