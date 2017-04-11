@@ -13,6 +13,7 @@ from wows_core import coeff_all_region
 from util import Util
 from fun import Fun
 from osu_commands import Osu
+from channelreader import ChannelReader
 
 
 def data_factory():
@@ -54,7 +55,7 @@ if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
     prefix = '!'
     bot = Yasen(prefix, description, data_factory())
-    cogs = [Util(bot), Fun(bot), Osu(bot)]
+    cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot)]
 
     @bot.event
     async def on_ready():
