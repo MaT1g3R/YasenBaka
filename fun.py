@@ -122,3 +122,7 @@ class Fun:
         res = 'https://i.imgur.com/7E3bAnE.png' if arg == 'clean' \
             else 'https://i.imgur.com/ajWiAYi.png'
         await self.bot.say(res)
+
+    @commands.command()
+    async def joke(self):
+        await self.bot.say('https://www.youtube.com/watch?v=THrCQ1ftuTU')
