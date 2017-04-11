@@ -3,11 +3,11 @@ from os.path import join
 from discord import game
 import stackexchange
 from wowspy.wowspy import Wows
-from shell.yasen import Yasen
-from core.data import Data
-from core.file_system import read_all_files, read_json, write_json, \
+from yasen import Yasen
+from data_class import Data
+from file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
-from core.wows_core import coeff_all_region
+from wows_core import coeff_all_region
 
 
 def data_factory():

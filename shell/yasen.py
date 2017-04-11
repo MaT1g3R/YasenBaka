@@ -2,6 +2,7 @@
 The yasen bot object
 """
 from discord.ext.commands import Bot
+from helpers import split_text
 
 
 class Yasen(Bot):
@@ -27,3 +28,23 @@ class Yasen(Bot):
         for cog in cogs:
             self.add_cog(cog)
         self.run(self.data.api_keys['Discord'])
+
+    async def try_say(self, text, i=1):
+        """
+        Try to say the block of text until the bot succeeds
+        :param text: The block of text
+        :type text: str | list
+        :param i: how many sections the text needs to be split into
+        :type i: int
+        :return: nothing
+        :rtype: None
+        """
+        try:
+            if isinstance(text, list):
+                for txt in text:
+                    await self.say('```markdown\n' + txt + '```')
+            elif isinstance(text, str):
+                await self.say('```markdown\n' + text + '```')
+        except Exception:
+            i += 1
+            await self.try_say(split_text(text, i), i)

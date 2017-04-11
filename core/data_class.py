@@ -16,6 +16,7 @@ class Data:
         self.lewds = lewds
         self.start_time = time.time()
         self.so = so
+        self.so.be_inclusive()
         self.help_message = help_message
         self.shame_list = shame_list
         self.na_ships = na_ships
