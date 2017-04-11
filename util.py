@@ -12,6 +12,7 @@ import subprocess
 import resource
 import math
 import sys
+from discord.errors import Forbidden
 
 
 class Util:
@@ -75,7 +76,7 @@ class Util:
             for member in members:
                 try:
                     await self.bot.send_message(member, ' '.join(message))
-                except Exception:
+                except Forbidden:
                     ex_list.append(member.name)
             if ex_list:
                 await self.bot.say(
