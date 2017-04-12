@@ -23,7 +23,7 @@ def data_factory():
     Creates an instance of Data 
     :rtype: Data
     """
-    api_keys = read_json(fopen_generic(join('data', 'beta_api_keys.json')))
+    api_keys = read_json(fopen_generic(join('data', 'api_keys.json')))
     wows_api = Wows(api_keys['WoWs'])
 
     write_json(fopen_generic(join('data', 'na_ships.json'), 'w'),
@@ -50,7 +50,7 @@ def data_factory():
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
-    prefix = '!'
+    prefix = '?'
     bot = Yasen(prefix, description, data_factory())
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot)]
