@@ -44,12 +44,11 @@ def default_help(help_dict):
     fun = ', '.join(sorted(help_dict['fun']))
     util = ', '.join(sorted(help_dict['util']))
     wows = ', '.join(sorted(help_dict['wows']))
-    sheet = ', '.join(help_dict['sheet_commands'])
 
     return \
         'Command List:\nUtility:```{}```Fun:```{}```Music:```{}```' \
-        'World of Warships:```{}```WoWs match spreadsheet:```{}```'.format(
-            util, fun, music, wows, sheet) + \
+        'World of Warships:```{}```'.format(
+            util, fun, music, wows) + \
         '?help [command] for more info on that command, such as `?help play`'
 
 

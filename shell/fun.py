@@ -100,6 +100,6 @@ class Fun:
         await self.bot.say(fun_core.place_url(arg == 'clean'))
         
     @commands.command()
-    async def joke():
+    async def joke(self):
         await self.bot.say('https://www.youtube.com/watch?v=THrCQ1ftuTU')
 
