@@ -9,7 +9,7 @@ class Data:
     A data class to hold all the data the bot will use
     """
     def __init__(self, api_keys, kanna_files, lewds, so, help_message,
-                 shame_list, na_ships, sheet_data, coefficients, expected,
+                 shame_list, na_ships, coefficients, expected,
                  ship_dict, ship_list, wows_api):
         self.api_keys = api_keys
         self.kanna_files = kanna_files
@@ -20,7 +20,6 @@ class Data:
         self.help_message = help_message
         self.shame_list = shame_list
         self.na_ships = na_ships
-        self.sheet_data = sheet_data
         self.coefficients = coefficients
         self.expected = expected
         self.ship_dict = ship_dict

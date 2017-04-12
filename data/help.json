@@ -36,19 +36,10 @@
     "ping"
   ],
   "wows": [
-    "ship",
     "shame",
     "shamelist",
     "addshame",
     "removeshame"
-  ],
-  "sheet_commands": [
-    "sheet",
-    "newsheet",
-    "addmatch",
-    "removematch",
-    "joinmatch",
-    "quitmatch"
   ],
   "shame": "Looks for a player on Warships Today. You can also look up players by pinging them if they are in the shamelist. Support all regions, default is NA. The region codes are: 'NA', 'EU', 'RU', 'AS' \nExample usage: `?shame MaT1g3R`, `?shame flamu EU`",
   "volume": "Sets the volume of the currently playing song.\nExample usage: `?volume 50`",
@@ -63,7 +54,6 @@
   "skip": "Vote to skip a song. The song requester can automatically skip. 3 skip votes are needed for the song to be skipped.",
   "anime": "Searches for an anime on MAL.\nExample usage `?anime Madoka Magica`",
   "playing": "Shows info about the currently played song.",
-  "ship": "Looks for a ship on the WG wiki.\nExample usage: `?ship shimakaze`",
   "repeat": "Repeats text for x amout of times, max is 5 times.\nExample usage: `?repeat 5 Dank memes`",
   "kyubey": "Kyubey",
   "play": "Plays a song.\nIf there is a song currently in the queue, then it isqueued until the next song is done playing.\nThis command automatically searches as well from YouTube.The list of supported sites can be found here:<https://rg3.github.io/youtube-dl/supportedsites.html>\nExample usage: `?play Poland is not yet lost`",
@@ -81,12 +71,6 @@
   "lewd": "Displays a random lewd reaction face.",
   "ayaya": "Ayaya!",
   "osu": "Return information for an osu! user. No filter for searching in standard mode, add one of: `--osu, --Taiko, --CTB, --mania` to the end of your search to specify the mode.\nExample usage: `?osu potateau`, `?osu Bukkake Blast --CTB`",
-  "sheet":"Displays the current spreadsheet.",
-  "newsheet":"Creates a new spreadsheet, this will delete the old one.",
-  "addmatch": "Adds a new match to the current spreadsheet. Note your match name CANNOT have spaces, and the entry after the match name must be a day in the week.\nExample usage: `?addmatch my_match_name Friday Sept.11 4:00PM`",
-  "removematch":"Removes a match from the current spreadsheet, note this will remove any data that's associated with that match.",
-  "joinmatch":"Joins a match or multiple matches on the curent spreadsheet.\nExample usage: `?joinmatch match_name1 match_name2`",
-  "quitmatch":"Quit match/matches on the current spreadsheet. \nExample usage: `?quitmatch match_name1 match_name2`",
   "ping": "Shows the response time of the bot.",
   "umi":"Umi is a vile ocean.",
   "place": "Let us marvel at the greatness of the internet. \n `?place clean`for the cleaned up version.",

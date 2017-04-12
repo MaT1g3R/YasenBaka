@@ -7,13 +7,15 @@ from file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
 from wowspy.wowspy import Wows
 from yasen import Yasen
-from wows_core import coeff_all_region
+from wows_core import coeff_all_region, get_all_ship_tier
 
 # Bot cog imports
 from util import Util
 from fun import Fun
 from osu_commands import Osu
 from channelreader import ChannelReader
+from world_of_warships import WorldOfWarships
+from music_player import Music
 
 
 def data_factory():
@@ -35,19 +37,14 @@ def data_factory():
     help_message = read_json(fopen_generic(join('data', 'help.json')))
     shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
     na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))['data']
-    sheet_data = read_json(fopen_generic(join('data', 'sheet.json')))
 
-    c_a_r = coeff_all_region()
-    coefficients = c_a_r[0]
-    expected = c_a_r[1]
+    coefficients, expected = coeff_all_region()
 
-    ship_dict = wows_api.warships(wows_api.region.NA, fields='tier')['data']
-    ship_list = [k for k in ship_dict.keys()]
+    ship_dict, ship_list = get_all_ship_tier(wows_api)
 
     data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
                 help_message=help_message, shame_list=shame_list,
-                na_ships=na_ships, sheet_data=sheet_data,
-                coefficients=coefficients, expected=expected,
+                na_ships=na_ships, coefficients=coefficients, expected=expected,
                 ship_dict=ship_dict, ship_list=ship_list, wows_api=wows_api)
     return data
 
@@ -55,7 +52,8 @@ if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
     prefix = '!'
     bot = Yasen(prefix, description, data_factory())
-    cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot)]
+    cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
+            WorldOfWarships(bot), Music(bot)]
 
     @bot.event
     async def on_ready():
