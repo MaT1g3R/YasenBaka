@@ -98,3 +98,8 @@ class Fun:
     @commands.command()
     async def place(self, arg=None):
         await self.bot.say(fun_core.place_url(arg == 'clean'))
+        
+    @commands.command()
+    async def joke():
+        await self.bot.say('https://www.youtube.com/watch?v=THrCQ1ftuTU')
+
