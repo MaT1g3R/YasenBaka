@@ -66,6 +66,6 @@ if __name__ == '__main__':
         print(bot.user.name)
         print(bot.user.id)
         print('------')
-        await bot.change_presence(game=game.Game(name='?help | ?info'))
+        await bot.change_presence(game=game.Game(name='!help | !info'))
 
     bot.start_bot(cogs)
