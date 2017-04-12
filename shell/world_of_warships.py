@@ -11,7 +11,6 @@ from wows_core import warships_today_url, build_embed, \
 
 class WorldOfWarships:
     """ WoWs commands """
-
     def __init__(self, bot):
         self.bot = bot
         self.data = self.bot.data
@@ -56,7 +55,7 @@ class WorldOfWarships:
                                        join('data', 'dark.png'))
             await self.bot.send_file(ctx.message.channel, fn)
         else:
-            await self.bot.say(ctx.message.channel, embed=embed)
+            await self.bot.say(embed=embed)
 
     @commands.command(pass_context=True)
     async def shamelist(self, ctx):

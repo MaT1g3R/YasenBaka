@@ -194,8 +194,10 @@ def player_stats(region: Region, api: Wows, id_: int):
     for date in reversed(dates):
         if date in date_stats \
                 and all_time_stats['battles'] - date_stats[date]['battles'] > 0:
-            for key, val in date_stats.items():
-                recent_stats[key] = all_time_stats[key] - date_stats[key]
+            for key, val in date_stats[date].items():
+                if key in all_time_stats:
+                    recent_stats[key] = all_time_stats[key] - \
+                                        date_stats[date][key]
             break
 
     return all_time_stats, recent_stats
@@ -267,7 +269,7 @@ def player_ship_stats(region: Region, api: Wows, id_: int, ship_list):
     res = {}
     split_ = split_list(ship_list, 90)
     for sub_list in split_:
-        sub_list = map(int, sub_list)
+        sub_list = [int(i) for i in sub_list]
         response = api.statistics_of_players_ships(
             region, ship_id=sub_list, account_id=id_,
             fields='battles,ship_id')['data'][str(id_)]
