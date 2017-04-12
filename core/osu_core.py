@@ -3,8 +3,8 @@ from math import ceil
 from os.path import join
 from discord import Embed
 from osu_sig import generate, Mode
-from helpers import generate_image_online, comma
-from osu import get_user
+from core.helpers import generate_image_online, comma
+from core.osu import get_user
 
 
 class PlayerNotFoundError(IndexError):

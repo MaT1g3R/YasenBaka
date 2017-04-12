@@ -2,7 +2,7 @@
 The yasen bot object
 """
 from discord.ext.commands import Bot
-from helpers import split_text
+from core.helpers import split_text
 
 
 class Yasen(Bot):

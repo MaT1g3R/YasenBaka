@@ -2,20 +2,20 @@
 from os.path import join
 from discord import game
 import stackexchange
-from data_class import Data
-from file_system import read_all_files, read_json, write_json, \
+from core.data_class import Data
+from core.file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
 from wowspy.wowspy import Wows
-from yasen import Yasen
-from wows_core import coeff_all_region, get_all_ship_tier
+from shell.yasen import Yasen
+from core.wows_core import coeff_all_region, get_all_ship_tier
 
 # Bot cog imports
-from util import Util
-from fun import Fun
-from osu_commands import Osu
-from channelreader import ChannelReader
-from world_of_warships import WorldOfWarships
-from music_player import Music
+from shell.util import Util
+from shell.fun import Fun
+from shell.osu_commands import Osu
+from shell.channelreader import ChannelReader
+from shell.world_of_warships import WorldOfWarships
+from shell.music_player import Music
 
 
 def data_factory():

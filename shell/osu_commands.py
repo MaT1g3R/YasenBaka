@@ -1,6 +1,6 @@
 """Osu commands"""
 from discord.ext import commands
-from osu_core import process_query, osu_embed, PlayerNotFoundError, NoGameError
+from core.osu_core import process_query, osu_embed, PlayerNotFoundError, NoGameError
 
 
 class Osu:

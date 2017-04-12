@@ -7,7 +7,7 @@ import resource
 import sys
 from subprocess import check_output, STDOUT, CalledProcessError
 from os.path import join
-from helpers import get_distro
+from core.helpers import get_distro
 from json import loads
 from urllib import request, parse
 from google import search

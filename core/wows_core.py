@@ -1,6 +1,6 @@
 import requests
 import json
-from helpers import split_list, get_date, get_server_id
+from core.helpers import split_list, get_date, get_server_id
 from wowspy.wowspy import Wows, Region
 from discord import Embed
 

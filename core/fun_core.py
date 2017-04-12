@@ -1,5 +1,5 @@
 import random
-from helpers import safebooru
+from core.helpers import safebooru
 
 
 def generate_dice_rolls(s: str):

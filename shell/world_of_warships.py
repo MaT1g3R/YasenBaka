@@ -2,9 +2,9 @@
 from os.path import join
 from threading import Timer
 from discord.ext import commands
-from file_system import fopen_generic, write_json
-from helpers import generate_image_online
-from wows_core import warships_today_url, build_embed, \
+from core.file_system import fopen_generic, write_json
+from core.helpers import generate_image_online
+from core.wows_core import warships_today_url, build_embed, \
     coeff_all_region, get_all_ship_tier, region_converter, find_player, \
     generate_shamelist, process_add_shame, process_remove_shame
 

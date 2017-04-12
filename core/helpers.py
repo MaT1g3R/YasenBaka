@@ -1,6 +1,6 @@
 import textwrap
 from os.path import join
-from file_system import freadlines, fopen_generic
+from core.file_system import freadlines, fopen_generic
 from requests import get
 import xml.etree.ElementTree as Et
 from shutil import copyfileobj

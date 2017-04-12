@@ -1,5 +1,5 @@
 """Handles mointoring of text channels"""
-from channel_reader_core import check_message
+from core.channel_reader_core import check_message
 
 
 class ChannelReader:

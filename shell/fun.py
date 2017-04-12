@@ -1,6 +1,6 @@
 """Commands for fun"""
-import fun_core
-from helpers import safebooru
+import core.fun_core as fun_core
+from core.helpers import safebooru
 from discord.ext import commands
 import random
 from os.path import join

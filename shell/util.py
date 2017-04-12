@@ -1,6 +1,6 @@
 """Utility commands"""
 import time
-import util_core
+import core.util_core as util_core
 import discord
 from discord.ext import commands
 from discord.errors import Forbidden, HTTPException
