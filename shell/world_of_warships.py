@@ -28,8 +28,7 @@ class WorldOfWarships:
     async def update_wows(self):
         self.data.coefficients, self.data.expected = \
             coeff_all_region()
-        self.data.ship_dict, self.data.ship_list = \
-            get_all_ship_tier(self.api)
+        self.data.ship_dict = get_all_ship_tier(self.api)
         await self.bot.say('Update Success!')
 
     @commands.command(pass_context=True)
