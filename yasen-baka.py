@@ -2,14 +2,17 @@
 from os.path import join
 from discord import game
 import stackexchange
+from wowspy.wowspy import Wows
+
+# Core imports
 from core.data_class import Data
 from core.file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
-from wowspy.wowspy import Wows
-from shell.yasen import Yasen
 from core.wows_core import coeff_all_region, get_all_ship_tier
 
+
 # Bot cog imports
+from shell.yasen import Yasen
 from shell.util import Util
 from shell.fun import Fun
 from shell.osu_commands import Osu
