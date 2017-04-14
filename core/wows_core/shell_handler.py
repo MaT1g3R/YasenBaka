@@ -1,9 +1,10 @@
-from core.discord_functions import get_server_id, build_embed
 from wowspy.wowspy import Wows, Region
+
+from core.discord_functions import get_server_id, build_embed
+from core.helpers import comma
 from core.wows_core.wg_core import player_stats, find_player_id, \
     player_ship_stats
 from core.wows_core.wtr_core import wtr_absolute, choose_colour
-from core.helpers import comma
 
 
 def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
@@ -66,7 +67,7 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
             second_hitrate = "{0:.2f}".format((second_hits /
                                                second_shots) * 100) + \
                              "%" if second_shots > 0 else '0%'
-            torp_hitrate = "{0:.2f}".format((torp_hits / torp_shots) * 100) +\
+            torp_hitrate = "{0:.2f}".format((torp_hits / torp_shots) * 100) + \
                            "%" if torp_shots > 0 else '0%'
             k_v += [
                 ('All Time Stats', comma(battles) + ' Battles', False),
@@ -139,10 +140,10 @@ def region_converter(r, is_warships: bool):
             'RU': Region.RU
         }[r]
     return {
-            'na': Region.NA,
-            'eu': Region.EU,
-            'asia': Region.AS,
-            'ru': Region.RU
+        'na': Region.NA,
+        'eu': Region.EU,
+        'asia': Region.AS,
+        'ru': Region.RU
     }[r]
 
 

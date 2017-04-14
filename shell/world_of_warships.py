@@ -1,10 +1,12 @@
 """World of Warships commands for this bot"""
 from os.path import join
 from threading import Timer
+
 from discord.ext import commands
+
 from core.file_system import fopen_generic, write_json
 from core.helpers import generate_image_online
-from core.wows_core.shell_handler import build_shame_embed, region_converter,\
+from core.wows_core.shell_handler import build_shame_embed, region_converter, \
     find_player, generate_shamelist, process_add_shame, process_remove_shame
 from core.wows_core.wg_core import get_all_ship_tier
 from core.wows_core.wtr_core import warships_today_url, coeff_all_region
@@ -12,6 +14,7 @@ from core.wows_core.wtr_core import warships_today_url, coeff_all_region
 
 class WorldOfWarships:
     """ WoWs commands """
+
     def __init__(self, bot):
         self.bot = bot
         self.data = self.bot.data

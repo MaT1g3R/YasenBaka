@@ -2,19 +2,21 @@
 Core for the util cog
 """
 import math
-import time
 import resource
 import sys
-from subprocess import check_output, STDOUT, CalledProcessError
-from os.path import join
+import time
 from json import loads
+from os.path import join
+from subprocess import check_output, STDOUT, CalledProcessError
 from urllib import request, parse
+
+from discord import Member, ChannelType, version_info
 from google import search
 from html2text import html2text
 from requests import get
-from discord import Member, ChannelType, Embed, version_info
-from core.helpers import get_distro
+
 from core.discord_functions import build_embed
+from core.helpers import get_distro
 
 
 def time_elapsed(start_time):
@@ -72,7 +74,7 @@ def process_pmall(ctx, message_in: list):
             member_ids.append(message.pop(0)[2:-1])
         else:
             break
-    return [member for member in m_d.values() if member.id in member_ids], ' '\
+    return [member for member in m_d.values() if member.id in member_ids], ' ' \
         .join(message)
 
 

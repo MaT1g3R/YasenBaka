@@ -2,6 +2,7 @@
 The yasen bot object
 """
 from discord.ext.commands import Bot
+
 from core.helpers import split_text
 
 
@@ -9,6 +10,7 @@ class Yasen(Bot):
     """
     The yasen bot object
     """
+
     def __init__(self, prefix, description, data):
         """
         Initialize a bot object

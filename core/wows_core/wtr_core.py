@@ -1,4 +1,5 @@
 import json
+
 import requests
 
 
@@ -54,17 +55,17 @@ def calc_wtr(expected, actual, coefficients, average_level):
     :param average_level the average level of the player's ships
     :return: the calculated value
     """
-    wins = actual['wins']/expected['wins'] if expected['wins'] > 0 else 0
-    damage_dealt = actual['damage_dealt']/expected['damage_dealt'] \
+    wins = actual['wins'] / expected['wins'] if expected['wins'] > 0 else 0
+    damage_dealt = actual['damage_dealt'] / expected['damage_dealt'] \
         if expected['damage_dealt'] > 0 else 0
-    ship_frags = actual['frags']/expected['frags'] \
+    ship_frags = actual['frags'] / expected['frags'] \
         if expected['frags'] > 0 else 0
-    capture_points = actual['capture_points']/expected['capture_points'] \
+    capture_points = actual['capture_points'] / expected['capture_points'] \
         if expected['capture_points'] > 0 else 0
     dropped_capture_points = actual['dropped_capture_points'] / expected[
         'dropped_capture_points'] \
         if expected['dropped_capture_points'] > 0 else 0
-    planes_killed = actual['planes_killed']/expected['planes_killed'] \
+    planes_killed = actual['planes_killed'] / expected['planes_killed'] \
         if expected['planes_killed'] > 0 else 0
 
     ship_frags_importance_weight = coefficients['ship_frags_importance_weight']
@@ -85,26 +86,26 @@ def calc_wtr(expected, actual, coefficients, average_level):
 
     if expected['planes_killed'] + expected['frags'] > 0:
         aircraft_frags_coef = \
-            expected['planes_killed']/(expected['planes_killed'] +
-                                       ship_frags_importance_weight
-                                       * expected['frags'])
+            expected['planes_killed'] / (expected['planes_killed'] +
+                                         ship_frags_importance_weight
+                                         * expected['frags'])
         ship_frags_coef = 1 - aircraft_frags_coef
         if aircraft_frags_coef == 1:
             frags = planes_killed
         elif ship_frags_coef == 1:
             frags = ship_frags
         else:
-            frags = ship_frags*ship_frags_coef + planes_killed *\
-                                                 aircraft_frags_coef
+            frags = ship_frags * ship_frags_coef + planes_killed * \
+                                                   aircraft_frags_coef
 
     wtr = \
-        wins*wins_weight + \
-        damage_dealt*damage_weight + \
-        frags*frags_weight + \
-        capture_points*capture_weight + \
-        dropped_capture_points*dropped_capture_weight
+        wins * wins_weight + \
+        damage_dealt * damage_weight + \
+        frags * frags_weight + \
+        capture_points * capture_weight + \
+        dropped_capture_points * dropped_capture_weight
 
-    return __adjust(wtr*nominal_rating, average_level, nominal_rating)
+    return __adjust(wtr * nominal_rating, average_level, nominal_rating)
 
 
 def __adjust(value, average_level, base):
@@ -144,18 +145,18 @@ def wtr_absolute(expected, coeff, actual: dict, ship_dict):
         temp_b = stats['battles']
         if temp_b > 0:
             stats_for_calc = {
-                "capture_points": stats['capture_points']/temp_b,
-                "planes_killed": stats['planes_killed']/temp_b,
-                "damage_dealt": stats['damage_dealt']/temp_b,
-                "frags": stats['frags']/temp_b,
+                "capture_points": stats['capture_points'] / temp_b,
+                "planes_killed": stats['planes_killed'] / temp_b,
+                "damage_dealt": stats['damage_dealt'] / temp_b,
+                "frags": stats['frags'] / temp_b,
                 "dropped_capture_points":
-                    stats['dropped_capture_points']/temp_b,
-                "wins": stats['wins']/temp_b
+                    stats['dropped_capture_points'] / temp_b,
+                "wins": stats['wins'] / temp_b
             }
             wtr = calc_wtr(d, stats_for_calc, coeff, tier)
-            total += wtr*temp_b
+            total += wtr * temp_b
             battles += temp_b
-    return round(total/max(battles, 1))
+    return round(total / max(battles, 1))
 
 
 def warships_today_url(region, player_id):
@@ -165,7 +166,7 @@ def warships_today_url(region, player_id):
     :param player_id: the player id
     :return: the sig url
     """
-    return 'http://{}.warshipstoday.com/signature/{}/dark.png'\
+    return 'http://{}.warshipstoday.com/signature/{}/dark.png' \
         .format(region, str(player_id))
 
 

@@ -88,5 +88,3 @@ def write_json(fp, data, keep_open=False):
         json.dump(data, fp)
         if not keep_open:
             fp.close()
-
-

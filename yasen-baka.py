@@ -1,25 +1,24 @@
 """The main bot run file"""
 from os.path import join
-from discord import game
+
 import stackexchange
+from discord import game
 from wowspy.wowspy import Wows
 
 # Core imports
 from core.data_class import Data
 from core.file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
-from core.wows_core.wtr_core import coeff_all_region
 from core.wows_core.wg_core import get_all_ship_tier
-
-
+from core.wows_core.wtr_core import coeff_all_region
 # Bot cog imports
-from shell.yasen import Yasen
-from shell.util import Util
-from shell.fun import Fun
-from shell.osu_commands import Osu
 from shell.channelreader import ChannelReader
-from shell.world_of_warships import WorldOfWarships
+from shell.fun import Fun
 from shell.music_player import Music
+from shell.osu_commands import Osu
+from shell.util import Util
+from shell.world_of_warships import WorldOfWarships
+from shell.yasen import Yasen
 
 
 def data_factory():
@@ -52,12 +51,14 @@ def data_factory():
                 ship_dict=ship_dict, wows_api=wows_api)
     return data
 
+
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
     prefix = '!'
     bot = Yasen(prefix, description, data_factory())
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot)]
+
 
     @bot.event
     async def on_ready():
@@ -71,5 +72,6 @@ if __name__ == '__main__':
         print(bot.user.id)
         print('------')
         await bot.change_presence(game=game.Game(name='!help | !info'))
+
 
     bot.start_bot(cogs)

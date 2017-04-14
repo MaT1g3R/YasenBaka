@@ -1,10 +1,12 @@
 import textwrap
-from os.path import join
-from core.file_system import freadlines, fopen_generic
-from requests import get
 import xml.etree.ElementTree as Et
-from shutil import copyfileobj
 from datetime import timedelta, date
+from os.path import join
+from shutil import copyfileobj
+
+from requests import get
+
+from core.file_system import freadlines, fopen_generic
 
 
 def split_text(text, i):
@@ -45,7 +47,7 @@ def safebooru(tag):
     :param tag: the tag to search for 
     :return: a list of picture links based on the tag
     """
-    url = "https://safebooru.org//index.php?page=dapi&s=post&q=index&tags={}"\
+    url = "https://safebooru.org//index.php?page=dapi&s=post&q=index&tags={}" \
         .format(tag)
     result = get(url).content
     root = Et.fromstring(result)

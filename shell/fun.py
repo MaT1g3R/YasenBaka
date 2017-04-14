@@ -1,13 +1,16 @@
 """Commands for fun"""
-import core.fun_core as fun_core
-from core.helpers import safebooru
-from discord.ext import commands
 import random
 from os.path import join
+
+from discord.ext import commands
+
+import core.fun_core as fun_core
+from core.helpers import safebooru
 
 
 class Fun:
     """Commands for fun"""
+
     def __init__(self, bot):
         self.bot = bot
         self.data = self.bot.data
@@ -31,7 +34,7 @@ class Fun:
     async def salt(self, prob: str, tries: int):
         """ chance of an event happeneing """
         prob = fun_core.event_probability(prob, tries)
-        await self.bot.say('about {}% of happeneing'.format(prob*100))
+        await self.bot.say('about {}% of happeneing'.format(prob * 100))
 
     @commands.command()
     async def repeat(self, n: int, *message: str):
@@ -98,8 +101,7 @@ class Fun:
     @commands.command()
     async def place(self, arg=None):
         await self.bot.say(fun_core.place_url(arg == 'clean'))
-        
+
     @commands.command()
     async def joke(self):
         await self.bot.say('https://www.youtube.com/watch?v=THrCQ1ftuTU')
-

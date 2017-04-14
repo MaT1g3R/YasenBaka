@@ -1,19 +1,22 @@
 """Utility commands"""
 import time
-import core.util_core as util_core
+
 import discord
-from discord.ext import commands
 from discord.errors import Forbidden, HTTPException
+from discord.ext import commands
+
+import core.util_core as util_core
 
 
 class Util:
     """Utility commands"""
+
     def __init__(self, bot):
         self.bot = bot
         self.data = self.bot.data
 
     @commands.command()
-    async def help(self, input_: str=None):
+    async def help(self, input_: str = None):
         """Help messages"""
         if input_ is None:
             await self.bot.say(util_core.default_help(self.data.help_message))

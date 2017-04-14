@@ -1,4 +1,5 @@
 import random
+
 from core.helpers import safebooru
 
 
@@ -23,7 +24,8 @@ def event_probability(prob: str, tries: int):
     :return: the probability of the event happeneing
     """
     try:
-        prob = float(prob.replace('%', ''))/100 if '%' in prob else float(prob)
+        prob = float(prob.replace('%', '')) / 100 if '%' in prob else float(
+            prob)
         return round((1 - (1 - prob) ** tries), 4)
     except ValueError:
         return
