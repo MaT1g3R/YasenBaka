@@ -10,7 +10,7 @@ class Data:
     """
     def __init__(self, api_keys, kanna_files, lewds, so, help_message,
                  shame_list, na_ships, coefficients, expected,
-                 ship_dict, ship_list, wows_api):
+                 ship_dict, wows_api):
         self.api_keys = api_keys
         self.kanna_files = kanna_files
         self.lewds = lewds
@@ -23,5 +23,4 @@ class Data:
         self.coefficients = coefficients
         self.expected = expected
         self.ship_dict = ship_dict
-        self.ship_list = ship_list
         self.wows_api = wows_api

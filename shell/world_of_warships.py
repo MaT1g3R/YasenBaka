@@ -4,9 +4,10 @@ from threading import Timer
 from discord.ext import commands
 from core.file_system import fopen_generic, write_json
 from core.helpers import generate_image_online
-from core.wows_core import warships_today_url, build_embed, \
-    coeff_all_region, get_all_ship_tier, region_converter, find_player, \
-    generate_shamelist, process_add_shame, process_remove_shame
+from core.wows_core.shell_handler import build_shame_embed, region_converter,\
+    find_player, generate_shamelist, process_add_shame, process_remove_shame
+from core.wows_core.wg_core import get_all_ship_tier
+from core.wows_core.wtr_core import warships_today_url, coeff_all_region
 
 
 class WorldOfWarships:
@@ -45,11 +46,10 @@ class WorldOfWarships:
             await self.bot.say('Cannot find player!')
             return
         r = region.value if region.value != 'com' else 'na'
-        embed = build_embed(region, self.api, player_id,
-                            coefficients=self.data.coefficients[r],
-                            expected=self.data.expected[r],
-                            ship_dict=self.data.ship_dict[r],
-                            ship_list=self.data.ship_list[r])
+        embed = build_shame_embed(region, self.api, player_id,
+                                  coefficients=self.data.coefficients[r],
+                                  expected=self.data.expected[r],
+                                  ship_dict=self.data.ship_dict[r])
         if embed is None:
             fn = generate_image_online(warships_today_url(r, player_id),
                                        join('data', 'dark.png'))

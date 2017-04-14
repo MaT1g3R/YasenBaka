@@ -39,20 +39,6 @@ def get_distro():
     return res
 
 
-def get_server_id(ctx):
-    """
-    Get the server id of a context
-    :param ctx: the context
-    :type ctx: context
-    :return: the server id
-    :rtype: str
-    """
-    try:
-        return ctx.message.server.id
-    except AttributeError:
-        return None
-
-
 def safebooru(tag):
     """
     Get a list of pictures from safebooru based on tag

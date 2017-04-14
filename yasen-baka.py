@@ -8,7 +8,8 @@ from wowspy.wowspy import Wows
 from core.data_class import Data
 from core.file_system import read_all_files, read_json, write_json, \
     fopen_generic, freadlines
-from core.wows_core import coeff_all_region, get_all_ship_tier
+from core.wows_core.wtr_core import coeff_all_region
+from core.wows_core.wg_core import get_all_ship_tier
 
 
 # Bot cog imports
@@ -43,12 +44,12 @@ def data_factory():
 
     coefficients, expected = coeff_all_region()
 
-    ship_dict, ship_list = get_all_ship_tier(wows_api)
+    ship_dict = get_all_ship_tier(wows_api)
 
     data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
                 help_message=help_message, shame_list=shame_list,
                 na_ships=na_ships, coefficients=coefficients, expected=expected,
-                ship_dict=ship_dict, ship_list=ship_list, wows_api=wows_api)
+                ship_dict=ship_dict, wows_api=wows_api)
     return data
 
 if __name__ == '__main__':

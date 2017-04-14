@@ -7,13 +7,14 @@ import resource
 import sys
 from subprocess import check_output, STDOUT, CalledProcessError
 from os.path import join
-from core.helpers import get_distro
 from json import loads
 from urllib import request, parse
 from google import search
 from html2text import html2text
 from requests import get
 from discord import Member, ChannelType, Embed, version_info
+from core.helpers import get_distro
+from core.discord_functions import build_embed
 
 
 def time_elapsed(start_time):
@@ -182,33 +183,36 @@ def info_builder(ctx, servers, all_members, all_channels, voice_clients,
     text_channel_count = len(
         [c for c in all_channels if c.type == ChannelType.text])
     voice_count = len([v for v in voice_clients])
-
-    res = Embed(colour=0x4286f4)
-    res.set_author(name=user.name,
-                   icon_url='{0.avatar_url}'.format(user))
     ram = "{0:.2f}".format(
         float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
-    res.add_field(name='RAM used', value=str(ram) + 'MB')
-    res.add_field(name='Uptime', value=uptime)
-    res.add_field(name='Python version', value=sys.version[:5])
+    ram = str(ram) + 'MB'
     lib_ver = version_info
-    res.add_field(name='Library', value='Discord.py v{}.{}.{}'
-                  .format(lib_ver.major, lib_ver.minor, lib_ver.micro))
-    res.add_field(name='System', value=get_distro())
-    res.add_field(name='Developers',
-                  value='ラブアローシュート#6728\nNaomi#3264')
-    res.add_field(name='Servers', value=str(server_count))
-    res.add_field(name='Users', value=str(user_count))
-    res.add_field(name='Text channels', value=str(text_channel_count))
-    res.add_field(name='Voice channels', value=str(voice_count))
-    res.add_field(name='Source code and invite link',
-                  value='https://github.com/MaT1g3R/YasenBaka',
-                  inline=False)
-    res.add_field(name='Support server', value='https://discord.gg/BnPbz6q')
-    res.set_footer(text='Requested by {}'.format(
+    colour = 0x4286f4
+    author = {
+        'name': user.name,
+        'icon_url': '{0.avatar_url}'.format(user)
+    }
+    k_v = [
+        ('RAM used', ram),
+        ('Uptime', uptime),
+        ('Python version', sys.version[:5]),
+        ('Library',
+         'Discord.py v{}.{}.{}'.format(
+             lib_ver.major, lib_ver.minor, lib_ver.micro)),
+        ('System', get_distro()),
+        ('Developers', 'ラブアローシュート#6728\nNaomi#3264'),
+        ('Servers', str(server_count)),
+        ('Users', str(user_count)),
+        ('Text channels', str(text_channel_count)),
+        ('Voice channels', str(voice_count)),
+        ('Source code and invite link', 'https://github.com/MaT1g3R/YasenBaka'
+         , False),
+        ('Support server', 'https://discord.gg/BnPbz6q')
+    ]
+    footer = 'Requested by {}'.format(
         ctx.message.author.display_name + '#' +
-        ctx.message.author.discriminator))
-    return res
+        ctx.message.author.discriminator)
+    return build_embed(k_v, colour, author=author, footer=footer)
 
 
 def bash_script(command: list):
