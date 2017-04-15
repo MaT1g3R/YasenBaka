@@ -112,3 +112,16 @@ def format_eq(term1, term2):
     """
     return str(term1) if term1 == term2 else str(min(term1, term2)) + '-' + str(
         max(term1, term2))
+
+
+def clense_prefix(message: str, prefix: str):
+    """
+    Clean the message's prefix
+    :param message: the message
+    :param prefix: the prefix to be cleaned
+    :return: A new message without the prefix
+    """
+    if not message.startswith(prefix):
+        return message
+    else:
+        return message[len(prefix):]
