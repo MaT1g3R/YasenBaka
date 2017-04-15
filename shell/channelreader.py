@@ -39,4 +39,3 @@ class ChannelReader:
             else:
                 res = chat_response(cleaned, message.author.id)
                 await self.bot.send_message(message.channel, res)
-
