@@ -52,7 +52,9 @@ def default_help(help_dict):
         'Command List:\nUtility:```{}```Fun:```{}```Music:```{}```' \
         'World of Warships:```{}```'.format(
             util, fun, music, wows) + \
-        '?help [command] for more info on that command, such as `?help play`'
+        '?help [command] for more info on that command, such as `?help play`' \
+        + '\nYou can also talk to the bot by You can also talk to the bot by ' \
+          'mentioning her!\nExample usage: <@243230010532560896> hi'
 
 
 def process_pmall(ctx, message_in: list):
