@@ -12,7 +12,8 @@ import subprocess
 import resource
 import math
 import sys
-import requests
+from discord.errors import Forbidden
+
 
 class Util:
     """Utility commands"""
@@ -75,7 +76,7 @@ class Util:
             for member in members:
                 try:
                     await self.bot.send_message(member, ' '.join(message))
-                except Exception:
+                except Forbidden:
                     ex_list.append(member.name)
             if ex_list:
                 await self.bot.say(
@@ -119,7 +120,7 @@ class Util:
         """ get user avatar """
         if ctx.message.channel.name is not None:
             await self.bot.say('{0.avatar_url}'.format(member))
-	
+
     @commands.command()
     async def stackoverflow(self, *question: str):
         """I do not take responsibility for damage caused"""
