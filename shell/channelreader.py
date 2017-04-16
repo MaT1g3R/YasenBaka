@@ -39,3 +39,7 @@ class ChannelReader:
             else:
                 res = chat_response(cleaned, message.author.id)
                 await self.bot.send_message(message.channel, res)
+        elif check_message(self.bot, message, 'I-402'):
+            await self.bot.send_message(message.channel, 'Go fuck my cousin, '
+                                                         'I don\'t fucking '
+                                                         'care.')
