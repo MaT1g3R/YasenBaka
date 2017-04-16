@@ -1,5 +1,6 @@
 """Handles mointoring of text channels"""
-
+import cleverbot_io
+cleverbot = cleverbot_io.set(user='96n0ExQDEqZHGngX', key='uo1mrPDVV8AAUSD2lmHOYSxa63HVgF2m', nick='yasenbaka')
 
 class ChannelReader:
     """
@@ -8,8 +9,6 @@ class ChannelReader:
 
     def __init__(self, bot):
         self.bot = bot
-        # self.key = key
-        # self.surl = 'http://api.simsimi.com/request.p?key={}&ft=1.0&lc=en&text={}'
 
     def bot_id(self):
         """
@@ -49,19 +48,15 @@ class ChannelReader:
         :return: nothing
         :rtype: None
         """
-        # Respnods to /o/ and \o\
-        if self.check_message(message, '/o/'):
-            await self.bot.send_message(message.channel, '\\o\\')
-        elif self.check_message(message, '\\o\\'):
-            await self.bot.send_message(message.channel, '/o/')
-        elif self.check_message(message, 'o7'):  # Yousoro!
-            await self.bot.send_message(message.channel, 'http://i.imgur.com/Pudz3G4.gif')
-        #
-        # if message.content.startswith(self.bot_id()):
-        #     msg = message.content[22:]
-        #     r = json.loads(requests.get(self.surl.format(self.key, msg)).text)
-        #     await self.bot.send_message(message.channel, r['response'])
-        # elif message.content.startswith(self.bot_nick()):
-        #     msg = message.content[23:]
-        #     r = json.loads(requests.get(self.surl.format(self.key, msg)).text)
-        #     await self.bot.send_message(message.channel, r['response'])
+        # Converted to comments because the disgust of these triggers lol
+        # if self.check_message(message, '/o/'):
+        #     await self.bot.send_message(message.channel, '\\o\\')
+        # elif self.check_message(message, '\\o\\'):
+        #     await self.bot.send_message(message.channel, '/o/')
+        # elif self.check_message(message, 'o7'):  # Yousoro!
+        #     await self.bot.send_message(message.channel, 'http://i.imgur.com/Pudz3G4.gif')
+
+        if message.content.startswith(self.bot_id()):
+            await self.bot.send_message(message.channel, ':speech_left: ' + cleverbot.ask(message.content[22:]))
+        elif message.content.startswith(self.bot_nick()):
+            await self.bot.send_message(message.channel, ':speech_left: ' + cleverbot.ask(message.content[23:]))

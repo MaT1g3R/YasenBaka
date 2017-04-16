@@ -12,7 +12,7 @@ import subprocess
 import resource
 import math
 import sys
-
+import requests
 
 class Util:
     """Utility commands"""
@@ -119,7 +119,7 @@ class Util:
         """ get user avatar """
         if ctx.message.channel.name is not None:
             await self.bot.say('{0.avatar_url}'.format(member))
-
+	
     @commands.command()
     async def stackoverflow(self, *question: str):
         """I do not take responsibility for damage caused"""
