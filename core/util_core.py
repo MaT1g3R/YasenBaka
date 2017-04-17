@@ -15,7 +15,7 @@ from google import search
 from html2text import html2text
 from requests import get
 
-from core.discord_functions import build_embed
+from core.discord_functions import build_embed, get_server_id
 from core.helpers import get_distro
 
 
@@ -37,9 +37,10 @@ def time_elapsed(start_time):
     return '{}:{}:{}'.format(str(hours), minutes_str, seconds_str)
 
 
-def default_help(help_dict):
+def default_help(help_dict, prefix):
     """
     Generate the default help message.
+    :param prefix: the prefix of the bot
     :param help_dict: the help message dictionary
     :return: the default help message.
     """
@@ -52,9 +53,11 @@ def default_help(help_dict):
         'Command List:\nUtility:```{}```Fun:```{}```Music:```{}```' \
         'World of Warships:```{}```'.format(
             util, fun, music, wows) + \
-        '?help [command] for more info on that command, such as `?help play`' \
+        '{}help [command] for more info on that command, ' \
+        'such as `{}help play`'.format(prefix, prefix) \
         + '\nYou can also talk to the bot by You can also talk to the bot by ' \
-          'mentioning her!\nExample usage: <@243230010532560896> hi'
+          'mentioning her!\nExample usage: <@243230010532560896> ' \
+          'hi'
 
 
 def process_pmall(ctx, message_in: list):
@@ -236,3 +239,17 @@ def bash_script(command: list):
         return \
             ":no_entry_sign: Command failed!\nOutput:" \
             "\n```{}```".format(res_str)
+
+
+def set_prefix(ctx, prefix, prefix_dict):
+    """
+    Set the prefix of the bot for a channel
+    :param ctx: the mesage context
+    :param prefix: the prefix to set to
+    :param prefix_dict: the prefix_dict
+    :return: the new prefix_dict
+    """
+    p_d = dict(prefix_dict)
+    id_ = get_server_id(ctx)
+    p_d[id_] = prefix
+    return p_d

@@ -2,6 +2,7 @@
 from core.channel_reader_core import check_message, check_message_startwith,\
     clean_message, linux_meme, interject
 from core.program_o import chat_response
+from core.command_handler import get_prefix
 
 
 class ChannelReader:
@@ -39,4 +40,8 @@ class ChannelReader:
             else:
                 res = chat_response(cleaned, message.author.id)
                 await self.bot.send_message(message.channel, res)
-
+        elif check_message(
+                self.bot, message, '{}prefix'.format(self.bot.default_prefix)):
+            res = 'The prefix for this server is: `{}`'.format(
+                get_prefix(self.bot, message))
+            await self.bot.send_message(message.channel, res)

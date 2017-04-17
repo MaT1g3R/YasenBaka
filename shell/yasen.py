@@ -11,14 +11,16 @@ class Yasen(Bot):
     The yasen bot object
     """
 
-    def __init__(self, prefix, description, data):
+    def __init__(self, default_prefix, prefix, description, data):
         """
         Initialize a bot object
+        :param default_prefix: the default prefix for the bot
         :param prefix the prefix this bot will use
         :param description the description of this bot
         :param data: the data this bot will store
         """
         super().__init__(command_prefix=prefix, description=description)
+        self.default_prefix = default_prefix
         self.data = data
 
     def start_bot(self, cogs):

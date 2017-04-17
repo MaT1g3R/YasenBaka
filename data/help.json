@@ -33,7 +33,9 @@
     "stackoverflow",
     "currency",
     "info",
-    "ping"
+    "ping",
+    "setprefix",
+    "prefix"
   ],
   "wows": [
     "shame",
@@ -74,5 +76,7 @@
   "ping": "Shows the response time of the bot.",
   "umi":"Umi is a vile ocean.",
   "place": "Let us marvel at the greatness of the internet. \n `?place clean`for the cleaned up version.",
-  "joke": "It's joke!"
+  "joke": "It's joke!",
+  "setprefix":"Set the prefix of the bot for this server. This is an admin only command. \nExample usage:`?setprefix !`",
+  "prefix":"Display the prefix for the server, is always accessible via the default prefix."
 }

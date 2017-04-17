@@ -4,6 +4,7 @@ from discord import game
 
 # Core imports
 from core import data_factory
+from core.command_handler import get_prefix
 # Bot cog imports
 from shell.channelreader import ChannelReader
 from shell.fun import Fun
@@ -15,8 +16,7 @@ from shell.yasen import Yasen
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
-    prefix = '!'
-    bot = Yasen(prefix, description, data_factory())
+    bot = Yasen('!', get_prefix, description, data_factory())
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot)]
 
@@ -32,7 +32,6 @@ if __name__ == '__main__':
         print(bot.user.name)
         print(bot.user.id)
         print('------')
-        await bot.change_presence(game=game.Game(name='!help | !info'))
-
+        await bot.change_presence(game=game.Game(name='help | info'))
 
     bot.start_bot(cogs)
