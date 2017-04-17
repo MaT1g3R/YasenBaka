@@ -2,8 +2,8 @@ from wowspy.wowspy import Wows, Region
 
 from core.discord_functions import get_server_id, build_embed
 from core.helpers import comma
-from core.wows_core.wg_core import player_stats, find_player_id, \
-    player_ship_stats
+from core.wows_core.wg_core import all_time_stats, find_player_id, \
+    player_ship_stats, recent_stats
 from core.wows_core.wtr_core import wtr_absolute, choose_colour
 
 
@@ -19,28 +19,28 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
     :param ship_dict: ship_id: tier
     :return: a discord embed object
     """
-    stats = player_stats(region, api, id_)
-    if stats is not None:
-        all_time_stats, recent_stats = stats
+    all_time_stats_ = all_time_stats(region, api, id_)
+    if all_time_stats_ is not None:
+        recent_stats_ = recent_stats(region, api, id_, all_time_stats_)
         nick_name = api.player_personal_data(
             region, id_, language='en', fields='nickname'
         )['data'][str(id_)]['nickname']
-        battles = all_time_stats['battles']
+        battles = all_time_stats_['battles']
         ship_stats = player_ship_stats(region, api, id_)
-        main_hits = all_time_stats['main_battery']['hits']
-        main_shots = all_time_stats['main_battery']['shots']
-        second_hits = all_time_stats['second_battery']['hits']
-        second_shots = all_time_stats['second_battery']['shots']
-        torp_hits = all_time_stats['torpedoes']['hits']
-        torp_shots = all_time_stats['torpedoes']['shots']
-        damage_dealt = all_time_stats['damage_dealt']
-        max_damage_dealt = all_time_stats['max_damage_dealt']
-        planes_killed = all_time_stats['planes_killed']
-        wins = all_time_stats['wins']
-        xp = all_time_stats['xp']
-        survived_battles = all_time_stats['survived_battles']
-        ships_spotted = all_time_stats['ships_spotted']
-        warships_killed = all_time_stats['frags']
+        main_hits = all_time_stats_['main_battery']['hits']
+        main_shots = all_time_stats_['main_battery']['shots']
+        second_hits = all_time_stats_['second_battery']['hits']
+        second_shots = all_time_stats_['second_battery']['shots']
+        torp_hits = all_time_stats_['torpedoes']['hits']
+        torp_shots = all_time_stats_['torpedoes']['shots']
+        damage_dealt = all_time_stats_['damage_dealt']
+        max_damage_dealt = all_time_stats_['max_damage_dealt']
+        planes_killed = all_time_stats_['planes_killed']
+        wins = all_time_stats_['wins']
+        xp = all_time_stats_['xp']
+        survived_battles = all_time_stats_['survived_battles']
+        ships_spotted = all_time_stats_['ships_spotted']
+        warships_killed = all_time_stats_['frags']
         deaths = battles - survived_battles
         wtr = wtr_absolute(expected, coefficients, ship_stats, ship_dict)
         # max_damage_dealt = str(all_time_stats['max_damage_dealt'])
@@ -85,19 +85,20 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
                 ('Survival Rate', survival_rate),  # 13
                 ('Kills/Deaths', kda)  # 14
             ]
-            if recent_stats is not None and recent_stats['battles'] > 0:
-                recent_battles = recent_stats['battles']
+            if recent_stats_ is not None:
+                recent_battles = recent_stats_['battles']
                 recent_actual = {
                     "damage_dealt":
-                        recent_stats['damage_dealt'] / recent_battles,
-                    "frags": recent_stats['frags'] / recent_battles,
-                    "wins": recent_stats['wins'] / recent_battles
+                        recent_stats_['damage_dealt'] / recent_battles,
+                    "frags": recent_stats_['frags'] / recent_battles,
+                    "wins": recent_stats_['wins'] / recent_battles
                 }
                 k_v += [
                     ('Recent Stats', str(recent_battles) + ' Battles', False),
                     ('Win Rate',
                      str("{0:.2f}".format(recent_actual['wins'] * 100)) + '%'),
-                    ('Average Damage', str(int(recent_actual['damage_dealt']))),
+                    ('Average Damage',
+                     comma(int(recent_actual['damage_dealt']))),
                     ('Average Kills',
                      str("{0:.2f}".format(recent_actual['frags'])))
                 ]

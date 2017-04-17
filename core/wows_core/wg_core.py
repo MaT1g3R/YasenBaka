@@ -21,38 +21,50 @@ def find_player_id(region: Region, api: Wows, name):
     return warships_api_respose["data"][0]["account_id"]
 
 
-def player_stats(region: Region, api: Wows, id_: int):
+def all_time_stats(region: Region, api: Wows, id_: int):
     """
     Returns a detailed dictionary of the player's stats
     :param region: the region of the player
     :param api: the wows api 
     :param id_: the player id
-    :return: (all_time_stats, recent_stats)
+    :return: all time stats of the player
     """
-    dates = [get_date(i) for i in range(6)]
     all_time_response = api.player_personal_data(
         region, id_, fields='hidden_profile,statistics.pvp',
         language='en')['data'][str(id_)]
     if all_time_response['hidden_profile']:
         return None
-    all_time_stats = all_time_response['statistics']['pvp']
+    all_time_stats_ = all_time_response['statistics']['pvp']
+    return all_time_stats_
+
+
+def recent_stats(region: Region, api: Wows, id_: int, all_time_stats_: dict):
+    """
+    Get the recent stats of the player
+    :param region: the region of the player
+    :param api: the wows api
+    :param id_: the id of ther player
+    :param all_time_stats_: all time stats of the player
+    :return: the recent stats of the player
+    """
+    dates = [get_date(i) for i in range(6)]
     date_stats = api.player_statistics_by_date(region, id_,
                                                dates=','.join(dates),
                                                language='en', fields='pvp'
                                                )['data'][str(id_)]['pvp']
-    recent_stats = {}
+    recent_stats_ = {}
     if date_stats is None:
-        return all_time_stats, None
+        return None
     for date in reversed(dates):
-        if date in date_stats \
-                and all_time_stats['battles'] - date_stats[date]['battles'] > 0:
+        if date in date_stats and all_time_stats_['battles'] - \
+                date_stats[date]['battles'] > 0:
             for key, val in date_stats[date].items():
-                if key in all_time_stats:
-                    recent_stats[key] = all_time_stats[key] - \
-                                        date_stats[date][key]
+                if key in all_time_stats_:
+                    recent_stats_[key] = all_time_stats_[key] - \
+                                         date_stats[date][key]
             break
-
-    return all_time_stats, recent_stats
+    return recent_stats_ if 'battles' in recent_stats_ and recent_stats_[
+        'battles'] > 0 else None
 
 
 def get_ship_tier_dict(region: Region, api: Wows):

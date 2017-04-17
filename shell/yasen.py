@@ -50,3 +50,18 @@ class Yasen(Bot):
         except Exception:
             i += 1
             await self.try_say(split_text(text, i), i)
+
+    def bot_id(self):
+        """
+        Returns the bot id in <@> format
+        :return: bot id in <@> format
+        """
+        return '<@%s>' % self.user.id
+
+    def bot_nick(self):
+        """
+        Returns the bot id in <@!> format
+        :return: the bot id in <@!> format
+        """
+        return '<@!%s>' % self.user.id
+

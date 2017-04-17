@@ -33,22 +33,6 @@ def check_message_startwith(bot, message, expected):
         not message.author.bot
 
 
-def bot_id(bot):
-    """
-    Returns bot id
-    :rtype str
-    """
-    return '<@%s>' % bot.user.id
-
-
-def bot_nick(bot):
-    """
-    Returns bot nickname id
-    :rtype str
-    """
-    return '<@!%s>' % bot.user.id
-
-
 def clean_message(message, prefix):
     """
     Clean a message mentioning the bot
