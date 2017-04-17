@@ -4,17 +4,17 @@ You can invite the bot to your channel with this [link](https://discordapp.com/o
 Join the support server here: https://discord.gg/BnPbz6q  
 
 Utility commands:  
-anime, avatar, currency, info, joined, latex, pmall, stackoverflow
+``anime, avatar, currency, info, joined, latex, pmall, prefix, setprefix, stackoverflow``
 
 Fun commands:  
-ayaya, chensaw, choose, joke, kanna, kyubey, lewd, osu, place, repeat, roll, salt, umi
+``ayaya, chensaw, choose, joke, kanna, kyubey, lewd, osu, place, repeat, roll, salt, umi``
 
 World of Warships commands:  
-addshame, removeshame, shame, shamelist, ship
+``addshame, removeshame, shame, shamelist, ship``
 
 Music commadns:  
-pause, play, playing, resume, skip, stop, summon, volume  
+``pause, play, playing, resume, skip, stop, summon, volume``
 
 Match spreadsheet:  
-sheet, newsheet, addmatch, removematch, joinmatch, quitmatch
+``sheet, newsheet, addmatch, removematch, joinmatch, quitmatch``
 
