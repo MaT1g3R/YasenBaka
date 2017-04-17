@@ -10,6 +10,8 @@ def get_prefix(bot, message: discord.Message):
     """
     prefix_dict = bot.data.prefix_dict
     default = bot.default_prefix
+    if message.server is None:
+        return default
     id_ = str(message.server.id)
     return default if id_ not in prefix_dict \
         else prefix_dict[id_]
