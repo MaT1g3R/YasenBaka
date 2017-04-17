@@ -15,6 +15,3 @@ Join the support server here: https://discord.gg/BnPbz6q
 #### Music commadns:  
 ``pause, play, playing, resume, skip, stop, summon, volume``
 
-#### Match spreadsheet:  
-``sheet, newsheet, addmatch, removematch, joinmatch, quitmatch``
-
