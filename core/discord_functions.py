@@ -29,7 +29,7 @@ def build_embed(k_v_pairs: list, colour, **kwargs):
         name = author['name'] if 'name' in author else None
         url = author['icon_url'] if 'icon_url' in author else None
         if url is not None:
-            res.set_author(name=name, url=url)
+            res.set_author(name=name, icon_url=url)
         else:
             res.set_author(name=name)
     for t in k_v_pairs:
