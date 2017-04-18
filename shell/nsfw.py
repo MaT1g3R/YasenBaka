@@ -2,7 +2,7 @@
 Cog for NSFW commands
 """
 from discord.ext import commands
-from core.nsfw_core import is_nsfw
+from core.nsfw_core import is_nsfw, danbooru
 
 
 class Nsfw:
@@ -14,6 +14,6 @@ class Nsfw:
 
     @commands.command()
     @commands.check(is_nsfw)
-    async def danbooru(self):
-        await self.bot.say('True')
+    async def danbooru(self, *query: str):
+        await self.bot.say(danbooru(query, self.bot.data.danbooru))
 
