@@ -1,6 +1,6 @@
 """Handles mointoring of text channels"""
 import cleverbot_io
-cleverbot = cleverbot_io.set(user='96n0ExQDEqZHGngX', key='uo1mrPDVV8AAUSD2lmHOYSxa63HVgF2m', nick='yasenbaka')
+cleverbot = cleverbot_io.set(user='XXXXXXXXXXXXXXXX', key='XXXXXXXXXXXXXXXX', nick='yasenbaka')
 
 class ChannelReader:
     """
