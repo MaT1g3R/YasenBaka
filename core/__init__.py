@@ -1,4 +1,4 @@
-from os.path import join
+from os.path import join, isfile
 
 import stackexchange
 from wowspy.wowspy import Wows
@@ -36,7 +36,8 @@ def data_factory():
 
     prefix_dict = read_json(fopen_generic(join('data', 'prefix.json')))
 
-    avatar = open(join('data', 'avatar.png'), 'rb').read()
+    avatar = open(join('data', 'avatar.png'), 'rb').read() \
+        if isfile(join('data', 'avatar.png')) else None
 
     data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
                 help_message=help_message, shame_list=shame_list,

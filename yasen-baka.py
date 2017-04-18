@@ -37,3 +37,4 @@ if __name__ == '__main__':
             await bot.edit_profile(avatar=bot.data.avatar)
 
     bot.start_bot(cogs)
+
