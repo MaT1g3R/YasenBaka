@@ -36,8 +36,11 @@ def data_factory():
 
     prefix_dict = read_json(fopen_generic(join('data', 'prefix.json')))
 
+    avatar = open(join('data', 'avatar.png'), 'rb').read()
+
     data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
                 help_message=help_message, shame_list=shame_list,
                 na_ships=na_ships, coefficients=coefficients, expected=expected,
-                ship_dict=ship_dict, wows_api=wows_api, prefix_dict=prefix_dict)
+                ship_dict=ship_dict, wows_api=wows_api, prefix_dict=prefix_dict,
+                avatar=avatar)
     return data

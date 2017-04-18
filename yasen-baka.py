@@ -33,5 +33,7 @@ if __name__ == '__main__':
         print(bot.user.id)
         print('------')
         await bot.change_presence(game=game.Game(name='help | info'))
+        if bot.data.avatar is not None:
+            await bot.edit_profile(avatar=bot.data.avatar)
 
     bot.start_bot(cogs)

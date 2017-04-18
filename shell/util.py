@@ -86,7 +86,7 @@ class Util:
     async def avatar(self, ctx, member: discord.Member):
         """ get user avatar """
         if ctx.message.channel.name is not None:
-            res = member.avatar_url if member.avatar_url != '' \
+            res = '{0.avatar_url}'.format(member) if member.avatar_url != '' \
                 else member.default_avatar_url
             await self.bot.say(res)
 
@@ -98,7 +98,7 @@ class Util:
         else:
             await \
                 self.bot.try_say(util_core.stack_answer(
-                    self.data.so, ' '.join(question)))
+                    self.bot.data.so, ' '.join(question)))
 
     @commands.command()
     async def currency(self, base: str, target: str, amount: str):
@@ -113,8 +113,8 @@ class Util:
             return
 
         try:
-            money = util_core.convert_currency(self.data.api_keys['Currency'],
-                                               base, amount, target)
+            money = util_core.convert_currency(
+                self.bot.data.api_keys['Currency'], base, amount, target)
             await self.bot.say(amount_str + base + ' = ' + money + target)
         except KeyError:
             await self.bot.say('Please enter valid currency codes!')
