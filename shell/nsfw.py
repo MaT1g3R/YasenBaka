@@ -14,6 +14,6 @@ class Nsfw:
 
     @commands.command()
     @commands.check(is_nsfw)
+    @commands.cooldown(rate=2, per=2, type=commands.BucketType.server)
     async def danbooru(self, *query: str):
         await self.bot.say(danbooru(query, self.bot.data.danbooru))
-

@@ -1,8 +1,11 @@
 """
 The yasen bot object
 """
-from discord.ext.commands import Bot
+import asyncio
 
+from discord.ext.commands import Bot, CommandOnCooldown
+
+from core.discord_functions import message_sender
 from core.helpers import split_text
 
 
@@ -67,3 +70,14 @@ class Yasen(Bot):
         """
         return '<@!%s>' % self.user.id
 
+    @asyncio.coroutine
+    async def on_command_error(self, exception, context):
+        """
+        Custom command error handling
+        :param exception: the expection raised
+        :param context: the context of the command
+        """
+        if isinstance(exception, CommandOnCooldown):
+            await message_sender(self, context.message.channel, str(exception))
+        else:
+            raise exception

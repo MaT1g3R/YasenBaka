@@ -40,3 +40,13 @@ def build_embed(k_v_pairs: list, colour, **kwargs):
     if 'footer' in kwargs:
         res.set_footer(text=kwargs['footer'])
     return res
+
+
+async def message_sender(bot, channel, msg):
+    """
+    A helper function to send a message 
+    :param bot: the bot
+    :param channel: the channel to send the messsage to
+    :param msg: the message to send
+    """
+    await bot.send_message(channel, msg)
