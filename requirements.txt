@@ -21,3 +21,4 @@ yarl
 youtube-dl
 osu_sig
 wowspy
+pybooru

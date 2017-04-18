@@ -1,6 +1,7 @@
-from os.path import join, isfile
+from os.path import join
 
 import stackexchange
+from pybooru import Danbooru
 from wowspy.wowspy import Wows
 
 from core.data_class import Data
@@ -36,12 +37,14 @@ def data_factory():
 
     prefix_dict = read_json(fopen_generic(join('data', 'prefix.json')))
 
-    avatar = open(join('data', 'avatar.png'), 'rb').read() \
-        if isfile(join('data', 'avatar.png')) else None
+    usr, key = api_keys['Danbooru']
+    danbooru = Danbooru('danbooru', username=usr, api_key=key)
+    # avatar = open(join('data', 'avatar.png'), 'rb').read() \
+    #     if isfile(join('data', 'avatar.png')) else None
 
     data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
                 help_message=help_message, shame_list=shame_list,
                 na_ships=na_ships, coefficients=coefficients, expected=expected,
                 ship_dict=ship_dict, wows_api=wows_api, prefix_dict=prefix_dict,
-                avatar=avatar)
+                avatar=None, danbooru=danbooru)
     return data

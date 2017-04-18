@@ -12,13 +12,15 @@ from shell.music_player import Music
 from shell.osu_commands import Osu
 from shell.util import Util
 from shell.world_of_warships import WorldOfWarships
+from shell.nsfw import Nsfw
 from shell.yasen import Yasen
+
 
 if __name__ == '__main__':
     description = 'Yo Teitoku, Yasennnnn!'
     bot = Yasen('!', get_prefix, description, data_factory())
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
-            WorldOfWarships(bot), Music(bot)]
+            WorldOfWarships(bot), Music(bot), Nsfw(bot)]
 
 
     @bot.event
