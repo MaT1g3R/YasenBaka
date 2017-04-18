@@ -167,3 +167,10 @@ class Util:
             self.save_prefix()
             await self.bot.say('The command prefix for this server has '
                                'been set to `{}`'.format(prefix))
+
+    @commands.command()
+    async def systeminfo(self):
+        res = '```{}```'\
+            .format(util_core.
+                    raw_bash(['screenfetch', '-N']).replace('`', chr(0x1fef)))
+        await self.bot.say(res)

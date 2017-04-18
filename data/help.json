@@ -35,7 +35,8 @@
     "info",
     "ping",
     "setprefix",
-    "prefix"
+    "prefix",
+    "systeminfo"
   ],
   "wows": [
     "shame",
@@ -78,5 +79,6 @@
   "place": "Let us marvel at the greatness of the internet. \n `?place clean`for the cleaned up version.",
   "joke": "It's joke!",
   "setprefix":"Set the prefix of the bot for this server. This is an admin only command. \nExample usage:`?setprefix !`",
-  "prefix":"Display the prefix for the server, is always accessible via the default prefix."
+  "prefix":"Display the prefix for the server, is always accessible via the default prefix.",
+  "systeminfo":"Display the system info of the bot."
 }

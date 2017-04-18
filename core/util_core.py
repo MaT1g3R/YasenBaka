@@ -233,12 +233,12 @@ def bash_script(command: list):
         res_str = output.decode()
         return \
             ":white_check_mark: Command success!\nOutput:\n" \
-            "```{}```".format(res_str)
+            "```\n{}\n```".format(res_str)
     except CalledProcessError as ex:
         res_str = ex.output.decode()
         return \
             ":no_entry_sign: Command failed!\nOutput:" \
-            "\n```{}```".format(res_str)
+            "\n```\n{}\n```".format(res_str)
 
 
 def set_prefix(ctx, prefix, prefix_dict):
@@ -253,3 +253,17 @@ def set_prefix(ctx, prefix, prefix_dict):
     id_ = get_server_id(ctx)
     p_d[id_] = prefix
     return p_d
+
+
+def raw_bash(command: list):
+    """
+    Raw bash access
+    :param command: the command in a list 
+    :return: the result
+    """
+    output = check_output(command, stderr=STDOUT)
+    return output.decode()
+
+
+if __name__ == '__main__':
+    print(raw_bash(['screenfetch', '-N']).replace('`', chr(0x1fef)))
