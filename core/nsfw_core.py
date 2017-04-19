@@ -1,10 +1,10 @@
+import xml.etree.ElementTree as Et
+from json import loads, decoder
+from random import choice
+
 from discord import ChannelType
 from pybooru import Danbooru, PybooruAPIError
 from requests import get, ConnectionError, HTTPError
-from json import loads, decoder
-from random import choice
-import xml.etree.ElementTree as Et
-
 
 SORRY = 'Sorry! nothing found'
 ERROR = 'Something went wrong with the {} API. ' \
@@ -37,7 +37,7 @@ def danbooru(search, api: Danbooru):
     except PybooruAPIError:
         return ERROR.format('Danbooru')
     base = 'https://danbooru.donmai.us'
-    return base+res[0]['large_file_url'] \
+    return base + res[0]['large_file_url'] \
         if len(res) > 0 and 'large_file_url' in res[0] \
         else SORRY
 
