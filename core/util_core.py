@@ -48,11 +48,11 @@ def default_help(help_dict, prefix):
     fun = ', '.join(sorted(help_dict['fun']))
     util = ', '.join(sorted(help_dict['util']))
     wows = ', '.join(sorted(help_dict['wows']))
-
+    nsfw = ', '.join(sorted(help_dict['NSFW']))
     return \
         'Command List:\nUtility:```{}```Fun:```{}```Music:```{}```' \
-        'World of Warships:```{}```'.format(
-            util, fun, music, wows) + \
+        'World of Warships:```{}```NSFW:```{}```'.format(
+            util, fun, music, wows, nsfw) + \
         '{}help [command] for more info on that command, ' \
         'such as `{}help play`'.format(prefix, prefix) \
         + '\nYou can also talk to the bot by You can also talk to the bot by ' \

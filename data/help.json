@@ -44,6 +44,7 @@
     "addshame",
     "removeshame"
   ],
+  "NSFW":["danbooru", "konachan", "yandere", "gelbooru"],
   "shame": "Looks for a player on Warships Today. You can also look up players by pinging them if they are in the shamelist. Support all regions, default is NA. The region codes are: 'NA', 'EU', 'RU', 'AS' \nExample usage: `?shame MaT1g3R`, `?shame flamu EU`",
   "volume": "Sets the volume of the currently playing song.\nExample usage: `?volume 50`",
   "addshame": "Add yourself to the shamelist. If you are already in the shamelist, it will be overwritten by the new player name. Support all regions, default is NA. The region codes are: 'NA', 'EU', 'RU', 'AS'\nExample usage: `?addshame MY_WOWS_USER_NAME`, `?addshame flamu EU`",
@@ -80,5 +81,9 @@
   "joke": "It's joke!",
   "setprefix":"Set the prefix of the bot for this server. This is an admin only command. \nExample usage:`?setprefix !`",
   "prefix":"Display the prefix for the server, is always accessible via the default prefix.",
-  "systeminfo":"Display the system info of the bot."
+  "systeminfo":"Display the system info of the bot.",
+  "gelbooru": "Search gelbooru for a picture. Tags are separated with spaces.\nExample usage: `?gelbooru haruna_(kantai_collection) solo`",
+  "danbooru": "Search danbooru for a picture. Tags are separated with spaces.\nExample usage: `?danbooru haruna_(kantai_collection) solo`",
+  "konachan": "Search konachan for a picture. Tags are separated with spaces.\nExample usage: `?konachan haruna_(kancolle) wet`",
+  "yandere": "Search yande.re for a picture. Tags are separated with spaces.\nExample usage: `?yandere konachan haruna_(kancolle) wet`"
 }
