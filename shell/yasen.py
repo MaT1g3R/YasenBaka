@@ -52,7 +52,7 @@ class Yasen(Bot):
                     await self.say('```markdown\n' + txt + '```')
             elif isinstance(text, str):
                 await self.say('```markdown\n' + text + '```')
-        except Exception:
+        except:
             i += 1
             await self.try_say(split_text(text, i), i)
 
