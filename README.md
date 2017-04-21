@@ -5,19 +5,24 @@ Join the support server [here](https://discord.gg/BnPbz6q)
 
 * #### Utility commands:
 ```
-anime, avatar, currency, info, joined, latex, pmall, prefix, setprefix, stackoverflow
+anime, avatar, currency, info, joined, latex, ping, pmall, prefix, setprefix, stackoverflow, systeminfo
 ```
 * #### Fun commands:
 ```
 ayaya, chensaw, choose, joke, kanna, kyubey, lewd, osu, place, repeat, roll, salt, umi
 ```
 
-* #### World of Warships commands:
-```
-addshame, removeshame, shame, shamelist, ship
-```
-
 * #### Music commadns:  
 ```
 pause, play, playing, resume, skip, stop, summon, volume
+```
+
+* #### World of Warships commands:
+```
+addshame, removeshame, shame, shamelist
+```
+
+* #### NSFW commands:
+```
+danbooru, gelbooru, konachan, yandere
 ```
