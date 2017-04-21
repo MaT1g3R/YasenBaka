@@ -18,7 +18,7 @@ from shell.yasen import Yasen
 
 def init():
     description = 'Yo Teitoku, Yasennnnn!'
-    bot = Yasen('!', get_prefix, description, data_factory())
+    bot = Yasen('?', get_prefix, description, data_factory())
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot), Nsfw(bot)]
 
@@ -33,7 +33,7 @@ def init():
         print(bot.user.name)
         print(bot.user.id)
         print('------')
-        await bot.change_presence(game=game.Game(name='help | info'))
+        await bot.change_presence(game=game.Game(name='?help | ?info'))
         if bot.data.avatar is not None:
             await bot.edit_profile(avatar=bot.data.avatar)
 
