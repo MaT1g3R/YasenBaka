@@ -1,2 +1,2 @@
 #!/bin/bash 
-python3 yasen-baka.py
+konsole -e python3 yasen-baka.py
