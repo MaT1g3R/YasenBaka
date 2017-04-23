@@ -4,6 +4,7 @@ import stackexchange
 from pybooru import Danbooru
 from wowspy.wowspy import Wows
 
+from config import api
 from core.data_class import Data
 from core.file_system import fopen_generic, read_json, read_all_files, \
     write_json, freadlines
@@ -16,7 +17,7 @@ def data_factory():
     Creates an instance of Data 
     :rtype: Data
     """
-    api_keys = read_json(fopen_generic(join('data', 'api_keys.json')))
+    api_keys = api.beta_api()
     wows_api = Wows(api_keys['WoWs'])
 
     write_json(fopen_generic(join('data', 'na_ships.json'), 'w'),

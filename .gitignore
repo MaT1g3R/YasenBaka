@@ -24,3 +24,5 @@ data/beta_api_keys\.json
 data/shamelist\.json
 data/osu.png
 /random_text_file.txt
+
+config/api\.py
