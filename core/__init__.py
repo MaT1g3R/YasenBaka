@@ -20,9 +20,6 @@ def data_factory():
     api_keys = api.beta_api()
     wows_api = Wows(api_keys['WoWs'])
 
-    write_json(fopen_generic(join('data', 'na_ships.json'), 'w'),
-               wows_api.warships(wows_api.region.NA))
-
     kanna_files = read_all_files(join('data', 'kanna_is_cute_af'))
     lewds = freadlines(fopen_generic(join('data', 'lewd.txt')))
     lewds.append('( ͡° ͜ʖ ͡°)')
@@ -30,7 +27,6 @@ def data_factory():
         'StackExchange'], impose_throttling=True)
     help_message = read_json(fopen_generic(join('data', 'help.json')))
     shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
-    na_ships = read_json(fopen_generic(join('data', 'na_ships.json')))['data']
 
     coefficients, expected = coeff_all_region()
 
@@ -40,12 +36,12 @@ def data_factory():
 
     usr, key = api_keys['Danbooru']
     danbooru = Danbooru('danbooru', username=usr, api_key=key)
-    # avatar = open(join('data', 'avatar.png'), 'rb').read() \
-    #     if isfile(join('data', 'avatar.png')) else None
+    # avatar = open(join('config', 'avatar.png'), 'rb').read() \
+    #     if isfile(join('config', 'avatar.png')) else None
 
     data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
                 help_message=help_message, shame_list=shame_list,
-                na_ships=na_ships, coefficients=coefficients, expected=expected,
+                coefficients=coefficients, expected=expected,
                 ship_dict=ship_dict, wows_api=wows_api, prefix_dict=prefix_dict,
                 avatar=None, danbooru=danbooru)
     return data
