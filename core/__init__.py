@@ -16,7 +16,7 @@ def data_factory():
     Creates an instance of Data 
     :rtype: Data
     """
-    api_keys = read_json(fopen_generic(join('data', 'beta_api_keys.json')))
+    api_keys = read_json(fopen_generic(join('data', 'api_keys.json')))
     wows_api = Wows(api_keys['WoWs'])
 
     write_json(fopen_generic(join('data', 'na_ships.json'), 'w'),
