@@ -28,11 +28,11 @@ class DataController:
         :param player_id: the player's wows id
         :return: True if it's a new entry, else false
         """
-        sql_exist = '''SELECT EXISTS(SELECT 1 FROM shame_list WHERE (server, user)=(?, ?) LIMIT 1)'''
+        sql_exist = '''SELECT EXISTS(SELECT 1 FROM shame_list WHERE server=? AND user=?LIMIT 1)'''
         self.cursor.execute(sql_exist, (server_id, user_id))
         new_entry = self.cursor.fetchone() == (0,)
         sql_new = '''INSERT INTO shame_list VALUES (?, ?, ?, ?)'''
-        sql_edit = '''UPDATE shame_list SET region=?, id=? WHERE (server, user) = (?, ?)'''
+        sql_edit = '''UPDATE shame_list SET region=?, id=? WHERE server=? AND user=?'''
         if new_entry:
             self.cursor.execute(sql_new, (server_id, user_id, region, player_id))
         else:
