@@ -48,8 +48,7 @@ $ pip3 install -r requirements.txt
 ```
 On Linux, you might run into trouble installing PyNaCl, please refer to the below image.
 
-[logo]: 
-https://camo.githubusercontent.com/70c57a8abd17504a36554c87290f864be48686ea/687474703a2f2f692e696d6775722e636f6d2f35625165584a582e706e67 
+![logo](https://camo.githubusercontent.com/70c57a8abd17504a36554c87290f864be48686ea/687474703a2f2f692e696d6775722e636f6d2f35625165584a582e706e67)
 
 Then you will need to rename ``sample_mydb`` to ``mydb`` in the ``data`` directory and rename ``sample_api.py`` to ``api.py`` in the ``config`` directory, and fill out the api keys inside.
 
