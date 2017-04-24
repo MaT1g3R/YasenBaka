@@ -5,6 +5,8 @@ from core.helpers import comma
 from core.wows_core.wg_core import all_time_stats, find_player_id, \
     player_ship_stats, recent_stats
 from core.wows_core.wtr_core import wtr_absolute, choose_colour
+from core.data_controller import \
+    get_shame_list, get_shame, write_shame, remove_shame
 
 
 def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
@@ -148,11 +150,11 @@ def region_converter(r, is_warships: bool):
     }[r]
 
 
-def find_player(ctx, data_controller, query: str, region: Region, api: Wows):
+def find_player(ctx, cursor, query: str, region: Region, api: Wows):
     """
     Search for a wows player and returns its region and id
     :param ctx: the server context
-    :param data_controller: the data_controller
+    :param cursor: the database cursor
     :param query: the search query
     :param region: the wows player region
     :param api: the wows api 
@@ -169,7 +171,7 @@ def find_player(ctx, data_controller, query: str, region: Region, api: Wows):
         query_id = int(query[2:-1])
         search = True
     if search and server_id is not None:
-        r, i = data_controller.get_shame(server_id, query_id)
+        r, i = get_shame(cursor=cursor, server_id=server_id, user_id=query_id)
         if r is None:
             return None, None
         else:
@@ -178,24 +180,25 @@ def find_player(ctx, data_controller, query: str, region: Region, api: Wows):
         return region, find_player_id(region, api, query)
 
 
-def generate_shamelist(ctx, data_controller):
+def generate_shamelist(ctx, cursor):
     """
     Generate shamelist text for a server
     :param ctx: the server context
-    :param data_controller: the data_controller
+    :param cursor: the database cursor
     :return: the shame list for displaying
     """
     server_id = int(get_server_id(ctx))
-    res = data_controller.get_shame_list(server_id)
+    res = get_shame_list(cursor, server_id)
     return '```{}```'.format(', '.join([ctx.message.server.get_member(
         str(id_)).name for id_ in res])) if res else None
 
 
-def process_add_shame(ctx, data_controller, query, region: str, api: Wows):
+def process_add_shame(ctx, cursor, connection, query, region: str, api: Wows):
     """
     Return a new instance of shamelist object with the new entry added
     :param ctx: the server context
-    :param data_controller: the data_controller
+    :param cursor: the databse cursor
+    :param connection: the databse connectionn
     :param query: the search query
     :param region: the region of the player
     :param api: the wows api
@@ -211,16 +214,17 @@ def process_add_shame(ctx, data_controller, query, region: str, api: Wows):
     warships_region = region.value
     if warships_region == 'com':
         warships_region = 'na'
-    return data_controller.write_shame(
-        server_id, user_id, warships_region, playerid)
+    return write_shame(
+        cursor, connection, server_id, user_id, warships_region, playerid)
 
 
-def process_remove_shame(ctx, data_controller):
+def process_remove_shame(ctx, cursor, connection):
     """
     Process remove shame event
     :param ctx: the server context
-    :param data_controller: the data_controller
+    :param cursor: the databse cursor
+    :param connection: the databse connectionn    
     """
     server_id = int(get_server_id(ctx))
     user_id = int(ctx.message.author.id)
-    data_controller.remove_shame(server_id, user_id)
+    remove_shame(cursor, connection, server_id, user_id)

@@ -9,6 +9,7 @@ import core.util_core as util_core
 from core.command_handler import get_prefix
 from config.help import COMMANDS
 from core.discord_functions import get_server_id
+from core.data_controller import set_prefix
 
 
 class Util:
@@ -145,7 +146,9 @@ class Util:
         if len(prefix) != 1:
             await self.bot.say('Please use a prefix of length 1!')
         else:
-            self.bot.data_controller.set_prefix(int(get_server_id(ctx)), prefix)
+            set_prefix(
+                self.bot.cursor, self.bot.connection,
+                int(get_server_id(ctx)), prefix)
             await self.bot.say('The command prefix for this server has '
                                'been set to `{}`'.format(prefix))
 

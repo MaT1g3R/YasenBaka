@@ -33,7 +33,7 @@ class WorldOfWarships:
                 ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
         region, player_id = find_player(
-            ctx, self.bot.data_controller, user_name,
+            ctx, self.bot.cursor, user_name,
             region_converter(region, False), self.api)
         if player_id is None:
             await self.bot.say('Cannot find player!')
@@ -53,7 +53,7 @@ class WorldOfWarships:
     @commands.command(pass_context=True, no_pm=True)
     async def shamelist(self, ctx):
         """Get the entire shame shamelist"""
-        res = generate_shamelist(ctx, self.bot.data_controller)
+        res = generate_shamelist(ctx, self.bot.cursor)
         if res is not None:
             await self.bot.say(res)
         else:
@@ -66,8 +66,10 @@ class WorldOfWarships:
             await self.bot.say('Region must be in ' + str(
                 ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
-        new_entry = process_add_shame(
-            ctx, self.bot.data_controller, user_name, region, self.api)
+        new_entry = \
+            process_add_shame(
+                ctx, self.bot.cursor, self.bot.connection,
+                user_name, region, self.api)
         if new_entry:
             await self.bot.say('Add success!')
         elif not new_entry:
@@ -76,5 +78,5 @@ class WorldOfWarships:
     @commands.command(pass_context=True, no_pm=True)
     async def removeshame(self, ctx):
         """Remove you from the shame shamelist"""
-        process_remove_shame(ctx, self.bot.data_controller)
+        process_remove_shame(ctx, self.bot.cursor, self.bot.connection)
         await self.bot.say('Remove success!')

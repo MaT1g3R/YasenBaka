@@ -244,7 +244,3 @@ def raw_bash(command: list):
     """
     output = check_output(command, stderr=STDOUT)
     return output.decode()
-
-
-if __name__ == '__main__':
-    print(raw_bash(['screenfetch', '-N']).replace('`', chr(0x1fef)))

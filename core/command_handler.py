@@ -1,4 +1,5 @@
 import discord
+from core.data_controller import get_prefix as gf
 
 
 def get_prefix(bot, message: discord.Message):
@@ -11,5 +12,5 @@ def get_prefix(bot, message: discord.Message):
     if message.server is None:
         return bot.default_prefix
     id_ = int(message.server.id)
-    res = bot.data_controller.get_prefix(id_)
+    res = gf(bot.cursor, id_)
     return res if res is not None else bot.default_prefix

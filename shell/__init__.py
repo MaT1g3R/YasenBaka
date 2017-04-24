@@ -1,5 +1,6 @@
 """Initialize the bot"""
 
+import sqlite3
 from os.path import join
 
 from discord import game
@@ -7,7 +8,6 @@ from discord import game
 # Core imports
 from core import data_factory
 from core.command_handler import get_prefix
-from core.data_controller import DataController
 # Bot cog imports
 from shell.channelreader import ChannelReader
 from shell.fun import Fun
@@ -21,8 +21,10 @@ from shell.yasen import Yasen
 
 def init():
     description = 'Yo Teitoku, Yasennnnn!'
-    data_controller = DataController(join('data', 'mydb'))
-    bot = Yasen('?', get_prefix, description, data_factory(), data_controller)
+    connection = sqlite3.connect(join('data', 'mydb'))
+    cursor = connection.cursor()
+    bot = Yasen(
+        '?', get_prefix, description, data_factory(), cursor, connection)
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot), Nsfw(bot)]
 
