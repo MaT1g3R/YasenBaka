@@ -1,24 +1,28 @@
 """Initialize the bot"""
 
+from os.path import join
+
 from discord import game
 
 # Core imports
 from core import data_factory
 from core.command_handler import get_prefix
+from core.data_controller import DataController
 # Bot cog imports
 from shell.channelreader import ChannelReader
 from shell.fun import Fun
 from shell.music_player import Music
+from shell.nsfw import Nsfw
 from shell.osu_commands import Osu
 from shell.util import Util
 from shell.world_of_warships import WorldOfWarships
-from shell.nsfw import Nsfw
 from shell.yasen import Yasen
 
 
 def init():
     description = 'Yo Teitoku, Yasennnnn!'
-    bot = Yasen('?', get_prefix, description, data_factory())
+    data_controller = DataController(join('data', 'mydb'))
+    bot = Yasen('!', get_prefix, description, data_factory(), data_controller)
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot), Nsfw(bot)]
 

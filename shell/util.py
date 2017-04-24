@@ -6,10 +6,9 @@ from discord.errors import Forbidden, HTTPException
 from discord.ext import commands
 
 import core.util_core as util_core
-from threading import Timer
-from core.file_system import write_json, fopen_generic
-from os.path import join
 from core.command_handler import get_prefix
+from config.help import COMMANDS
+from core.discord_functions import get_server_id
 
 
 class Util:
@@ -17,26 +16,19 @@ class Util:
 
     def __init__(self, bot):
         self.bot = bot
-        self.save_prefix_event = Timer(300, self.save_prefix)
-
-    def save_prefix(self):
-        """
-        short cut for saving prefix_dict
-        """
-        write_json(fopen_generic(join('data', 'prefix.json'), 'w'),
-                   self.bot.data.prefix_dict)
-        self.save_prefix_event = Timer(300, self.save_prefix)
 
     @commands.command(pass_context=True)
     async def help(self, ctx, input_: str = None):
         """Help messages"""
+        prefix = get_prefix(self.bot, ctx.message)
         if input_ is None:
-            await self.bot.say(util_core.default_help(
-                self.bot.data.help_message, get_prefix(self.bot, ctx.message)))
-        elif input_ in self.bot.data.help_message:
-            res = self.bot.data.help_message[input_]
-            res = res.replace('?', get_prefix(self.bot, ctx.message))
+            await self.bot.say(util_core.default_help(prefix))
+        elif input_ in COMMANDS:
+            res = COMMANDS[input_].format(prefix)
             await self.bot.say(res)
+        else:
+            await self.bot.say('Command not found! `{}help for list '
+                               'of all commands.`'.format(prefix))
 
     @commands.command(pass_context=True, no_pm=True)
     @commands.has_permissions(administrator=True)
@@ -162,9 +154,7 @@ class Util:
         if len(prefix) != 1:
             await self.bot.say('Please use a prefix of length 1!')
         else:
-            self.bot.data.prefix_dict =\
-                util_core.set_prefix(ctx, prefix, self.bot.data.prefix_dict)
-            self.save_prefix()
+            self.bot.data_controller.set_prefix(int(get_server_id(ctx)), prefix)
             await self.bot.say('The command prefix for this server has '
                                'been set to `{}`'.format(prefix))
 

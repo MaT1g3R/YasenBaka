@@ -17,6 +17,7 @@ from requests import get
 
 from core.discord_functions import build_embed, get_server_id
 from core.helpers import get_distro
+from config.help import COMMAND_LISTS
 
 
 def time_elapsed(start_time):
@@ -37,27 +38,21 @@ def time_elapsed(start_time):
     return '{}:{}:{}'.format(str(hours), minutes_str, seconds_str)
 
 
-def default_help(help_dict, prefix):
+def default_help(prefix):
     """
     Generate the default help message.
     :param prefix: the prefix of the bot
-    :param help_dict: the help message dictionary
     :return: the default help message.
     """
-    music = ', '.join(sorted(help_dict['music']))
-    fun = ', '.join(sorted(help_dict['fun']))
-    util = ', '.join(sorted(help_dict['util']))
-    wows = ', '.join(sorted(help_dict['wows']))
-    nsfw = ', '.join(sorted(help_dict['NSFW']))
-    return \
-        'Command List:\nUtility:```{}```Fun:```{}```Music:```{}```' \
-        'World of Warships:```{}```NSFW:```{}```'.format(
-            util, fun, music, wows, nsfw) + \
-        '{}help [command] for more info on that command, ' \
-        'such as `{}help play`'.format(prefix, prefix) \
-        + '\nYou can also talk to the bot by You can also talk to the bot by ' \
+    res = ''
+    for key, val in COMMAND_LISTS:
+        res += key + ':```' + ', '.join(sorted(val)) + '```'
+    res += '{0}help [command] for more info on that command, ' \
+        'such as `{0}help play`'.format(prefix) \
+        + '\nYou can also talk to the bot by ' \
           'mentioning her!\nExample usage: <@243230010532560896> ' \
           'hi'
+    return res
 
 
 def process_pmall(ctx, message_in: list):
@@ -239,20 +234,6 @@ def bash_script(command: list):
         return \
             ":no_entry_sign: Command failed!\nOutput:" \
             "\n```\n{}\n```".format(res_str)
-
-
-def set_prefix(ctx, prefix, prefix_dict):
-    """
-    Set the prefix of the bot for a channel
-    :param ctx: the mesage context
-    :param prefix: the prefix to set to
-    :param prefix_dict: the prefix_dict
-    :return: the new prefix_dict
-    """
-    p_d = dict(prefix_dict)
-    id_ = get_server_id(ctx)
-    p_d[id_] = prefix
-    return p_d
 
 
 def raw_bash(command: list):
