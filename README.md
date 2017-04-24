@@ -2,7 +2,7 @@
 Yasen-Baka discord bot, written with the [discord.py](https://github.com/Rapptz/discord.py) api.  
 You can invite the bot to your channel with this [link](https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=-1)  
 Join the support server [here](https://discord.gg/BnPbz6q)  
-# Commands
+## Commands
 * #### Moderation commands:
 ```
 pmall, setprefix
@@ -32,7 +32,7 @@ danbooru, gelbooru, konachan, yandere
 ```
 You can also talk to the bot by mentioning her!
 
-# Self Host
+## Self Host
 To self host yasen, you will need those packages installed on your system:
 * Python3.6+: https://www.python.org/downloads/ Python3.5 and below is not supported
 * FFmpeg: https://ffmpeg.org/
@@ -53,3 +53,16 @@ On Linux, you might run into trouble installing PyNaCl, please refer to the belo
 Then you will need to rename ``sample_mydb`` to ``mydb`` in the ``data`` directory and rename ``sample_api.py`` to ``api.py`` in the ``config`` directory, and fill out the api keys inside.
 
 Then to run, execute ``yasen-baka.py`` in the root directory with a python3.6+ interpreter, or execute ``run.sh`` on GNU/Linux or MacOS, ``run.bat`` on Microsoft<sup>®</sup> Windows<sup>®</sup>.
+
+## Contributing
+For non-developers, you can contribute by reporting bugs or making suggestions. They can be done in three ways:
+* Join the support server [here](https://discord.gg/BnPbz6q)  
+* Message me on discord: ラブアローシュート#6728
+* Open a Github issue [here](https://github.com/MaT1g3R/YasenBaka/issues/new)
+
+For developers, if you are interested in contributing, follow the steps below:
+1. Fork it ( https://github.com/MaT1g3R/YasenBaka/fork )
+2. Create your feature branch (git checkout -b my-new-feature)
+3. Commit your changes (git commit -am 'Add some feature')
+4. Push to the branch (git push origin my-new-feature)
+5. Create a new Pull Request
