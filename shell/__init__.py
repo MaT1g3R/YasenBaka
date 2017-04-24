@@ -22,7 +22,7 @@ from shell.yasen import Yasen
 def init():
     description = 'Yo Teitoku, Yasennnnn!'
     data_controller = DataController(join('data', 'mydb'))
-    bot = Yasen('!', get_prefix, description, data_factory(), data_controller)
+    bot = Yasen('?', get_prefix, description, data_factory(), data_controller)
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot), Nsfw(bot)]
 
