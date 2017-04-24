@@ -10,6 +10,7 @@ from threading import Timer
 from core.file_system import write_json, fopen_generic
 from os.path import join
 from core.command_handler import get_prefix
+from config.help import COMMANDS
 
 
 class Util:
@@ -30,13 +31,15 @@ class Util:
     @commands.command(pass_context=True)
     async def help(self, ctx, input_: str = None):
         """Help messages"""
+        prefix = get_prefix(self.bot, ctx.message)
         if input_ is None:
-            await self.bot.say(util_core.default_help(
-                self.bot.data.help_message, get_prefix(self.bot, ctx.message)))
-        elif input_ in self.bot.data.help_message:
-            res = self.bot.data.help_message[input_]
-            res = res.replace('?', get_prefix(self.bot, ctx.message))
+            await self.bot.say(util_core.default_help(prefix))
+        elif input_ in COMMANDS:
+            res = COMMANDS[input_].format(prefix)
             await self.bot.say(res)
+        else:
+            await self.bot.say('Command not found! `{}help for list '
+                               'of all commands.`'.format(prefix))
 
     @commands.command(pass_context=True, no_pm=True)
     @commands.has_permissions(administrator=True)

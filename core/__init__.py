@@ -21,11 +21,8 @@ def data_factory():
     wows_api = Wows(api_keys['WoWs'])
 
     kanna_files = read_all_files(join('data', 'kanna_is_cute_af'))
-    lewds = freadlines(fopen_generic(join('data', 'lewd.txt')))
-    lewds.append('( ͡° ͜ʖ ͡°)')
     so = stackexchange.Site(stackexchange.StackOverflow, api_keys[
         'StackExchange'], impose_throttling=True)
-    help_message = read_json(fopen_generic(join('data', 'help.json')))
     shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
 
     coefficients, expected = coeff_all_region()
@@ -39,8 +36,8 @@ def data_factory():
     # avatar = open(join('config', 'avatar.png'), 'rb').read() \
     #     if isfile(join('config', 'avatar.png')) else None
 
-    data = Data(api_keys=api_keys, kanna_files=kanna_files, lewds=lewds, so=so,
-                help_message=help_message, shame_list=shame_list,
+    data = Data(api_keys=api_keys, kanna_files=kanna_files, so=so,
+                shame_list=shame_list,
                 coefficients=coefficients, expected=expected,
                 ship_dict=ship_dict, wows_api=wows_api, prefix_dict=prefix_dict,
                 avatar=None, danbooru=danbooru)
