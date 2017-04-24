@@ -139,15 +139,6 @@ class Util:
         else:
             await self.bot.say('Only my owner can use this command!')
 
-    @commands.command(pass_context=True)
-    async def update(self, ctx):
-        if str(ctx.message.author.id) \
-                in ["99271746347110400", "145735970342305792"]:
-            await self.bot.say(util_core.bash_script(['git', 'pull']))
-            util_core.bash_script(['pm2', 'restart', '16'])
-        else:
-            await self.bot.say('Only my owner can use this command!')
-
     @commands.command(pass_context=True, no_pm=True)
     @commands.has_permissions(administrator=True)
     async def setprefix(self, ctx, prefix: str):
