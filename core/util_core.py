@@ -236,20 +236,6 @@ def bash_script(command: list):
             "\n```\n{}\n```".format(res_str)
 
 
-def set_prefix(ctx, prefix, prefix_dict):
-    """
-    Set the prefix of the bot for a channel
-    :param ctx: the mesage context
-    :param prefix: the prefix to set to
-    :param prefix_dict: the prefix_dict
-    :return: the new prefix_dict
-    """
-    p_d = dict(prefix_dict)
-    id_ = get_server_id(ctx)
-    p_d[id_] = prefix
-    return p_d
-
-
 def raw_bash(command: list):
     """
     Raw bash access

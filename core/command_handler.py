@@ -8,10 +8,8 @@ def get_prefix(bot, message: discord.Message):
     :param message: the message
     :return: the prefix for the server
     """
-    prefix_dict = bot.data.prefix_dict
-    default = bot.default_prefix
     if message.server is None:
-        return default
-    id_ = str(message.server.id)
-    return default if id_ not in prefix_dict \
-        else prefix_dict[id_]
+        return bot.default_prefix
+    id_ = int(message.server.id)
+    res = bot.data_controller.get_prefix(id_)
+    return res if res is not None else bot.default_prefix

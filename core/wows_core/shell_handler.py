@@ -148,86 +148,79 @@ def region_converter(r, is_warships: bool):
     }[r]
 
 
-def find_player(ctx, shame_list, query: str, region: Region, api: Wows):
+def find_player(ctx, data_controller, query: str, region: Region, api: Wows):
     """
     Search for a wows player and returns its region and id
     :param ctx: the server context
-    :param shame_list: the shamelist
+    :param data_controller: the data_controller
     :param query: the search query
     :param region: the wows player region
     :param api: the wows api 
     :return: (Region, id)
     :rtype: tuple
     """
-    server_id = get_server_id(ctx)
-    if server_id is None:
-        return
-    query_l = ''
+    server_id = int(get_server_id(ctx))
+    search = False
+    query_id = None
     if query.startswith('<@!'):
-        query_l = query[3:-1]
+        query_id = int(query[3:-1])
+        search = True
     elif query.startswith('<@'):
-        query_l = query[2:-1]
-    if server_id in shame_list and query_l in shame_list[server_id]:
-        return region_converter(shame_list[server_id][query_l][0], True), \
-               shame_list[server_id][query_l][1]
+        query_id = int(query[2:-1])
+        search = True
+    if search and server_id is not None:
+        r, i = data_controller.get_shame(server_id, query_id)
+        if r is None:
+            return None, None
+        else:
+            return region_converter(r, True), i
     else:
         return region, find_player_id(region, api, query)
 
 
-def generate_shamelist(ctx, shame_list):
+def generate_shamelist(ctx, data_controller):
     """
     Generate shamelist text for a server
     :param ctx: the server context
-    :param shame_list: the entire shame list
+    :param data_controller: the data_controller
     :return: the shame list for displaying
     """
-    server_id = get_server_id(ctx)
-    if server_id in shame_list:
-        res = [ctx.message.server.get_member(key).name for key in
-               shame_list[server_id]]
-        return '```{}```'.format(', '.join(res)) if res else None
-    return None
+    server_id = int(get_server_id(ctx))
+    res = data_controller.get_shame_list(server_id)
+    return '```{}```'.format(', '.join([ctx.message.server.get_member(
+        str(id_)).name for id_ in res])) if res else None
 
 
-def process_add_shame(ctx, shamelist, query, region: str, api: Wows):
+def process_add_shame(ctx, data_controller, query, region: str, api: Wows):
     """
     Return a new instance of shamelist object with the new entry added
     :param ctx: the server context
-    :param shamelist: the origional shame list
+    :param data_controller: the data_controller
     :param query: the search query
     :param region: the region of the player
     :param api: the wows api
-    :return: (shamelist, new_entry)
-    :rtype: tuple
+    :return: new_entry
+    :rtype: bool
     """
-    shamelist = dict(shamelist)
-    server_id = str(get_server_id(ctx))
+    server_id = int(get_server_id(ctx))
     region = region_converter(region, False)
-    user_id = str(ctx.message.author.id)
+    user_id = int(ctx.message.author.id)
     playerid = find_player_id(region, api, query)
     if playerid is None:
-        return None, None
+        return None
     warships_region = region.value
     if warships_region == 'com':
         warships_region = 'na'
-    if ctx.message.server.id not in shamelist:
-        shamelist[server_id] = {}
-    new_entry = user_id not in shamelist[server_id]
-    shamelist[server_id][user_id] = [warships_region, playerid]
-    return shamelist, new_entry
+    return data_controller.write_shame(
+        server_id, user_id, warships_region, playerid)
 
 
-def process_remove_shame(ctx, shamelist):
+def process_remove_shame(ctx, data_controller):
     """
     Process remove shame event
     :param ctx: the server context
-    :param shamelist: the shame list
-    :return: a new instance of shame list with the entry removed
+    :param data_controller: the data_controller
     """
-    shamelist = dict(shamelist)
-    server_id = str(get_server_id(ctx))
-    user_id = str(ctx.message.author.id)
-    if user_id in shamelist[server_id]:
-        shamelist[server_id].pop(user_id, None)
-        return shamelist
-    return None
+    server_id = int(get_server_id(ctx))
+    user_id = int(ctx.message.author.id)
+    data_controller.remove_shame(server_id, user_id)

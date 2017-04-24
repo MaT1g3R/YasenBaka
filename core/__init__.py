@@ -17,19 +17,16 @@ def data_factory():
     Creates an instance of Data 
     :rtype: Data
     """
-    api_keys = api.beta_api()
+    api_keys = api.BETA_API
     wows_api = Wows(api_keys['WoWs'])
 
     kanna_files = read_all_files(join('data', 'kanna_is_cute_af'))
     so = stackexchange.Site(stackexchange.StackOverflow, api_keys[
         'StackExchange'], impose_throttling=True)
-    shame_list = read_json(fopen_generic(join('data', 'shamelist.json')))
 
     coefficients, expected = coeff_all_region()
 
     ship_dict = get_all_ship_tier(wows_api)
-
-    prefix_dict = read_json(fopen_generic(join('data', 'prefix.json')))
 
     usr, key = api_keys['Danbooru']
     danbooru = Danbooru('danbooru', username=usr, api_key=key)
@@ -37,8 +34,7 @@ def data_factory():
     #     if isfile(join('config', 'avatar.png')) else None
 
     data = Data(api_keys=api_keys, kanna_files=kanna_files, so=so,
-                shame_list=shame_list,
                 coefficients=coefficients, expected=expected,
-                ship_dict=ship_dict, wows_api=wows_api, prefix_dict=prefix_dict,
+                ship_dict=ship_dict, wows_api=wows_api,
                 avatar=None, danbooru=danbooru)
     return data

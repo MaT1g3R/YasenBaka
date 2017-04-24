@@ -8,9 +8,10 @@ class Data:
     """
     A data class to hold all the data the bot will use
     """
+
     def __init__(self, api_keys, kanna_files, so,
-                 shame_list, coefficients, expected,
-                 ship_dict, wows_api, prefix_dict, avatar, danbooru):
+                 coefficients, expected,
+                 ship_dict, wows_api, avatar, danbooru):
         self.api_keys = api_keys
         self.kanna_files = kanna_files
         self.lewds = [
@@ -31,11 +32,9 @@ class Data:
         self.start_time = time.time()
         self.so = so
         self.so.be_inclusive()
-        self.shame_list = shame_list
         self.coefficients = coefficients
         self.expected = expected
         self.ship_dict = ship_dict
         self.wows_api = wows_api
-        self.prefix_dict = prefix_dict
         self.avatar = avatar
         self.danbooru = danbooru
