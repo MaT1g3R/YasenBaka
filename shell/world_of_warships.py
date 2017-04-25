@@ -26,10 +26,10 @@ class WorldOfWarships:
             self.data.coefficients, self.data.expected = \
                 coeff_all_region()
             self.data.ship_dict = get_all_ship_tier(self.api)
-            write_json(fopen_generic(join('data', 'coefficients.json'), 'w'),
-                       self.data.coefficients)
-            write_json(fopen_generic(join('data', 'expected.json'), 'w'),
-                       self.data.expected)
+            fp = fopen_generic(join('data', 'coefficients.json'), 'w')
+            write_json(fp, self.data.coefficients)
+            fp = fopen_generic(join('data', 'expected.json'), 'w')
+            write_json(fp, self.data.expected)
             await self.bot.say('Update Success!')
         except JSONDecodeError:
             await self.bot.say(
