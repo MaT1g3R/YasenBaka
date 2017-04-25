@@ -25,11 +25,23 @@ def data_factory():
     so = stackexchange.Site(stackexchange.StackOverflow, api_keys[
         'StackExchange'], impose_throttling=True)
 
+    # Fallback in case warships today is down
+    success = False
     try:
         coefficients, expected = coeff_all_region()
+        success = True
     except JSONDecodeError:
-        coefficients, expected = None, None
+        coefficients = read_json(
+            fopen_generic(join('data', 'coefficients.json')))
+        expected = read_json(fopen_generic(join('data', 'expected.json')))
 
+    if success:
+        write_json(fopen_generic(
+            fopen_generic(join('data', 'coefficients.json'), 'w')),
+                   coefficients)
+        write_json(fopen_generic(
+            fopen_generic(join('data', 'expected.json'), 'w')),
+            coefficients)
     ship_dict = get_all_ship_tier(wows_api)
 
     usr, key = api_keys['Danbooru']

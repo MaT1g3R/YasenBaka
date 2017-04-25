@@ -4,6 +4,7 @@ from os.path import join
 
 from discord.ext import commands
 
+from core.file_system import fopen_generic, write_json
 from core.helpers import generate_image_online
 from core.wows_core.shell_handler import build_shame_embed, region_converter, \
     find_player, generate_shamelist, process_add_shame, process_remove_shame
@@ -25,6 +26,10 @@ class WorldOfWarships:
             self.data.coefficients, self.data.expected = \
                 coeff_all_region()
             self.data.ship_dict = get_all_ship_tier(self.api)
+            write_json(fopen_generic(join('data', 'coefficients.json'), 'w'),
+                       self.data.coefficients)
+            write_json(fopen_generic(join('data', 'expected.json'), 'w'),
+                       self.data.expected)
             await self.bot.say('Update Success!')
         except JSONDecodeError:
             await self.bot.say(
@@ -45,19 +50,16 @@ class WorldOfWarships:
             await self.bot.say('Cannot find player!')
             return
         r = region.value if region.value != 'com' else 'na'
-        try:
-            embed = build_shame_embed(region, self.api, player_id,
-                                      coefficients=self.data.coefficients[r],
-                                      expected=self.data.expected[r],
-                                      ship_dict=self.data.ship_dict[r])
-            if embed is None:
-                fn = generate_image_online(warships_today_url(r, player_id),
-                                           join('data', 'dark.png'))
-                await self.bot.send_file(ctx.message.channel, fn)
-            else:
-                await self.bot.say(embed=embed)
-        except TypeError:
-            await self.bot.sat('Sorry! Warships Today is down!')
+        embed = build_shame_embed(region, self.api, player_id,
+                                  coefficients=self.data.coefficients[r],
+                                  expected=self.data.expected[r],
+                                  ship_dict=self.data.ship_dict[r])
+        if embed is None:
+            fn = generate_image_online(warships_today_url(r, player_id),
+                                       join('data', 'dark.png'))
+            await self.bot.send_file(ctx.message.channel, fn)
+        else:
+            await self.bot.say(embed=embed)
 
     @commands.command(pass_context=True, no_pm=True)
     async def shamelist(self, ctx):
