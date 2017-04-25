@@ -1,4 +1,5 @@
 """World of Warships commands for this bot"""
+from json import JSONDecodeError
 from os.path import join
 
 from discord.ext import commands
@@ -20,10 +21,15 @@ class WorldOfWarships:
 
     @commands.command()
     async def update_wows(self):
-        self.data.coefficients, self.data.expected = \
-            coeff_all_region()
-        self.data.ship_dict = get_all_ship_tier(self.api)
-        await self.bot.say('Update Success!')
+        try:
+            self.data.coefficients, self.data.expected = \
+                coeff_all_region()
+            self.data.ship_dict = get_all_ship_tier(self.api)
+            await self.bot.say('Update Success!')
+        except JSONDecodeError:
+            await self.bot.say(
+                'Update Failed! Cause is probably '
+                'Warships Today api being down.')
 
     @commands.command(pass_context=True)
     async def shame(self, ctx, user_name: str, region: str = 'NA'):

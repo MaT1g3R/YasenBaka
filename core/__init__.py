@@ -1,3 +1,4 @@
+from json import JSONDecodeError
 from os.path import join
 
 import stackexchange
@@ -24,7 +25,10 @@ def data_factory():
     so = stackexchange.Site(stackexchange.StackOverflow, api_keys[
         'StackExchange'], impose_throttling=True)
 
-    coefficients, expected = coeff_all_region()
+    try:
+        coefficients, expected = coeff_all_region()
+    except JSONDecodeError:
+        coefficients, expected = None, None
 
     ship_dict = get_all_ship_tier(wows_api)
 
