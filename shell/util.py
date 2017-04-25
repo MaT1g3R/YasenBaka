@@ -147,7 +147,7 @@ class Util:
             await self.bot.say('Please use a prefix of length 1!')
         else:
             set_prefix(
-                self.bot.cursor, self.bot.connection,
+                self.bot.cursor, self.bot.conn,
                 int(get_server_id(ctx)), prefix)
             await self.bot.say('The command prefix for this server has '
                                'been set to `{}`'.format(prefix))

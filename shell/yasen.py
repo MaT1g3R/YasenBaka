@@ -23,13 +23,13 @@ class Yasen(Bot):
         :param description the description of this bot
         :param data: the data this bot will store
         :param cursor: the database cursor
-        :param connection: the database connection
+        :param connection: the database conn
         """
         super().__init__(command_prefix=prefix, description=description)
         self.default_prefix = default_prefix
         self.data = data
         self.cursor = cursor
-        self.connection = connection
+        self.conn = connection
 
     def start_bot(self, cogs):
         """

@@ -17,7 +17,7 @@ def write_shame(cursor, connection, server_id: int, user_id: int,
     """
     Write user's data into shamelist
     :param cursor: the database cursor
-    :param connection: the database connection
+    :param connection: the database conn
     :param server_id: the server id
     :param user_id: the user id
     :param region: the region of the player
@@ -55,7 +55,7 @@ def set_prefix(cursor, connection, server_id: int, prefix: str):
     """
     Set the prefix of a server
     :param cursor: the database cursor
-    :param connection: the database connection
+    :param connection: the database conn
     :param server_id: the server id
     :param prefix: the prefix 
     """
@@ -68,7 +68,7 @@ def remove_shame(cursor, connection, server_id: int, user_id: int):
     """
     Remove a user from shame list
     :param cursor: the database cursor
-    :param connection: the database connection
+    :param connection: the database conn
     :param server_id: the server id
     :param user_id: the user id
     """

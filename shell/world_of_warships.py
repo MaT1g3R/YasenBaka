@@ -68,7 +68,7 @@ class WorldOfWarships:
             return
         new_entry = \
             process_add_shame(
-                ctx, self.bot.cursor, self.bot.connection,
+                ctx, self.bot.cursor, self.bot.conn,
                 user_name, region, self.api)
         if new_entry:
             await self.bot.say('Add success!')
@@ -78,5 +78,5 @@ class WorldOfWarships:
     @commands.command(pass_context=True, no_pm=True)
     async def removeshame(self, ctx):
         """Remove you from the shame shamelist"""
-        process_remove_shame(ctx, self.bot.cursor, self.bot.connection)
+        process_remove_shame(ctx, self.bot.cursor, self.bot.conn)
         await self.bot.say('Remove success!')
