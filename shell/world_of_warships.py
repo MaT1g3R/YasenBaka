@@ -45,16 +45,19 @@ class WorldOfWarships:
             await self.bot.say('Cannot find player!')
             return
         r = region.value if region.value != 'com' else 'na'
-        embed = build_shame_embed(region, self.api, player_id,
-                                  coefficients=self.data.coefficients[r],
-                                  expected=self.data.expected[r],
-                                  ship_dict=self.data.ship_dict[r])
-        if embed is None:
-            fn = generate_image_online(warships_today_url(r, player_id),
-                                       join('data', 'dark.png'))
-            await self.bot.send_file(ctx.message.channel, fn)
-        else:
-            await self.bot.say(embed=embed)
+        try:
+            embed = build_shame_embed(region, self.api, player_id,
+                                      coefficients=self.data.coefficients[r],
+                                      expected=self.data.expected[r],
+                                      ship_dict=self.data.ship_dict[r])
+            if embed is None:
+                fn = generate_image_online(warships_today_url(r, player_id),
+                                           join('data', 'dark.png'))
+                await self.bot.send_file(ctx.message.channel, fn)
+            else:
+                await self.bot.say(embed=embed)
+        except TypeError:
+            await self.bot.sat('Sorry! Warships Today is down!')
 
     @commands.command(pass_context=True, no_pm=True)
     async def shamelist(self, ctx):
