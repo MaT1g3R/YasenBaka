@@ -3,7 +3,7 @@ from wowspy.wowspy import Wows, Region
 from core.discord_functions import get_server_id, build_embed
 from core.helpers import comma
 from core.wows_core.wg_core import all_time_stats, find_player_id, \
-    player_ship_stats, recent_stats
+    player_ship_stats, recent_stats, get_player_clan_info, get_clan_info
 from core.wows_core.wtr_core import wtr_absolute, choose_colour
 from core.data_controller import \
     get_shame_list, get_shame, write_shame, remove_shame
@@ -27,6 +27,10 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
         nick_name = api.player_personal_data(
             region, id_, language='en', fields='nickname'
         )['data'][str(id_)]['nickname']
+        player_clan_info = get_player_clan_info(region, api, id_)
+        clan = get_clan_info(region, api, player_clan_info['clan_id']) if \
+            player_clan_info is not None else None
+        clan_tag = clan['tag'] if clan is not None else 'None'
         battles = all_time_stats_['battles']
         ship_stats = player_ship_stats(region, api, id_)
         main_hits = all_time_stats_['main_battery']['hits']
@@ -50,7 +54,7 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
         # max_planes_killed = str(all_time_stats['max_planes_killed'])
         colour = choose_colour(wtr)
         author = {
-            'name': nick_name
+            'name': nick_name + ' Clan: ' + clan_tag
         }
         k_v = []
         if battles > 0:

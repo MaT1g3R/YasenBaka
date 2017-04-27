@@ -137,8 +137,22 @@ def get_clan_info(region: Region, api: Wows, id_: int):
         language='en')['data'][str(id_)]
 
 
+def get_player_clan_info(region: Region, api: Wows, id_: int):
+    """
+    Get player's clan info
+    :param region: th region
+    :param api: wows api
+    :param id_: the player id
+    :return: the player's clan info
+    """
+    return api.player_clan_data(region, id_)['data'][str(id_)]
+
+
 if __name__ == '__main__':
     from config.api import BETA_API
     a = Wows(BETA_API['WoWs'])
-    i = find_clan_id(Region.NA, a, 'ZR')
-    print(get_clan_info(Region.NA, a, i))
+    c = find_clan_id(Region.NA, a, 'ZR')
+    print(get_clan_info(Region.NA, a, c))
+    # p = find_player_id(Region.NA, a, 'PotatoSquad')
+    # m = find_player_id(Region.NA, a, 'MaT1g3R')
+    # print(get_player_clan_info(Region.NA, a, p))
