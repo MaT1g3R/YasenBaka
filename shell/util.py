@@ -9,6 +9,7 @@ import core.util_core as util_core
 from core.command_handler import get_prefix
 from config.help import COMMANDS
 from core.discord_functions import get_server_id
+from core.data_controller import set_prefix
 
 
 class Util:
@@ -139,22 +140,15 @@ class Util:
         else:
             await self.bot.say('Only my owner can use this command!')
 
-    @commands.command(pass_context=True)
-    async def update(self, ctx):
-        if str(ctx.message.author.id) \
-                in ["99271746347110400", "145735970342305792"]:
-            await self.bot.say(util_core.bash_script(['git', 'pull']))
-            util_core.bash_script(['pm2', 'restart', '16'])
-        else:
-            await self.bot.say('Only my owner can use this command!')
-
     @commands.command(pass_context=True, no_pm=True)
     @commands.has_permissions(administrator=True)
     async def setprefix(self, ctx, prefix: str):
         if len(prefix) != 1:
             await self.bot.say('Please use a prefix of length 1!')
         else:
-            self.bot.data_controller.set_prefix(int(get_server_id(ctx)), prefix)
+            set_prefix(
+                self.bot.cursor, self.bot.conn,
+                int(get_server_id(ctx)), prefix)
             await self.bot.say('The command prefix for this server has '
                                'been set to `{}`'.format(prefix))
 

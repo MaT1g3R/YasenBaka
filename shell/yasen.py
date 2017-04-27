@@ -15,19 +15,21 @@ class Yasen(Bot):
     """
 
     def __init__(self, default_prefix, prefix, description,
-                 data, data_controller):
+                 data, cursor, connection):
         """
         Initialize a bot object
         :param default_prefix: the default prefix for the bot
         :param prefix the prefix this bot will use
         :param description the description of this bot
         :param data: the data this bot will store
-        :param data_controller: the data controller
+        :param cursor: the database cursor
+        :param connection: the database conn
         """
         super().__init__(command_prefix=prefix, description=description)
         self.default_prefix = default_prefix
         self.data = data
-        self.data_controller = data_controller
+        self.cursor = cursor
+        self.conn = connection
 
     def start_bot(self, cogs):
         """

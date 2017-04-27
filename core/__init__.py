@@ -1,3 +1,4 @@
+from json import JSONDecodeError
 from os.path import join
 
 import stackexchange
@@ -17,15 +18,28 @@ def data_factory():
     Creates an instance of Data 
     :rtype: Data
     """
-    api_keys = api.BETA_API
+    api_keys = api.API
     wows_api = Wows(api_keys['WoWs'])
 
     kanna_files = read_all_files(join('data', 'kanna_is_cute_af'))
     so = stackexchange.Site(stackexchange.StackOverflow, api_keys[
         'StackExchange'], impose_throttling=True)
 
-    coefficients, expected = coeff_all_region()
-
+    # Fallback in case warships today is down
+    success = False
+    try:
+        coefficients, expected = coeff_all_region()
+        success = True
+    except JSONDecodeError:
+        fp = fopen_generic(join('data', 'coefficients.json'))
+        coefficients = read_json(fp)
+        fp = fopen_generic(join('data', 'expected.json'))
+        expected = read_json(fp)
+    if success:
+        fp = fopen_generic(join('data', 'coefficients.json'), 'w')
+        write_json(fp, coefficients)
+        fp = fopen_generic(join('data', 'expected.json'), 'w')
+        write_json(fp, expected)
     ship_dict = get_all_ship_tier(wows_api)
 
     usr, key = api_keys['Danbooru']

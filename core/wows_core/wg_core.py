@@ -109,3 +109,36 @@ def player_ship_stats(region: Region, api, id_: int):
     for d in response:
         res[d['ship_id']] = d['pvp']
     return res
+
+
+def find_clan_id(region: Region, api: Wows, search: str):
+    """
+    Search for a clan id
+    :param region: the region of the clan
+    :param api: the wows api
+    :param search: the search query
+    :return: the clan id if found else None
+    """
+    res = api.clans(
+        region, language='en', limit=1, search=search, fields='clan_id')['data']
+    return res[0]['clan_id'] if res else None
+
+
+def get_clan_info(region: Region, api: Wows, id_: int):
+    """
+    Get detailed info about a clan
+    :param region: the region
+    :param api: the wows api
+    :param id_: the clan id
+    :return: the info about the clan
+    """
+    return api.clan_details(
+        region, id_, fields='-clan_id,-old_name,-renamed_at,-old_tag',
+        language='en')['data'][str(id_)]
+
+
+if __name__ == '__main__':
+    from config.api import BETA_API
+    a = Wows(BETA_API['WoWs'])
+    i = find_clan_id(Region.NA, a, 'ZR')
+    print(get_clan_info(Region.NA, a, i))
