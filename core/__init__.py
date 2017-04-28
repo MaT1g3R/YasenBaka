@@ -18,7 +18,7 @@ def data_factory():
     Creates an instance of Data 
     :rtype: Data
     """
-    api_keys = api.BETA_API
+    api_keys = api.API
     wows_api = Wows(api_keys['WoWs'])
 
     kanna_files = read_all_files(join('data', 'kanna_is_cute_af'))

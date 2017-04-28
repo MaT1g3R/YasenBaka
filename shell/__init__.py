@@ -24,7 +24,7 @@ def init():
     connection = sqlite3.connect(join('data', 'mydb'))
     cursor = connection.cursor()
     bot = Yasen(
-        '!', get_prefix, description, data_factory(), cursor, connection)
+        '?', get_prefix, description, data_factory(), cursor, connection)
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
             WorldOfWarships(bot), Music(bot), Nsfw(bot)]
 
