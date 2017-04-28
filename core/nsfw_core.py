@@ -34,7 +34,9 @@ def danbooru(search, api: Danbooru, cursor, connection):
     :param connection: the db connection
     :return: lewds
     """
-    if len(search) == 0:
+    if len(search) > 2:
+        return 'You cannot search for more than 2 tags at a time'
+    elif len(search) == 0:
         try:
             res = api.post_list(tags=' '.join(search), random=True, limit=1)
         except PybooruAPIError:
@@ -43,28 +45,27 @@ def danbooru(search, api: Danbooru, cursor, connection):
         return base + res[0]['large_file_url'] \
             if len(res) > 0 and 'large_file_url' in res[0] \
             else SORRY
-    if len(search) > 2:
-        return 'You cannot search for more than 2 tags at a time'
-    tag_finder_res = [tag_finder(t, 'danbooru', api, cursor, connection) for t in search]
-    is_fuzzy = False
-    for entry in tag_finder_res:
-        if entry[1] is True:
-            is_fuzzy = True
-            break
-    search = [t[0] for t in tag_finder_res if t[0] is not None]
-    fuzzy_string = '' if not is_fuzzy else \
-        'You have entered invalid danbooru tags, ' \
-        'here\'s the result of the search using these tags ' \
-        'that I tried to match: `{}`\n'.format(', '.join(search))
-    if len(search) > 0:
-        try:
-            res = api.post_list(tags=' '.join(search), random=True, limit=1)
-        except PybooruAPIError:
-            return ERROR.format('Danbooru')
-        base = 'https://danbooru.donmai.us'
-        return fuzzy_string + base + res[0]['large_file_url'] \
-            if len(res) > 0 and 'large_file_url' in res[0] \
-            else SORRY
+    else:
+        tag_finder_res = [tag_finder(t, 'danbooru', api, cursor, connection) for t in search]
+        is_fuzzy = False
+        for entry in tag_finder_res:
+            if entry[1] is True:
+                is_fuzzy = True
+                break
+        search = [t[0] for t in tag_finder_res if t[0] is not None]
+        fuzzy_string = '' if not is_fuzzy else \
+            'You have entered invalid danbooru tags, ' \
+            'here\'s the result of the search using these tags ' \
+            'that I tried to match: `{}`\n'.format(', '.join(search))
+        if len(search) > 0:
+            try:
+                res = api.post_list(tags=' '.join(search), random=True, limit=1)
+            except PybooruAPIError:
+                return ERROR.format('Danbooru')
+            base = 'https://danbooru.donmai.us'
+            return fuzzy_string + base + res[0]['large_file_url'] \
+                if len(res) > 0 and 'large_file_url' in res[0] \
+                else SORRY
 
 
 def tag_finder(tag, site, api: Danbooru, cursor, connection):
