@@ -67,7 +67,6 @@ def danbooru(search, api: Danbooru, cursor, connection):
             else SORRY
 
 
-
 def tag_finder(tag, site, api: Danbooru, cursor, connection):
     """
     Try to find or fuzzy match tag in db then the site after the attempt
