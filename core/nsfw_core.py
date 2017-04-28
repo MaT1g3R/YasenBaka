@@ -46,7 +46,8 @@ def danbooru(search, api: Danbooru, cursor, connection):
             if len(res) > 0 and 'large_file_url' in res[0] \
             else SORRY
     else:
-        tag_finder_res = [tag_finder(t, 'danbooru', api, cursor, connection) for t in search]
+        tag_finder_res = [tag_finder(t, 'danbooru', api, cursor, connection)
+                          for t in search]
         is_fuzzy = False
         for entry in tag_finder_res:
             if entry[1] is True:
@@ -66,6 +67,8 @@ def danbooru(search, api: Danbooru, cursor, connection):
             return fuzzy_string + base + res[0]['large_file_url'] \
                 if len(res) > 0 and 'large_file_url' in res[0] \
                 else SORRY
+        else:
+            return SORRY
 
 
 def tag_finder(tag, site, api: Danbooru, cursor, connection):
