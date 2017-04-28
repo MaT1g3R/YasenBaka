@@ -87,3 +87,50 @@ def get_shame_list(cursor, server_id):
     sql = '''SELECT user FROM shame_list WHERE server=?'''
     cursor.execute(sql, [server_id])
     return [i[0] for i in cursor.fetchall()]
+
+
+def write_tag(cursor, connection, site, tag):
+    """
+    Write a tag entry into the database
+    :param cursor: the database cursor
+    :param connection: the database connection
+    :param site: the site name
+    :param tag: the tag entry
+    """
+    if tag_in_db(cursor, site, tag):
+        return
+    else:
+        sql = '''INSERT INTO nsfw_tags(site, tag) VALUES (?, ?)'''
+        cursor.execute(sql, (site, tag))
+        connection.commit()
+
+
+def tag_in_db(cursor, site, tag):
+    """
+    Returns if the tag is in the db or not
+    :param cursor: the db cursor
+    :param site: the site name
+    :param tag: the tag name
+    :return: True if the tag is in the db else false
+    """
+    sql = '''
+SELECT EXISTS(SELECT 1 FROM nsfw_tags WHERE site=? AND tag=?LIMIT 1)'''
+    cursor.execute(sql, (site, tag))
+    return cursor.fetchone() == (1,)
+
+
+def fuzzy_match_tag(cursor, site, tag):
+    """
+    Try to fuzzy match a tag with one in the db
+    :param cursor: the db cursor
+    :param site: the stie name
+    :param tag: the tag name
+    :return: a tag in the db if match success else None
+    """
+    sql = """
+    SELECT tag FROM nsfw_tags 
+    WHERE (tag LIKE '{0}%' OR tag LIKE '%{0}%' OR tag LIKE '%{0}') 
+    AND site=?
+    """.format(tag)
+    res = cursor.execute(sql, [site]).fetchone()
+    return res[0] if res is not None else None
