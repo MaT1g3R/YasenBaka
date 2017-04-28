@@ -1,6 +1,6 @@
 import textwrap
 import xml.etree.ElementTree as Et
-from datetime import timedelta, date
+from datetime import timedelta, date, datetime
 from os.path import join
 from shutil import copyfileobj
 
@@ -125,3 +125,59 @@ def clense_prefix(message: str, prefix: str):
         return message
     else:
         return message[len(prefix):]
+
+
+def timestamp_to_string(timestamp: int):
+    """
+    Convert unix timestamp to a readable string
+    :param timestamp: the unix time stamp
+    :return: date time string
+    """
+    return datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d')
+
+
+def combine_dict(dicts):
+    """
+    combine (nested) dictionaries with numbers as values,
+    assuming same key in all dicts maps to the same data type
+    :param dicts: a collection of dicts
+    :return: the combined dict
+    >>> d1 = {'a': 1, 'b': 2}
+    >>> d2 = {'a': 1, 'c':1}
+    >>> d3 = combine_dict((d1, d2))
+    >>> d3 == {'a': 2, 'b': 2, 'c': 1}
+    True
+    >>> d4 = {'d1': d1, 'd2': d2}
+    >>> d5 = {'d1': d1, 'c':100}
+    >>> d6 = combine_dict((d4, d5))
+    >>> d6 == {'d1': {'a': 2, 'b': 4}, 'd2': d2, 'c': 100}
+    True
+    >>> combine_dict((d1, d2, d3)) == {'a': 4, 'b': 4, 'c': 2}
+    True
+    >>> combine_dict((d4, d5, d6)) == \
+    {'d1':{'a': 4,'b':8}, 'd2': {'a':2,'c':2}, 'c': 200}
+    True
+    """
+    if len(dicts) == 0:
+        return None
+    elif len(dicts) == 1:
+        return dicts[0]
+    elif len(dicts) == 2:
+        d1, d2 = dicts
+        res = {}
+        all_keys = set(list(d1.keys()) + list(d2.keys()))
+        for key in all_keys:
+            if key in d1 and key in d2:
+                if isinstance(d1[key], dict):
+                    res[key] = combine_dict((d1[key], d2[key]))
+                else:
+                    res[key] = d1[key] + d2[key]
+            elif key in d1:
+                res[key] = d1[key]
+            elif key in d2:
+                res[key] = d2[key]
+        return res
+    elif len(dicts) > 2:
+        l = len(dicts)
+        return combine_dict(
+            (combine_dict(dicts[:l//2]), combine_dict(dicts[l//2:])))

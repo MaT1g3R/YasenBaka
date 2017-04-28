@@ -7,7 +7,8 @@ from discord.ext import commands
 from core.file_system import fopen_generic, write_json
 from core.helpers import generate_image_online
 from core.wows_core.shell_handler import build_shame_embed, region_converter, \
-    find_player, generate_shamelist, process_add_shame, process_remove_shame
+    find_player, generate_shamelist, process_add_shame, process_remove_shame, \
+    process_clan
 from core.wows_core.wg_core import get_all_ship_tier
 from core.wows_core.wtr_core import warships_today_url, coeff_all_region
 
@@ -91,3 +92,18 @@ class WorldOfWarships:
         """Remove you from the shame shamelist"""
         process_remove_shame(ctx, self.bot.cursor, self.bot.conn)
         await self.bot.say('Remove success!')
+
+    @commands.command()
+    async def clan(self, query, region='NA'):
+        if region not in ['NA', 'EU', 'RU', 'AS']:
+            await self.bot.say('Region must be in ' + str(
+                ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
+        else:
+            r = region_converter(region,
+                                 False).value if region != 'NA' else 'na'
+            res = process_clan(self.api, region, query,
+                               coeff=self.data.coefficients[r],
+                               expected=self.data.expected[r],
+                               ship_dict=self.data.ship_dict[r])
+            await self.bot.say('Clan not found!') if res is None else \
+                await self.bot.say(embed=res)

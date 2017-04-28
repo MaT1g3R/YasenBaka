@@ -189,7 +189,6 @@ def info_builder(ctx, servers, all_members, all_channels, voice_clients,
         float(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
     ram = str(ram) + 'MB'
     lib_ver = version_info
-    colour = 0x4286f4
     author = {
         'name': user.name,
         'icon_url': '{0.avatar_url}'.format(user)
@@ -214,7 +213,7 @@ def info_builder(ctx, servers, all_members, all_channels, voice_clients,
     footer = 'Requested by {}'.format(
         ctx.message.author.display_name + '#' +
         ctx.message.author.discriminator)
-    return build_embed(k_v, colour, author=author, footer=footer)
+    return build_embed(k_v, 0x4286f4, author=author, footer=footer)
 
 
 def bash_script(command: list):

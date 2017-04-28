@@ -1,7 +1,8 @@
 COMMAND_LISTS = [
     ('Moderation', ['pmall', 'setprefix']),
 
-    ('World of Warships', ['shame', 'shamelist', 'addshame', 'removeshame']),
+    ('World of Warships',
+     ['shame', 'shamelist', 'addshame', 'removeshame', 'clan']),
 
     ('Fun',
      ['kyubey', 'roll', 'choose', 'salt', 'repeat', 'kanna', 'chensaw', 'lewd',
@@ -102,5 +103,8 @@ COMMANDS = {
     "konachan": "Search konachan for a picture. Tags are separated with spaces."
                 "\nExample usage: `{0}konachan haruna_(kancolle) wet`",
     "yandere": "Search yande.re for a picture. Tags are separated with spaces."
-               "\nExample usage: `{0}yandere konachan haruna_(kancolle) wet`"
+               "\nExample usage: `{0}yandere konachan haruna_(kancolle) wet`",
+    "clan": "Look for a World of Warships clan. Support all regions, "
+            "default is NA. The region codes are: 'NA', 'EU', 'RU', 'AS' "
+            "\nExample usage: `{0}clan ZR`,`{0}clan OMNI EU`"
 }

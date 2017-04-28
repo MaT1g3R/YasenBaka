@@ -1,6 +1,6 @@
 from wowspy.wowspy import Region, Wows
 
-from core.helpers import get_date
+from core.helpers import get_date, combine_dict
 
 
 def find_player_id(region: Region, api: Wows, name):
@@ -111,6 +111,20 @@ def player_ship_stats(region: Region, api, id_: int):
     return res
 
 
+def list_player_ship_stats(region: Region, api, id_: list):
+    """
+    Get combined ship stats for a list of players
+    :param region: the region
+    :param api: the wows api
+    :param id_: a list of player ids
+    :return: the combined ship stats of the list of players
+    """
+    res = []
+    for i in id_:
+        res.append(player_ship_stats(region, api, i))
+    return combine_dict(res)
+
+
 def find_clan_id(region: Region, api: Wows, search: str):
     """
     Search for a clan id
@@ -146,13 +160,3 @@ def get_player_clan_info(region: Region, api: Wows, id_: int):
     :return: the player's clan info
     """
     return api.player_clan_data(region, id_)['data'][str(id_)]
-
-
-if __name__ == '__main__':
-    from config.api import BETA_API
-    a = Wows(BETA_API['WoWs'])
-    c = find_clan_id(Region.NA, a, 'ZR')
-    print(get_clan_info(Region.NA, a, c))
-    # p = find_player_id(Region.NA, a, 'PotatoSquad')
-    # m = find_player_id(Region.NA, a, 'MaT1g3R')
-    # print(get_player_clan_info(Region.NA, a, p))
