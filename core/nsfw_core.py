@@ -34,6 +34,15 @@ def danbooru(search, api: Danbooru, cursor, connection):
     :param connection: the db connection
     :return: lewds
     """
+    if len(search) == 0:
+        try:
+            res = api.post_list(tags=' '.join(search), random=True, limit=1)
+        except PybooruAPIError:
+            return ERROR.format('Danbooru')
+        base = 'https://danbooru.donmai.us'
+        return base + res[0]['large_file_url'] \
+            if len(res) > 0 and 'large_file_url' in res[0] \
+            else SORRY
     if len(search) > 2:
         return 'You cannot search for more than 2 tags at a time'
     tag_finder_res = [tag_finder(t, 'danbooru', api, cursor, connection) for t in search]
@@ -56,8 +65,7 @@ def danbooru(search, api: Danbooru, cursor, connection):
         return fuzzy_string + base + res[0]['large_file_url'] \
             if len(res) > 0 and 'large_file_url' in res[0] \
             else SORRY
-    else:
-        return SORRY
+
 
 
 def tag_finder(tag, site, api: Danbooru, cursor, connection):
