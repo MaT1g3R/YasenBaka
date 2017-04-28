@@ -21,7 +21,7 @@ def find_player_id(region: Region, api: Wows, name):
     return warships_api_respose["data"][0]["account_id"]
 
 
-def all_time_stats(region: Region, api: Wows, id_: int):
+def all_time_stats(region: Region, api: Wows, id_):
     """
     Returns a detailed dictionary of the player's stats
     :param region: the region of the player
@@ -31,11 +31,15 @@ def all_time_stats(region: Region, api: Wows, id_: int):
     """
     all_time_response = api.player_personal_data(
         region, id_, fields='hidden_profile,statistics.pvp',
-        language='en')['data'][str(id_)]
-    if all_time_response['hidden_profile']:
+        language='en')['data']
+    no_hidden = {k: all_time_response[k] for k in all_time_response
+                 if all_time_response[k]['hidden_profile'] is False}
+
+    if no_hidden:
+        res = combine_dict(list(no_hidden.values()))
+        return res['statistics']['pvp']
+    else:
         return None
-    all_time_stats_ = all_time_response['statistics']['pvp']
-    return all_time_stats_
 
 
 def recent_stats(region: Region, api: Wows, id_: int, all_time_stats_: dict):
@@ -63,8 +67,8 @@ def recent_stats(region: Region, api: Wows, id_: int, all_time_stats_: dict):
                     recent_stats_[key] = all_time_stats_[key] - \
                                          date_stats[date][key]
             break
-    return recent_stats_ if 'battles' in recent_stats_ and recent_stats_[
-        'battles'] > 0 else None
+    return recent_stats_ if 'battles' in recent_stats_ \
+                            and recent_stats_['battles'] > 0 else None
 
 
 def get_ship_tier_dict(region: Region, api: Wows):
@@ -103,12 +107,25 @@ def player_ship_stats(region: Region, api, id_: int):
     :param id_: the player id
     :return: stats mapped to ship for the player
     """
-    res = {}
-    response = api.statistics_of_players_ships(
-        region, account_id=id_)['data'][str(id_)]
-    for d in response:
-        res[d['ship_id']] = d['pvp']
-    return res
+    hidden = api.player_personal_data(
+        region, id_, fields='hidden_profile',
+        language='en')['data'][str(id_)]
+    if hidden['hidden_profile']:
+        return None
+    else:
+        res = {}
+        response = api.statistics_of_players_ships(
+            region, account_id=id_,
+            fields='pvp.battles,pvp.damage_dealt,pvp.wins,'
+                   'pvp.survived_battles,pvp.torpedoes,pvp.frags,'
+                   'pvp.main_battery,pvp.second_battery,pvp.ships_spotted,'
+                   'pvp.planes_killed,pvp.xp,pvp.capture_points,'
+                   'pvp.dropped_capture_points,ship_id',
+            language='en')
+        response = response['data'][str(id_)]
+        for d in response:
+            res[d['ship_id']] = d['pvp']
+        return res
 
 
 def list_player_ship_stats(region: Region, api, id_: list):
@@ -121,8 +138,14 @@ def list_player_ship_stats(region: Region, api, id_: list):
     """
     res = []
     for i in id_:
-        res.append(player_ship_stats(region, api, i))
-    return combine_dict(res)
+        try:
+            temp = player_ship_stats(region, api, i)
+            if temp is not None:
+                res.append(temp)
+        except KeyError:
+            continue
+    res = combine_dict(res)
+    return res
 
 
 def find_clan_id(region: Region, api: Wows, search: str):

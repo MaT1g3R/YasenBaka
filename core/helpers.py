@@ -171,7 +171,14 @@ def combine_dict(dicts):
                 if isinstance(d1[key], dict):
                     res[key] = combine_dict((d1[key], d2[key]))
                 else:
-                    res[key] = d1[key] + d2[key]
+                    a, b = d1[key], d2[key]
+                    if a is not None and b is not None:
+                        s = a + b
+                    elif a is not None:
+                        s = a
+                    else:
+                        s = b
+                    res[key] = s
             elif key in d1:
                 res[key] = d1[key]
             elif key in d2:

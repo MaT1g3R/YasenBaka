@@ -99,11 +99,12 @@ class WorldOfWarships:
             await self.bot.say('Region must be in ' + str(
                 ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
         else:
+            msg = await self.bot.say('Loading...')
             r = region_converter(region,
                                  False).value if region != 'NA' else 'na'
-            res = process_clan(self.api, region, query,
-                               coeff=self.data.coefficients[r],
-                               expected=self.data.expected[r],
-                               ship_dict=self.data.ship_dict[r])
-            await self.bot.say('Clan not found!') if res is None else \
+            res = process_clan(self.api, region, query)
+            if res is None:
+                await self.bot.edit_message(msg, 'Clan not found!')
+            else:
+                await self.bot.delete_message(msg)
                 await self.bot.say(embed=res)

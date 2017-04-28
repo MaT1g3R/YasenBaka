@@ -235,25 +235,18 @@ def process_remove_shame(ctx, cursor, connection):
     remove_shame(cursor, connection, server_id, user_id)
 
 
-def build_clan_embed(region: Region, api: Wows, id_, expected, coeff,
-                     ship_dict):
+def build_clan_embed(region: Region, api: Wows, id_):
     """
     Build an embed for clan info
     :param region: the region
     :param api: the wows api
     :param id_: the clan id
-    :param expected: the expected server values from warships today
-    :param coeff: the coefficents used from warships today
-    :param ship_dict: a dict of {ship_id: tier}
     :return: the discord embed of the clan
     """
     clan_info = get_clan_info(region, api, id_)
     members_ids = clan_info['members_ids']
-    total_ship_stats = list_player_ship_stats(api=api, region=region,
-                                              id_=members_ids)
-    clan_wtr = wtr_absolute(expected=expected, coeff=coeff,
-                            actual=total_ship_stats, ship_dict=ship_dict)
-    total_stats = combine_dict(list(total_ship_stats.values()))
+    total_stats = all_time_stats(api=api, region=region, id_=members_ids)
+
     battles = total_stats['battles']
     damage_dealt = total_stats['damage_dealt']
     wins = total_stats['wins']
@@ -284,17 +277,17 @@ def build_clan_embed(region: Region, api: Wows, id_, expected, coeff,
     author = {
         'name': clan_info['name']
     }
-
+    des = 'None' if clan_info['description'] == ''\
+        else clan_info['description']
     body = [
         ('Tag', clan_info['tag']),
-        ('Description', clan_info['description']),
+        ('Description', des),
         ('Active', str(not clan_info['is_clan_disbanded'])),
         ('Created At', timestamp_to_string(clan_info['created_at'])),
         ('Creator', clan_info['creator_name']),
         ('Leader', clan_info['leader_name']),
         ('Members Count', str(clan_info['members_count'])),
-        ('Clan Average Stats', comma(battles) + ' Battles', False),
-        ('WTR', comma(clan_wtr)),
+        ('Clan Average Stats', 'In total of ' + comma(battles) + ' Battles', False),
         ('Win Rate', win_rate),
         ('Average Damage', average_damage),
         ('Average Experience', average_xp),
@@ -307,21 +300,17 @@ def build_clan_embed(region: Region, api: Wows, id_, expected, coeff,
         ('Survival Rate', survival_rate),
         ('Kills/Deaths', kda)
     ]
-    return build_embed(body, choose_colour(clan_wtr), author=author)
+    return build_embed(body, 0x4286f4, author=author)
 
 
-def process_clan(api: Wows, region, search, expected, coeff, ship_dict):
+def process_clan(api: Wows, region, search):
     """
     process a clan search
     :param api: the wows api
     :param region: the region
     :param search: the search query
-    :param expected: the expected server values from warships today
-    :param coeff: the coefficents used from warships today
-    :param ship_dict: a dict of {ship_id: tier}
     :return: the clan embed 
     """
     region = region_converter(region, False)
     id_ = find_clan_id(region, api, search)
-    return None if id_ is None else build_clan_embed(region, api, id_, expected,
-                                                     coeff, ship_dict)
+    return None if id_ is None else build_clan_embed(region, api, id_)
