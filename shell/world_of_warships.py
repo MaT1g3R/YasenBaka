@@ -44,6 +44,7 @@ class WorldOfWarships:
             await self.bot.say('Region must be in ' + str(
                 ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
             return
+        loading = await self.bot.say('Loading...')
         region, player_id = find_player(
             ctx, self.bot.cursor, user_name,
             region_converter(region, False), self.api)
@@ -55,6 +56,7 @@ class WorldOfWarships:
                                   coefficients=self.data.coefficients[r],
                                   expected=self.data.expected[r],
                                   ship_dict=self.data.ship_dict[r])
+        await self.bot.delete_message(loading)
         if embed is None:
             fn = generate_image_online(warships_today_url(r, player_id),
                                        join('data', 'dark.png'))
