@@ -29,8 +29,10 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
             region, id_, language='en', fields='nickname'
         )['data'][str(id_)]['nickname']
         player_clan_info = get_player_clan_info(region, api, id_)
-        clan = get_clan_info(region, api, player_clan_info['clan_id']) if \
-            player_clan_info is not None else None
+        clan_id = player_clan_info['clan_id'] if player_clan_info is not None \
+            else None
+        clan = get_clan_info(region, api, clan_id) if \
+            clan_id is not None else None
         clan_tag = clan['tag'] if clan is not None else 'None'
         battles = all_time_stats_['battles']
         ship_stats = player_ship_stats(region, api, id_)
