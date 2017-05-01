@@ -274,7 +274,7 @@ def build_clan_embed(region: Region, api: Wows, id_):
     second_hit_rate = '{0:.2f}'.format(100 * second_hits / second_shots) + '%'
     torp_hit_rate = '{0:.2f}'.format(100 * torp_hits / torp_shots) + '%'
     survival_rate = '{0:.2f}'.format(100 * survived_battles / battles) + '%'
-    kda = '{0:.2f}'.format(survived_battles / (battles - survived_battles))
+    kda = '{0:.2f}'.format(kills / (battles - survived_battles))
 
     author = {
         'name': clan_info['name']
