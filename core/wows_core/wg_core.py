@@ -89,12 +89,12 @@ def get_all_ship_tier(api: Wows):
     """
     na = api.warships(api.region.NA, language='en', fields='tier')['data']
     eu = api.warships(api.region.EU, language='en', fields='tier')['data']
-    ru = api.warships(api.region.RU, language='en', fields='tier')['data']
+    # ru = api.warships(api.region.RU, language='en', fields='tier')['data']
     asia = api.warships(api.region.AS, language='en', fields='tier')['data']
     return {
         'na': na,
         'eu': eu,
-        'ru': ru,
+        'ru': None,
         'asia': asia
     }
 

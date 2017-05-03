@@ -4,6 +4,7 @@ The yasen bot object
 import asyncio
 
 from discord.ext.commands import Bot, CommandOnCooldown
+from discord import game
 
 from core.discord_functions import message_sender
 from core.helpers import split_text
@@ -15,7 +16,7 @@ class Yasen(Bot):
     """
 
     def __init__(self, default_prefix, prefix, description,
-                 data, cursor, connection):
+                 data, cursor, connection, shard_count=1, shard_id=0):
         """
         Initialize a bot object
         :param default_prefix: the default prefix for the bot
@@ -25,11 +26,14 @@ class Yasen(Bot):
         :param cursor: the database cursor
         :param connection: the database conn
         """
-        super().__init__(command_prefix=prefix, description=description)
+        super().__init__(command_prefix=prefix, description=description,
+                         shard_count=shard_count, shard_id=shard_id)
         self.default_prefix = default_prefix
         self.data = data
         self.cursor = cursor
         self.conn = connection
+        self.shard_count = shard_count
+        self.shard_id = shard_id
 
     def start_bot(self, cogs):
         """
@@ -86,3 +90,18 @@ class Yasen(Bot):
             await message_sender(self, context.message.channel, str(exception))
         else:
             raise exception
+
+    async def on_ready(self):
+        """
+        Event for when bot is ready
+        :return: nothing
+        :rtype: None
+        """
+        g = '{}/{} | ?help'.format(self.shard_id + 1, self.shard_count)
+        print('Logged in as')
+        print(self.user.name)
+        print(self.user.id)
+        print('------')
+        await self.change_presence(game=game.Game(name=g))
+        if self.data.avatar is not None:
+            await self.edit_profile(avatar=self.data.avatar)
