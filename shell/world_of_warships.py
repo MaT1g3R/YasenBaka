@@ -97,6 +97,13 @@ class WorldOfWarships:
 
     @commands.command()
     async def clan(self, query, region='NA'):
+        await self.clan_helper(query, region)
+
+    @commands.command()
+    async def clanwtr(self, query, region='NA'):
+        await self.clan_helper(query, region, True)
+
+    async def clan_helper(self, query, region='NA', is_wtr=False):
         if region not in ['NA', 'EU', 'RU', 'AS']:
             await self.bot.say('Region must be in ' + str(
                 ['NA', 'EU', 'RU', 'AS']) + ' or blank for default(NA)')
@@ -104,7 +111,11 @@ class WorldOfWarships:
             msg = await self.bot.say('Loading...')
             r = region_converter(region,
                                  False).value if region != 'NA' else 'na'
-            res = process_clan(self.api, region, query)
+            res = process_clan(self.api, region, query) if not is_wtr else \
+                process_clan(self.api, region, query,
+                             coefficients=self.data.coefficients[r],
+                             expected=self.data.expected[r],
+                             ship_dict=self.data.ship_dict[r])
             if res is None:
                 await self.bot.edit_message(msg, 'Clan not found!')
             else:

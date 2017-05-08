@@ -1,3 +1,5 @@
+from multiprocessing.dummy import Pool
+
 from wowspy.wowspy import Region, Wows
 
 from core.helpers import get_date, combine_dict
@@ -89,12 +91,12 @@ def get_all_ship_tier(api: Wows):
     """
     na = api.warships(api.region.NA, language='en', fields='tier')['data']
     eu = api.warships(api.region.EU, language='en', fields='tier')['data']
-    # ru = api.warships(api.region.RU, language='en', fields='tier')['data']
+    ru = api.warships(api.region.RU, language='en', fields='tier')['data']
     asia = api.warships(api.region.AS, language='en', fields='tier')['data']
     return {
         'na': na,
         'eu': eu,
-        'ru': None,
+        'ru': ru,
         'asia': asia
     }
 
@@ -107,25 +109,22 @@ def player_ship_stats(region: Region, api, id_: int):
     :param id_: the player id
     :return: stats mapped to ship for the player
     """
-    hidden = api.player_personal_data(
-        region, id_, fields='hidden_profile',
-        language='en')['data'][str(id_)]
-    if hidden['hidden_profile']:
-        return None
-    else:
-        res = {}
-        response = api.statistics_of_players_ships(
-            region, account_id=id_,
-            fields='pvp.battles,pvp.damage_dealt,pvp.wins,'
-                   'pvp.survived_battles,pvp.torpedoes,pvp.frags,'
-                   'pvp.main_battery,pvp.second_battery,pvp.ships_spotted,'
-                   'pvp.planes_killed,pvp.xp,pvp.capture_points,'
-                   'pvp.dropped_capture_points,ship_id',
-            language='en')
+    res = {}
+    response = api.statistics_of_players_ships(
+        region, account_id=id_,
+        fields='pvp.battles,pvp.damage_dealt,pvp.wins,'
+               'pvp.survived_battles,pvp.torpedoes,pvp.frags,'
+               'pvp.main_battery,pvp.second_battery,pvp.ships_spotted,'
+               'pvp.planes_killed,pvp.xp,pvp.capture_points,'
+               'pvp.dropped_capture_points,ship_id',
+        language='en')
+    try:
         response = response['data'][str(id_)]
         for d in response:
             res[d['ship_id']] = d['pvp']
-        return res
+    except KeyError:
+        res = None
+    return res
 
 
 def list_player_ship_stats(region: Region, api, id_: list):
@@ -136,16 +135,10 @@ def list_player_ship_stats(region: Region, api, id_: list):
     :param id_: a list of player ids
     :return: the combined ship stats of the list of players
     """
-    res = []
-    for i in id_:
-        try:
-            temp = player_ship_stats(region, api, i)
-            if temp is not None:
-                res.append(temp)
-        except KeyError:
-            continue
-    res = combine_dict(res)
-    return res
+    pool = Pool()
+    args = ((region, api, i) for i in id_)
+    res = pool.starmap(player_ship_stats, args)
+    return combine_dict(res)
 
 
 def find_clan_id(region: Region, api: Wows, search: str):

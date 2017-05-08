@@ -158,6 +158,7 @@ def combine_dict(dicts):
     {'d1':{'a': 4,'b':8}, 'd2': {'a':2,'c':2}, 'c': 200}
     True
     """
+    dicts = [d for d in dicts if d is not None]
     if len(dicts) == 0:
         return None
     elif len(dicts) == 1:
@@ -172,13 +173,11 @@ def combine_dict(dicts):
                     res[key] = combine_dict((d1[key], d2[key]))
                 else:
                     a, b = d1[key], d2[key]
-                    if a is not None and b is not None:
-                        s = a + b
-                    elif a is not None:
-                        s = a
-                    else:
-                        s = b
-                    res[key] = s
+                    if not isinstance(a, (int, float)):
+                        a = 0
+                    if not isinstance(b, (int, float)):
+                        b = 0
+                    res[key] = a + b
             elif key in d1:
                 res[key] = d1[key]
             elif key in d2:
@@ -187,4 +186,4 @@ def combine_dict(dicts):
     elif len(dicts) > 2:
         l = len(dicts)
         return combine_dict(
-            (combine_dict(dicts[:l//2]), combine_dict(dicts[l//2:])))
+            (combine_dict(dicts[:l // 2]), combine_dict(dicts[l // 2:])))
