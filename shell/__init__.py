@@ -3,8 +3,6 @@
 import sqlite3
 from os.path import join
 
-from discord import game
-
 # Core imports
 from core import data_factory
 from core.command_handler import get_prefix
