@@ -122,7 +122,7 @@ def player_ship_stats(region: Region, api, id_: int):
         response = response['data'][str(id_)]
         for d in response:
             res[d['ship_id']] = d['pvp']
-    except KeyError:
+    except (KeyError, TypeError):
         res = None
     return res
 
