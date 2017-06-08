@@ -1,13 +1,13 @@
-from wowspy.wowspy import Wows, Region
+from wowspy.wowspy import Region, Wows
 
-from core.data_controller import \
-    get_shame_list, get_shame, write_shame, remove_shame
-from core.discord_functions import get_server_id, build_embed
+from core.data_controller import get_shame, get_shame_list, remove_shame, \
+    write_shame
+from core.discord_functions import build_embed, get_server_id
 from core.helpers import comma, timestamp_to_string
-from core.wows_core.wg_core import all_time_stats, find_player_id, \
-    player_ship_stats, recent_stats, get_player_clan_info, get_clan_info, \
-    find_clan_id, list_player_ship_stats
-from core.wows_core.wtr_core import wtr_absolute, choose_colour
+from core.wows_core.wg_core import all_time_stats, find_clan_id, \
+    find_player_id, get_clan_info, get_player_clan_info, \
+    list_player_ship_stats, player_ship_stats, recent_stats
+from core.wows_core.wtr_core import choose_colour, wtr_absolute
 
 
 def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
@@ -57,7 +57,7 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
         # max_planes_killed = str(all_time_stats['max_planes_killed'])
         colour = choose_colour(wtr)
         author = {
-            'name': nick_name + ' Clan: ' + clan_tag
+            'name': nick_name + ' Clan: ' + clan_tag + ' <-- click on me!'
         }
         k_v = []
         if battles > 0:
@@ -113,7 +113,13 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
                 ]
         else:
             k_v += [('Error', 'The player doesn\'t have any battles played')]
-        return build_embed(k_v, colour, author=author)
+        _region = region.value
+        if _region == 'com':
+            _region = 'na'
+        return build_embed(
+            k_v, colour, author=author,
+            url=f'https://{_region}.warships.today/player/{id_}/{nick_name}'
+        )
     else:
         return None
 

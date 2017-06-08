@@ -1,10 +1,9 @@
 """
 The yasen bot object
 """
-import asyncio
 
-from discord.ext.commands import Bot, CommandOnCooldown
 from discord import game
+from discord.ext.commands import Bot, CommandOnCooldown
 
 from core.discord_functions import message_sender
 from core.helpers import split_text
@@ -79,7 +78,6 @@ class Yasen(Bot):
         """
         return '<@!%s>' % self.user.id
 
-    @asyncio.coroutine
     async def on_command_error(self, exception, context):
         """
         Custom command error handling
@@ -97,7 +95,9 @@ class Yasen(Bot):
         :return: nothing
         :rtype: None
         """
-        g = '{}/{} | ?help'.format(self.shard_id + 1, self.shard_count)
+        g = '{}help'.format(self.default_prefix)
+        if self.shard_count > 1:
+            g = '{}/{} | '.format(self.shard_id + 1, self.shard_count) + g
         print('Logged in as')
         print(self.user.name)
         print(self.user.id)
