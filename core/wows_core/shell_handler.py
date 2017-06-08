@@ -57,7 +57,7 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
         # max_planes_killed = str(all_time_stats['max_planes_killed'])
         colour = choose_colour(wtr)
         author = {
-            'name': nick_name + ' Clan: ' + clan_tag + ' <-- click on me!'
+            'name': nick_name + ' | Clan: ' + clan_tag + ' <-- click on me!'
         }
         k_v = []
         if battles > 0:
