@@ -1,6 +1,6 @@
 """Handles mointoring of text channels"""
 from core.channel_reader_core import check_message, check_message_startwith,\
-    clean_message, linux_meme, interject
+    clean_message, linux_meme, interject, arch_meme
 from core.program_o import chat_response
 from core.command_handler import get_prefix
 
@@ -35,7 +35,10 @@ class ChannelReader:
                 check_message_startwith(self.bot, message, self.bot.bot_id())\
                 else self.bot.bot_nick()
             cleaned = clean_message(message, prefix)
-            if linux_meme(cleaned):
+            if arch_meme(cleaned):
+                await self.bot.send_message(
+                    message.channel, 'Btw I use Arch Linux')
+            elif linux_meme(cleaned):
                 await self.bot.send_message(message.channel, interject())
             else:
                 res = chat_response(cleaned, message.author.id)
