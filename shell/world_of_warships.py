@@ -6,11 +6,11 @@ from discord.ext import commands
 
 from core.file_system import fopen_generic, write_json
 from core.helpers import generate_image_online
-from core.wows_core.shell_handler import build_shame_embed, region_converter, \
-    find_player, generate_shamelist, process_add_shame, process_remove_shame, \
-    process_clan
+from core.wows_core.shell_handler import build_shame_embed, find_player, \
+    generate_shamelist, process_add_shame, process_clan, process_remove_shame, \
+    region_converter
 from core.wows_core.wg_core import get_all_ship_tier
-from core.wows_core.wtr_core import warships_today_url, coeff_all_region
+from core.wows_core.wtr_core import coeff_all_region, warships_today_url
 
 
 class WorldOfWarships:
@@ -49,20 +49,20 @@ class WorldOfWarships:
             ctx, self.bot.cursor, user_name,
             region_converter(region, False), self.api)
         if player_id is None:
-            await self.bot.say('Cannot find player!')
+            await self.bot.edit_message(loading, 'Cannot find player!')
             return
         r = region.value if region.value != 'com' else 'na'
         embed = build_shame_embed(region, self.api, player_id,
                                   coefficients=self.data.coefficients[r],
                                   expected=self.data.expected[r],
                                   ship_dict=self.data.ship_dict[r])
-        await self.bot.delete_message(loading)
         if embed is None:
             fn = generate_image_online(warships_today_url(r, player_id),
                                        join('data', 'dark.png'))
             await self.bot.send_file(ctx.message.channel, fn)
         else:
             await self.bot.say(embed=embed)
+        await self.bot.delete_message(loading)
 
     @commands.command(pass_context=True, no_pm=True)
     async def shamelist(self, ctx):
@@ -119,5 +119,5 @@ class WorldOfWarships:
             if res is None:
                 await self.bot.edit_message(msg, 'Clan not found!')
             else:
-                await self.bot.delete_message(msg)
                 await self.bot.say(embed=res)
+                await self.bot.delete_message(msg)
