@@ -9,7 +9,7 @@ pmall, setprefix
 ```
 * #### World of Warship commands:
 ```
-addshame, removeshame, shame, shamelist
+addshame, clan, clanwtr, removeshame, shame, shamelist
 ```
 
 * #### Fun commadns:  

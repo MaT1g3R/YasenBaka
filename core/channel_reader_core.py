@@ -46,6 +46,10 @@ def clean_message(message, prefix):
     return res
 
 
+def arch_meme(text: str):
+    return 'arch' in text.lower()
+
+
 def linux_meme(text: str):
     """
     I'd just like to interject for a moment.

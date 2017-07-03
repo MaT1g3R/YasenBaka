@@ -20,7 +20,8 @@ class Nsfw:
     async def danbooru(self, *query: str):
         if len(query) == 0:
             await self.bot.say(self.random)
-        await self.bot.say(danbooru(query, self.bot.data.danbooru))
+        await self.bot.say(danbooru(query, self.bot.data.danbooru,
+                                    self.bot.cursor, self.bot.conn))
 
     @commands.command()
     @commands.check(is_nsfw)

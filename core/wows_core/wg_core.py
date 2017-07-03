@@ -1,6 +1,8 @@
+from multiprocessing.dummy import Pool
+
 from wowspy.wowspy import Region, Wows
 
-from core.helpers import get_date
+from core.helpers import get_date, combine_dict
 
 
 def find_player_id(region: Region, api: Wows, name):
@@ -21,7 +23,7 @@ def find_player_id(region: Region, api: Wows, name):
     return warships_api_respose["data"][0]["account_id"]
 
 
-def all_time_stats(region: Region, api: Wows, id_: int):
+def all_time_stats(region: Region, api: Wows, id_):
     """
     Returns a detailed dictionary of the player's stats
     :param region: the region of the player
@@ -31,11 +33,15 @@ def all_time_stats(region: Region, api: Wows, id_: int):
     """
     all_time_response = api.player_personal_data(
         region, id_, fields='hidden_profile,statistics.pvp',
-        language='en')['data'][str(id_)]
-    if all_time_response['hidden_profile']:
+        language='en')['data']
+    no_hidden = {k: all_time_response[k] for k in all_time_response
+                 if all_time_response[k]['hidden_profile'] is False}
+
+    if no_hidden:
+        res = combine_dict(list(no_hidden.values()))
+        return res['statistics']['pvp']
+    else:
         return None
-    all_time_stats_ = all_time_response['statistics']['pvp']
-    return all_time_stats_
 
 
 def recent_stats(region: Region, api: Wows, id_: int, all_time_stats_: dict):
@@ -63,8 +69,8 @@ def recent_stats(region: Region, api: Wows, id_: int, all_time_stats_: dict):
                     recent_stats_[key] = all_time_stats_[key] - \
                                          date_stats[date][key]
             break
-    return recent_stats_ if 'battles' in recent_stats_ and recent_stats_[
-        'battles'] > 0 else None
+    return recent_stats_ if 'battles' in recent_stats_ \
+                            and recent_stats_['battles'] > 0 else None
 
 
 def get_ship_tier_dict(region: Region, api: Wows):
@@ -105,10 +111,34 @@ def player_ship_stats(region: Region, api, id_: int):
     """
     res = {}
     response = api.statistics_of_players_ships(
-        region, account_id=id_)['data'][str(id_)]
-    for d in response:
-        res[d['ship_id']] = d['pvp']
+        region, account_id=id_,
+        fields='pvp.battles,pvp.damage_dealt,pvp.wins,'
+               'pvp.survived_battles,pvp.torpedoes,pvp.frags,'
+               'pvp.main_battery,pvp.second_battery,pvp.ships_spotted,'
+               'pvp.planes_killed,pvp.xp,pvp.capture_points,'
+               'pvp.dropped_capture_points,ship_id',
+        language='en')
+    try:
+        response = response['data'][str(id_)]
+        for d in response:
+            res[d['ship_id']] = d['pvp']
+    except (KeyError, TypeError):
+        res = None
     return res
+
+
+def list_player_ship_stats(region: Region, api, id_: list):
+    """
+    Get combined ship stats for a list of players
+    :param region: the region
+    :param api: the wows api
+    :param id_: a list of player ids
+    :return: the combined ship stats of the list of players
+    """
+    pool = Pool()
+    args = ((region, api, i) for i in id_)
+    res = pool.starmap(player_ship_stats, args)
+    return combine_dict(res)
 
 
 def find_clan_id(region: Region, api: Wows, search: str):
@@ -137,8 +167,12 @@ def get_clan_info(region: Region, api: Wows, id_: int):
         language='en')['data'][str(id_)]
 
 
-if __name__ == '__main__':
-    from config.api import BETA_API
-    a = Wows(BETA_API['WoWs'])
-    i = find_clan_id(Region.NA, a, 'ZR')
-    print(get_clan_info(Region.NA, a, i))
+def get_player_clan_info(region: Region, api: Wows, id_: int):
+    """
+    Get player's clan info
+    :param region: th region
+    :param api: wows api
+    :param id_: the player id
+    :return: the player's clan info
+    """
+    return api.player_clan_data(region, id_)['data'][str(id_)]

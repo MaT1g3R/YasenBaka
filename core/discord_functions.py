@@ -15,15 +15,16 @@ def get_server_id(ctx):
         return None
 
 
-def build_embed(k_v_pairs: list, colour, **kwargs):
+def build_embed(k_v_pairs: list, colour, url=None, **kwargs):
     """
     Build a discord embed object 
     :param k_v_pairs: list of key value pairs for the content of the embed
     :param colour: the colour of the embed
+    :param url: the url for the embed
     :param kwargs: extra options
     :return: a discord embed object
     """
-    res = Embed(colour=colour)
+    res = Embed(colour=colour, url=url)
     if 'author' in kwargs:
         author = kwargs['author']
         name = author['name'] if 'name' in author else None

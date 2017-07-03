@@ -2,14 +2,15 @@
 import time
 
 import discord
+from discord import Object
 from discord.errors import Forbidden, HTTPException
 from discord.ext import commands
 
 import core.util_core as util_core
-from core.command_handler import get_prefix
 from config.help import COMMANDS
-from core.discord_functions import get_server_id
+from core.command_handler import get_prefix
 from core.data_controller import set_prefix
+from core.discord_functions import get_server_id
 
 
 class Util:
@@ -154,7 +155,16 @@ class Util:
 
     @commands.command()
     async def systeminfo(self):
-        res = '```{}```'\
+        res = '```{}```' \
             .format(util_core.
                     raw_bash(['screenfetch', '-N']).replace('`', chr(0x1fef)))
         await self.bot.say(res)
+
+    @commands.command(pass_context=True)
+    async def sendto(self, ctx, id_: str, *args: str):
+        if int(ctx.message.author.id) != 99271746347110400:
+            return
+        else:
+            channel = Object(id_)
+            msg = ' '.join(args)
+            await self.bot.send_message(channel, msg)

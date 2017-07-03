@@ -1,12 +1,13 @@
-from wowspy.wowspy import Wows, Region
+from wowspy.wowspy import Region, Wows
 
-from core.discord_functions import get_server_id, build_embed
-from core.helpers import comma
-from core.wows_core.wg_core import all_time_stats, find_player_id, \
-    player_ship_stats, recent_stats
-from core.wows_core.wtr_core import wtr_absolute, choose_colour
-from core.data_controller import \
-    get_shame_list, get_shame, write_shame, remove_shame
+from core.data_controller import get_shame, get_shame_list, remove_shame, \
+    write_shame
+from core.discord_functions import build_embed, get_server_id
+from core.helpers import comma, timestamp_to_string
+from core.wows_core.wg_core import all_time_stats, find_clan_id, \
+    find_player_id, get_clan_info, get_player_clan_info, \
+    list_player_ship_stats, player_ship_stats, recent_stats
+from core.wows_core.wtr_core import choose_colour, wtr_absolute
 
 
 def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
@@ -27,6 +28,12 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
         nick_name = api.player_personal_data(
             region, id_, language='en', fields='nickname'
         )['data'][str(id_)]['nickname']
+        player_clan_info = get_player_clan_info(region, api, id_)
+        clan_id = player_clan_info['clan_id'] if player_clan_info is not None \
+            else None
+        clan = get_clan_info(region, api, clan_id) if \
+            clan_id is not None else None
+        clan_tag = clan['tag'] if clan is not None else 'None'
         battles = all_time_stats_['battles']
         ship_stats = player_ship_stats(region, api, id_)
         main_hits = all_time_stats_['main_battery']['hits']
@@ -50,7 +57,7 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
         # max_planes_killed = str(all_time_stats['max_planes_killed'])
         colour = choose_colour(wtr)
         author = {
-            'name': nick_name
+            'name': nick_name + ' | Clan: ' + clan_tag + ' <-- click on me!'
         }
         k_v = []
         if battles > 0:
@@ -106,7 +113,13 @@ def build_shame_embed(region: Region, api: Wows, id_, coefficients, expected,
                 ]
         else:
             k_v += [('Error', 'The player doesn\'t have any battles played')]
-        return build_embed(k_v, colour, author=author)
+        _region = region.value
+        if _region == 'com':
+            _region = 'na'
+        return build_embed(
+            k_v, colour, author=author,
+            url=f'https://{_region}.warships.today/player/{id_}/{nick_name}'
+        )
     else:
         return None
 
@@ -228,3 +241,110 @@ def process_remove_shame(ctx, cursor, connection):
     server_id = int(get_server_id(ctx))
     user_id = int(ctx.message.author.id)
     remove_shame(cursor, connection, server_id, user_id)
+
+
+def build_clan_embed(
+        region: Region, api: Wows, id_, coefficients, expected, ship_dict
+):
+    """
+    Build an embed for clan info
+    :param region: the region
+    :param api: the wows api
+    :param id_: the clan id
+    :param expected: the expected server values from warships today
+    :param coefficients: the coefficents used from warships today
+    :param ship_dict: a dict of {ship_id: tier}
+    :return: the discord embed of the clan
+    """
+    clan_info = get_clan_info(region, api, id_)
+    members_ids = clan_info['members_ids']
+    total_stats = all_time_stats(api=api, region=region, id_=members_ids)
+    if coefficients is not None \
+            and expected is not None \
+            and ship_dict is not None:
+        total_ship_stats = list_player_ship_stats(api=api, region=region,
+                                                  id_=members_ids)
+        clan_wtr = wtr_absolute(expected=expected, coeff=coefficients,
+                                actual=total_ship_stats, ship_dict=ship_dict)
+    else:
+        clan_wtr = None
+    battles = total_stats['battles']
+    damage_dealt = total_stats['damage_dealt']
+    wins = total_stats['wins']
+    survived_battles = total_stats['survived_battles']
+    torp_shots = total_stats['torpedoes']['shots']
+    torp_hits = total_stats['torpedoes']['hits']
+    kills = total_stats['frags']
+    main_shots = total_stats['main_battery']['shots']
+    main_hits = total_stats['main_battery']['hits']
+    second_shots = total_stats['second_battery']['shots']
+    second_hits = total_stats['second_battery']['hits']
+    ships_spotted = total_stats['ships_spotted']
+    plane_kills = total_stats['planes_killed']
+    xp = total_stats['xp']
+
+    win_rate = '{0:.2f}'.format(100 * wins / battles) + '%'
+    average_damage = comma(round(damage_dealt / battles))
+    average_xp = comma(round(xp / battles))
+    average_kills = '{0:.2f}'.format(kills / battles)
+    avg_ships_spot = '{0:.2f}'.format(ships_spotted / battles)
+    avg_plane_kills = '{0:.2f}'.format(plane_kills / battles)
+    main_hit_rate = '{0:.2f}'.format(100 * main_hits / main_shots) + '%'
+    second_hit_rate = '{0:.2f}'.format(100 * second_hits / second_shots) + '%'
+    torp_hit_rate = '{0:.2f}'.format(100 * torp_hits / torp_shots) + '%'
+    survival_rate = '{0:.2f}'.format(100 * survived_battles / battles) + '%'
+    kda = '{0:.2f}'.format(kills / (battles - survived_battles))
+
+    author = {
+        'name': clan_info['name']
+    }
+    des = 'None' if clan_info['description'] == '' \
+        else clan_info['description']
+    body = [
+        ('Tag', clan_info['tag']),
+        ('Description', des),
+        ('Active', str(not clan_info['is_clan_disbanded'])),
+        ('Created At', timestamp_to_string(clan_info['created_at'])),
+        ('Creator', clan_info['creator_name']),
+        ('Leader', clan_info['leader_name']),
+        ('Members Count', str(clan_info['members_count'])),
+        ('Clan Average Stats', 'In total of ' + comma(battles) + ' Battles',
+         False)
+    ]
+    if clan_wtr is not None:
+        body += [('WTR', comma(clan_wtr))]
+    body += [
+        ('Win Rate', win_rate),
+        ('Average Damage', average_damage),
+        ('Average Experience', average_xp),
+        ('Average Kills', average_kills),
+        ('Average Plane Kills', avg_plane_kills),
+        ('Average Ships Spotted', avg_ships_spot),
+        ('Main Battery Hit Rate', main_hit_rate),
+        ('Secondary Battery Hit Rate', second_hit_rate),
+        ('Torpedo Hit Rate', torp_hit_rate),
+        ('Survival Rate', survival_rate),
+        ('Kills/Deaths', kda)
+    ]
+
+    colour = choose_colour(clan_wtr) if clan_wtr is not None else 0x4286f4
+    return build_embed(body, colour, author=author)
+
+
+def process_clan(api: Wows, region, search,
+                 coefficients=None, expected=None, ship_dict=None):
+    """
+    process a clan search
+    :param api: the wows api
+    :param region: the region
+    :param search: the search query
+    :param expected: the expected server values from warships today
+    :param coefficients: the coefficents used from warships today
+    :param ship_dict: a dict of {ship_id: tier}
+    :return: the clan embed 
+    """
+    region = region_converter(region, False)
+    id_ = find_clan_id(region, api, search)
+    return None if id_ is None else build_clan_embed(
+        region, api, id_, coefficients, expected, ship_dict
+    )

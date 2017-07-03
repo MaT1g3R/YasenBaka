@@ -1,4 +1,5 @@
 import json
+from threading import Thread
 
 import requests
 
@@ -133,30 +134,45 @@ def wtr_absolute(expected, coeff, actual: dict, ship_dict):
     :param ship_dict: dict of ship_id mapped to ship tier
     :return: the wtr of the player
     """
-    total = 0
-    battles = 0
+    total = []
+    battles = []
     for d in expected:
         ship_id = d['ship_id']
         if ship_id not in actual:
             continue
-        tier = ship_dict[str(ship_id)]['tier'] if str(ship_id) in ship_dict \
-            else 7.5
-        stats = actual[ship_id]
-        temp_b = stats['battles']
-        if temp_b > 0:
-            stats_for_calc = {
-                "capture_points": stats['capture_points'] / temp_b,
-                "planes_killed": stats['planes_killed'] / temp_b,
-                "damage_dealt": stats['damage_dealt'] / temp_b,
-                "frags": stats['frags'] / temp_b,
-                "dropped_capture_points":
-                    stats['dropped_capture_points'] / temp_b,
-                "wins": stats['wins'] / temp_b
-            }
-            wtr = calc_wtr(d, stats_for_calc, coeff, tier)
-            total += wtr * temp_b
-            battles += temp_b
-    return round(total / max(battles, 1))
+        else:
+            t = Thread(
+                target=__wtr, args=(
+                    d, ship_id, actual, ship_dict, coeff, total, battles
+                )
+            )
+            t.daemon = True
+            t.start()
+    return round(sum(total) / max(sum(battles), 1))
+
+
+def __wtr(d, ship_id, actual, ship_dict, coeff, total, battles):
+    """
+    Helper function for wtr_absolute
+    See wtr_absolute for parameters
+    """
+    tier = ship_dict[str(ship_id)]['tier'] if str(ship_id) in ship_dict \
+        else 7.5
+    stats = actual[ship_id]
+    temp_b = stats['battles']
+    if temp_b > 0:
+        stats_for_calc = {
+            "capture_points": stats['capture_points'] / temp_b,
+            "planes_killed": stats['planes_killed'] / temp_b,
+            "damage_dealt": stats['damage_dealt'] / temp_b,
+            "frags": stats['frags'] / temp_b,
+            "dropped_capture_points":
+                stats['dropped_capture_points'] / temp_b,
+            "wins": stats['wins'] / temp_b
+        }
+        wtr = calc_wtr(d, stats_for_calc, coeff, tier)
+        total += [wtr * temp_b]
+        battles += [temp_b]
 
 
 def warships_today_url(region, player_id):

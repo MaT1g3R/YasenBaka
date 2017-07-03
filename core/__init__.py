@@ -7,8 +7,8 @@ from wowspy.wowspy import Wows
 
 from config import api
 from core.data_class import Data
-from core.file_system import fopen_generic, read_json, read_all_files, \
-    write_json, freadlines
+from core.file_system import fopen_generic, freadlines, read_all_files, \
+    read_json, write_json
 from core.wows_core.wg_core import get_all_ship_tier
 from core.wows_core.wtr_core import coeff_all_region
 
