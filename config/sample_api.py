@@ -14,5 +14,8 @@ API = {
     # Your Osu api key
     "Osu": "API_KEY",
     # Your danbooru user name and api key
-    "Danbooru": ["USER_NAME", "API_KEY"]
+    "Danbooru": ["USER_NAME", "API_KEY"],
+
+    # Your https://discordbots.org/ api key
+    "Botsorgapi": "API_KEY"
 }

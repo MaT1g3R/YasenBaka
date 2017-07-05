@@ -6,6 +6,7 @@ from os.path import join
 # Core imports
 from core import data_factory
 from core.command_handler import get_prefix
+from shell.botsorgapi import Botsorgapi
 # Bot cog imports
 from shell.channelreader import ChannelReader
 from shell.fun import Fun
@@ -26,6 +27,6 @@ def init(shard_count=1, shard_id=0):
         '?', get_prefix, description, data_factory(), cursor, connection,
         shard_count, shard_id)
     cogs = [Util(bot), Fun(bot), Osu(bot), ChannelReader(bot),
-            WorldOfWarships(bot), Music(bot), Nsfw(bot)]
+            WorldOfWarships(bot), Music(bot), Nsfw(bot), Botsorgapi(bot)]
 
     return bot, cogs
