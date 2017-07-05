@@ -30,3 +30,5 @@ config/api\.py
 data/prefix\.json
 
 data/mydb
+
+tests/\.cache/v/cache/
