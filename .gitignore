@@ -32,3 +32,4 @@ data/prefix\.json
 data/mydb
 
 tests/\.cache/v/cache/
+/config/config.json

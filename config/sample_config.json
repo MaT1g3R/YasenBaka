@@ -1,0 +1,16 @@
+{
+  "Discord": "YOUR DISCORD BOT TOKEN",
+  "StackExchange": "YOUR STACK EXCHANGE API KEY",
+  "WoWs": "YOUR WORLD OF WARSHIPS API KEY",
+  "Currency": "YOUR currencylayer API KEY",
+  "Osu": "YOUR OSU! API KEY",
+  "Danbooru": [
+    "YOUR DANBOORU USER NAME",
+    "YOUR DANBOORU API KEY"
+  ],
+  "Botsorgapi": "YOUR https://discordbots.org/ API KEY",
+  "default_prefix": "?",
+  "enable_console_logging": false,
+  "error_log": null,
+  "owners": []
+}

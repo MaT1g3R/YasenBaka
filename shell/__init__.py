@@ -3,6 +3,7 @@
 import sqlite3
 from os.path import join
 
+from bot.yasen import Yasen
 # Core imports
 from core import data_factory
 from core.command_handler import get_prefix
@@ -14,7 +15,6 @@ from shell.nsfw import Nsfw
 from shell.osu_commands import Osu
 from shell.util import Util
 from shell.world_of_warships import WorldOfWarships
-from shell.yasen import Yasen
 
 
 def init(shard_count=1, shard_id=0):
