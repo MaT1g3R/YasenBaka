@@ -1,12 +1,12 @@
 """
 The yasen bot object
 """
-from logging import INFO, WARN
+from logging import WARN
 from typing import Optional
 
 from discord import ConnectionClosed, Game, Status
 from discord.abc import Messageable
-from discord.ext.commands import AutoShardedBot, Context
+from discord.ext.commands import AutoShardedBot
 
 from config import Config
 from data_manager import DataManager
@@ -41,33 +41,8 @@ class Yasen(AutoShardedBot):
         Get the error log channel for the bot.
         :return: the error log channel.
         """
-        id_ = self.config.error_log
-        if id_ is None:
-            return None
-        c = self.get_channel(id_)
+        c = self.get_channel(self.config.error_log)
         return c if isinstance(c, Messageable) else None
-
-    async def send_tb(self, tb: list, header: str):
-        """
-        Send traceback to error log channel if it exists.
-        :param tb: the list of traceback.
-        :param header: the header.
-        """
-        channel = self.error_log
-        if not channel:
-            return
-        await channel.send(header)
-        for s in tb:
-            await channel.send(s)
-
-    async def on_ready(self):
-        """
-        Event for when bot gets ready.
-        """
-        g = Game(name=f'{self.version} | {self.default_prefix}help')
-        self.logger.log(INFO, f'Logged in as: {self.user}')
-        self.logger.log(INFO, f'Client Id: {self.client_id}')
-        await self.try_change_presence(True, game=g)
 
     async def try_change_presence(
             self, retry: bool, *,
@@ -105,8 +80,8 @@ class Yasen(AutoShardedBot):
             await super().change_presence(
                 game=game, status=status, afk=afk, shard_id=shard_id)
         except ConnectionClosed as e:
-            self.logger.log(WARN, str(e))
             if retry:
+                self.logger.log(WARN, str(e))
                 await self.logout()
                 await self.login(self.config.token)
                 await self.try_change_presence(
@@ -114,11 +89,12 @@ class Yasen(AutoShardedBot):
             else:
                 raise e
 
-    async def on_command_error(self, context: Context, exception):
+    def start_bot(self, cogs):
         """
-        Custom command error handling.
-        :param context:
-        :param exception:
-        :return:
+        Start the bot.
+        :param cogs: the list of cogs.
         """
-        pass
+        self.remove_command('help')
+        for cog in cogs:
+            self.add_cog(cog)
+        self.run(self.config.token)

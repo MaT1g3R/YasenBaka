@@ -12,5 +12,7 @@
   "default_prefix": "?",
   "enable_console_logging": false,
   "error_log": null,
-  "owners": []
+  "owners": [],
+  "wolke_api": "WOLKE API KEY, GET ONE HERE: discord.gg/y5MPvUC"
+
 }

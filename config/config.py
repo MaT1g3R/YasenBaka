@@ -8,11 +8,13 @@ class Config:
     Class to hold bot configs.
     """
 
-    def __init__(self):
+    def __init__(self, beta=False):
         """
         Initialize the instance.
+        :param beta: True to use the beta_config.json for the config file.
         """
-        self.path = Path(Path(__file__).parent.joinpath('config.json'))
+        name = 'beta_config.json' if beta else 'config.json'
+        self.path = Path(Path(__file__).parent.joinpath(name))
         with self.path.open() as f:
             self.__content = load(f)
 
@@ -86,3 +88,7 @@ class Config:
     @property
     def owners(self) -> List[int]:
         return self.__content['owners']
+
+    @property
+    def wolke_api(self):
+        return self.__content['wolke_api']

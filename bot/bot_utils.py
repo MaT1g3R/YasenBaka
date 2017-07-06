@@ -32,15 +32,3 @@ def format_command_error(ex: Exception, context: Context) -> tuple:
     return (f'{four_space}Triggered message: {triggered}\n'
             f'{four_space}Type: {ex_type}\n'
             f'{four_space}Exception: {str(ex)}'), triggered
-
-
-def format_traceback(tb: str):
-    """
-    Format a traceback to be able to display in discord.
-    :param tb: the traceback.
-    :return: the traceback divided up into sections of max 1800 chars.
-    """
-    res = wrap(tb, 1800, replace_whitespace=False)
-    str_out = ['```py\n' + s.replace('`', chr(0x1fef)) + '\n```'
-               for s in res]
-    return str_out

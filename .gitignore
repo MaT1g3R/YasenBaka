@@ -33,3 +33,4 @@ data/mydb
 
 tests/\.cache/v/cache/
 /config/config.json
+/config/beta_config.json
