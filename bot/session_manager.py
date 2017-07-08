@@ -12,7 +12,7 @@ class HTTPStatusError(Exception):
         self.msg = msg
 
     def __str__(self):
-        return f'HTTPStatusError: Code: {self.code} Message: {self.msg}'
+        return f'HTTPStatusError:\nCode: {self.code}\nMessage: {self.msg}'
 
     def __repr__(self):
         return f'HTTPStatusError({self.code}, {self.msg})'
@@ -64,7 +64,7 @@ class SessionManager:
             return res
         raise HTTPStatusError(code, self.get_msg(code))
 
-    def __json_sync(self, url, params):
+    def __json_sync(self, url, params, **kwargs):
         """
         Return the json content from an HTTP request using requests.
         :param url: the url.
@@ -73,7 +73,7 @@ class SessionManager:
         :raises HTTPStatusError: if the status code isn't in the 200s
         """
         try:
-            res = self.sync_get(url, params)
+            res = self.sync_get(url, params, **kwargs)
         except HTTPStatusError as e:
             raise e
         else:
@@ -86,7 +86,7 @@ class SessionManager:
                     js = loads(text) if text else None
                 return js
 
-    async def __json_async(self, url, params):
+    async def __json_async(self, url, params, **kwargs):
         """
         Return the json content from an HTTP request using Aiohttp.
         :param url: the url.
@@ -95,7 +95,7 @@ class SessionManager:
         :raises HTTPStatusError: if the status code isn't in the 200s
         """
         try:
-            res = await self.get(url, params=params)
+            res = await self.get(url, params=params, **kwargs)
         except HTTPStatusError as e:
             raise e
         else:
@@ -108,7 +108,7 @@ class SessionManager:
                     js = loads(text) if text else None
                 return js
 
-    async def get_json(self, url: str, params: dict = None):
+    async def get_json(self, url: str, params: dict = None, **kwargs):
         """
         Get the json content from an HTTP request.
         :param url: the url.
@@ -117,15 +117,15 @@ class SessionManager:
         :raises HTTPStatusError: if the status code isn't in the 200s
         """
         try:
-            return await self.__json_async(url, params)
+            return await self.__json_async(url, params, **kwargs)
         except Exception as e:
             if isinstance(e, HTTPStatusError):
                 raise e
             else:
                 self.logger.log(WARN, str(e))
-                return self.__json_sync(url, params)
+                return self.__json_sync(url, params, **kwargs)
 
-    def sync_get(self, url, params, **kwargs):
+    def sync_get(self, url, params=None, **kwargs):
         """
         A fall back get method using requests.get
         :param url: URL for the new :class:`Request` object.
