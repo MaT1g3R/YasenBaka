@@ -2,13 +2,16 @@
 The yasen bot object
 """
 from logging import WARN
-from typing import Optional
+from pathlib import Path
+from typing import List, Optional
 
 from discord import ConnectionClosed, Game, Status
 from discord.abc import Messageable
 from discord.ext.commands import AutoShardedBot
 
+from bot import SessionManager
 from config import Config
+from core.api_consumer import APIConsumer
 from data_manager import DataManager
 from data_manager.data_utils import get_prefix
 
@@ -18,13 +21,21 @@ class Yasen(AutoShardedBot):
     The yasen bot object
     """
 
-    def __init__(
-            self, config: Config, data_manager: DataManager, logger,
-            version: str):
-        self.data_manager = data_manager
+    def __init__(self, *,
+                 logger,
+                 version: str,
+                 config: Config,
+                 kanna: List[Path],
+                 data_manager: DataManager,
+                 api_consumer: APIConsumer,
+                 session_manager: SessionManager):
+        self.kanna = kanna
         self.config = config
         self.logger = logger
         self.version = version
+        self.data_manager = data_manager
+        self.api_consumer = api_consumer
+        self.session_manager = session_manager
         super().__init__(get_prefix)
 
     @property

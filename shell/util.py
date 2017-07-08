@@ -13,7 +13,7 @@ from core.data_controller import set_prefix
 from core.discord_functions import get_server_id
 
 
-class Util:
+class Utility:
     """Utility commands"""
 
     def __init__(self, bot):
