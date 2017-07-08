@@ -1,7 +1,5 @@
 import random
 
-from core.helpers import safebooru
-
 
 def generate_dice_rolls(s: str):
     """
@@ -31,17 +29,19 @@ def event_probability(prob: str, tries: int):
         return
 
 
-def random_kanna(kanna_files: list):
+def random_kanna(kanna_files: list, kanna_resp) -> tuple:
     """
-    Returns a tuple of kanna picture and if it's a file
-    :param kanna_files: list of local kanna files
+    Returns a tuple of kanna picture and if it's a file.
+    :param kanna_resp: the json response from safebooru.
+    :param kanna_files: list of local kanna files.
     :return: (kanna, is_file)
-    :rtype: tuple
     """
-    kanna_list = safebooru('kanna_kamui')
-    kanna_total = kanna_list + kanna_files
-    fn = random.choice(kanna_total)
-    return fn, fn in kanna_files
+    kanna_urls = [('https://safebooru.org//'
+                   'images/{}/{}').format(d['directory'], d['image'])
+                  for d in kanna_resp] if isinstance(kanna_resp, list) else []
+    kanna_total = kanna_urls + kanna_files
+    res = random.choice(kanna_total)
+    return res, res in kanna_files
 
 
 def cspost_meme():
