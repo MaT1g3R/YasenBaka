@@ -1,4 +1,5 @@
 from http import HTTPStatus
+from io import BytesIO
 from json import loads
 from logging import WARN
 
@@ -154,3 +155,19 @@ class SessionManager:
         r = await self.session.get(
             url, allow_redirects=allow_redirects, **kwargs)
         return self.return_response(r, r.status)
+
+    async def bytes_io(self, url) -> BytesIO:
+        """
+        Convert an url to BytesIO
+        :param url: the url.
+        :return: a BytesIO object from the get request of the url.
+        """
+        resp = await self.get(url)
+        async with resp:
+            try:
+                content = await resp.read()
+            except Exception as e:
+                self.logger.log(WARN, str(e))
+                raise e
+            else:
+                return BytesIO(content)

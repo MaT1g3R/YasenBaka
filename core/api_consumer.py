@@ -1,4 +1,6 @@
-from typing import List, Union
+from typing import Union
+
+from discord import File
 
 from bot import HTTPStatusError, SessionManager
 from config import Config
@@ -61,7 +63,7 @@ class APIConsumer:
             return js.get('botsay', self.sorry)
         return js
 
-    async def wolke_image(self, type_: str):
+    async def wolke_image(self, type_: str) -> Union[str, File]:
         """
         Get a random image by type from wolke api.
         :param type_: the type of the image.
@@ -69,25 +71,17 @@ class APIConsumer:
         """
         params = {'type': type_}
         js = await self.get_json(
-            'Wolke API', self.urls['wolke_image'], params,
+            'Wolke', self.urls['wolke_image'], params,
             headers=self.headers['wolke_image']
         )
         if isinstance(js, dict):
-            return js.get('url', self.sorry)
+            url = js.get('url', None)
+            if not url:
+                return self.sorry
+            try:
+                bytes_io = await self.session_manager.bytes_io(url)
+            except HTTPStatusError as e:
+                return f'Sorry, something went wrong with the Wolke api.\n{e}'
+            else:
+                return File(bytes_io)
         return js
-
-    async def safebooru(self, tags: List[str] = None) -> Union[list, str]:
-        """
-        Get a list of images from safebooru.
-        :param tags: the list of image tags, optional.
-        :return: the json response.
-        """
-        params = {
-            'page': 'dapi',
-            's': 'post',
-            'q': 'index',
-            'json': '1'
-        }
-        if tags:
-            params['tags'] = '%20'.join(tags)
-        return await self.get_json('Safebooru', self.urls['safebooru'], params)
