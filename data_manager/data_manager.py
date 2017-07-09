@@ -7,6 +7,7 @@ class DataManager:
     """
     A SQLite3 data manager.
     """
+
     def __init__(self, connection: Connection):
         """
         Initialize the instance of DataManager.
@@ -157,3 +158,12 @@ class DataManager:
             return tag
         res = get_close_matches(tag, self.nsfw[site], 1, cutoff=0.4)
         return res[0] if res else None
+
+    def tag_exist(self, site: str, tag: str) -> bool:
+        """
+        Check if a tag exists.
+        :param site: the site name.
+        :param tag: the tag.
+        :return: True if the tag exists.
+        """
+        return site in self.nsfw and tag in self.nsfw[site]

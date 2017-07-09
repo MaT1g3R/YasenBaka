@@ -1,4 +1,10 @@
-import random
+from random import choice, randint
+
+from discord import File
+
+from bot import SessionManager
+from core.nsfw_core import get_lewd
+from data_manager import DataManager
 
 
 def generate_dice_rolls(s: str):
@@ -8,10 +14,11 @@ def generate_dice_rolls(s: str):
     :return: a list of dice rolls
     """
     try:
-        rolls, limit = map(int, s.split('d'))
-        return ', '.join(str(random.randint(1, limit)) for _ in range(rolls))
+        rolls, limit = [int(s) for s in s.split('d')]
+        return (':game_die: '
+                + ', '.join(str(randint(1, limit)) for _ in range(rolls)))
     except ValueError:
-        return 'Format has to be in NdN!'
+        return 'Format must to be in NdN!'
 
 
 def event_probability(prob: str, tries: int):
@@ -29,44 +36,46 @@ def event_probability(prob: str, tries: int):
         return
 
 
-def random_kanna(kanna_files: list, kanna_resp) -> tuple:
+async def random_kanna(kanna_files: list,
+                       session_manager: SessionManager,
+                       data_manager: DataManager) -> File:
     """
     Returns a tuple of kanna picture and if it's a file.
-    :param kanna_resp: the json response from safebooru.
     :param kanna_files: list of local kanna files.
-    :return: (kanna, is_file)
+    :param session_manager: the SessionManager.
+    :param data_manager: the data manager.
+    :return: a kanna image as a discord File object.
     """
-    kanna_urls = [('https://safebooru.org//'
-                   'images/{}/{}').format(d['directory'], d['image'])
-                  for d in kanna_resp] if isinstance(kanna_resp, list) else []
-    kanna_total = kanna_urls + kanna_files
-    res = random.choice(kanna_total)
-    return res, res in kanna_files
+    _, url, __ = await get_lewd(
+        session_manager, 'safebooru', ('kanna_kamui',), data_manager)
+    path = str(choice(kanna_files))
+    try:
+        if url:
+            url_bytes = await session_manager.bytes_io(url)
+        else:
+            url_bytes = None
+    except:
+        url_bytes = None
+    return choice((File(path), File(url_bytes))) if url_bytes else File(path)
 
 
-def cspost_meme():
+def parse_repeat(n, msg) -> tuple:
     """
-    Cspost memes
-    :return: a random cspost meme
+    Parse the argument for the repeat command.
+    :param n: the number of times of repeat.
+    :param msg: the message to be repeated.
+    :return: (number of times of repeat, message to be repeated)
+    :raises ValueError:
+        if n is not an integre between 1 and 5, or msg is None,
+        or len(msg) > 2000.
     """
-    lmao = [
-        "It's a definite maybe.",
-        "83%",
-        "You need to get an 80+ in advanced algorithms.. "
-        "I heard it's pretty hard.",
-        "70% is the bare minimum.",
-        "No, you're gonna fail.",
-        "25% of the time, you get in 100% of the time.",
-        "It’s 50/50, you either get in, or you don’t."
-    ]
-    return random.choice(lmao)
-
-
-def place_url(is_clean: bool):
-    """
-    Return place url based on is_clean bool
-    :param is_clean: state if it's the clean version or not
-    :return: place url
-    """
-    return 'https://i.imgur.com/7E3bAnE.png' if is_clean \
-        else 'https://i.imgur.com/ajWiAYi.png'
+    try:
+        n = int(n)
+        if not 1 <= n <= 5:
+            raise ValueError
+    except (TypeError, ValueError):
+        raise ValueError('Please enter a number between 1 and 5.')
+    if not msg or len(msg) > 2000:
+        raise ValueError('Please enter a message with length less than 2000 '
+                         'for me to repeat.')
+    return n, msg
