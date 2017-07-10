@@ -16,12 +16,13 @@ version_info = VersionInfo(
     major=0, minor=9, micro=0, releaselevel='beta', serial=0
 )
 
-__title__ = 'YasenBaka'
-__author__ = 'ラブアローシュート#6728'
+__title__ = 'Yasen-Baka'
+__author__ = ['ラブアローシュート#6728']
 __license__ = 'Apache License 2.0'
 __copyright__ = 'Copyright 2016-2017 MaT1g3R'
 __version__ = '.'.join([str(i) for i in list(version_info)[:3]])
+__url__ = 'https://github.com/MaT1g3R/YasenBaka'
 
 __all__ = ['HTTPStatusError', 'SessionManager', 'Yasen', 'version_info',
            '__title__', '__author__', '__license__',
-           '__copyright__', '__version__']
+           '__copyright__', '__version__', '__url__']
