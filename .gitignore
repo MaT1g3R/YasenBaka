@@ -1,40 +1,18 @@
 
-latex\.png
-
-dark\.png
-
-api_keys\.json
+temp.py
 
 __pycache__/
-
-.idea/
-
-data/shame\.png
-
-data/na_ships\.json
-
-temp\.py
-
-data/osu\.jpg
-
-data/sheet\.json
-
-data/beta_api_keys\.json
-
-data/shamelist\.json
-data/osu.png
-/random_text_file.txt
-
-config/api\.py
-
-data/prefix\.json
 
 data/mydb
 
 tests/\.cache/v/cache/
-/config/config.json
-/config/beta_config.json
 
-data/Karen/\.directory
+*.log
 
-data/logs/
+*.directory
+
+\.idea/
+
+config/beta_config\.json
+
+config/config\.json
