@@ -36,3 +36,5 @@ tests/\.cache/v/cache/
 /config/beta_config.json
 
 data/Karen/\.directory
+
+data/logs/

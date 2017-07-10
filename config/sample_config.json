@@ -13,6 +13,6 @@
   "enable_console_logging": false,
   "error_log": null,
   "owners": [],
-  "wolke_api": "WOLKE API KEY, GET ONE HERE: discord.gg/y5MPvUC"
-
+  "wolke_api": "WOLKE API KEY, GET ONE HERE: discord.gg/y5MPvUC",
+  "colour": "A hex colour code to use for embeds. Example: 4286f4"
 }
