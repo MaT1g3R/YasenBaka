@@ -1,6 +1,48 @@
 """The main bot run file"""
-from shell import init
+from asyncio import get_event_loop
+from pathlib import Path
+from sqlite3 import connect
+from time import time
+
+from aiohttp import ClientSession
+
+from bot import SessionManager, Yasen, version_info as vs
+from bot.logger import get_console_handler, setup_logging
+from cogs import *
+from config import Config
+from core.api_consumer import APIConsumer
+from data import data_path
+from data_manager import DataManager
+
+
+async def run():
+    config = Config(True)
+    start_time = int(time())
+    logger = setup_logging(start_time, data_path.joinpath('logs'))
+    if config.console_logging:
+        logger.addHandler(get_console_handler())
+    v = f'{vs.releaselevel} {vs.major}.{vs.minor}.{vs.micro}'
+    if vs.serial:
+        v += f'-{vs.serial}'
+    data_manager = DataManager(connect('./tests/test_data/test_db'))
+    session_manager = SessionManager(ClientSession(), logger)
+    bot = Yasen(
+        logger=logger,
+        version=v,
+        config=config,
+        data_manager=data_manager,
+        api_consumer=APIConsumer(session_manager, config),
+        session_manager=session_manager
+    )
+    karen_files = [Path(f) for f in data_path.joinpath('Karen').iterdir()]
+    kanna_files = [Path(f) for f in
+                   data_path.joinpath('kanna_is_cute_af').iterdir()]
+
+    cogs = [Listeners(bot), Fun(bot, kanna_files, karen_files)]
+    return bot, cogs
+
 
 if __name__ == '__main__':
-    bot, cog = init()
-    bot.start_bot(cog)
+    loop = get_event_loop()
+    bot, c = loop.run_until_complete(run())
+    bot.start_bot(c)

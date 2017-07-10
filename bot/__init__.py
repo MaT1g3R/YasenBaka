@@ -23,5 +23,5 @@ __copyright__ = 'Copyright 2016-2017 MaT1g3R'
 __version__ = '.'.join([str(i) for i in list(version_info)[:3]])
 
 __all__ = ['HTTPStatusError', 'SessionManager', 'Yasen', 'version_info',
-           '__title__', '__author__', '__license__', '__copyright__',
-           '__version__']
+           '__title__', '__author__', '__license__',
+           '__copyright__', '__version__']
