@@ -78,10 +78,5 @@ class APIConsumer:
             url = js.get('url', None)
             if not url:
                 return self.sorry
-            try:
-                bytes_io = await self.session_manager.bytes_io(url)
-            except HTTPStatusError as e:
-                return f'Sorry, something went wrong with the Wolke api.\n{e}'
-            else:
-                return File(bytes_io)
+            return url
         return js

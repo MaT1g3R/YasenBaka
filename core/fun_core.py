@@ -1,4 +1,6 @@
+from pathlib import Path
 from random import choice, randint
+from typing import List, Tuple, Union
 
 from discord import File
 
@@ -21,42 +23,45 @@ def generate_dice_rolls(s: str):
         return 'Format must to be in NdN!'
 
 
-def event_probability(prob: str, tries: int):
+def parse_salt(trials: str, prob: str) -> tuple:
     """
-    Return the probability of something happeneing in x number of tries
+    Return the number of trials and the probaility from the user intput
+    arguments.
+    :param trials: the number of trials
     :param prob: the probability of the event happeneing
-    :param tries: the number of tries
-    :return: the probability of the event happeneing
+    :return: (trials, prob) if the numbers are valid
     """
+    if trials is None or prob is None:
+        return None, None
     try:
-        prob = float(prob.replace('%', '')) / 100 if '%' in prob else float(
-            prob)
-        return round((1 - (1 - prob) ** tries), 4)
+        n = int(trials)
+        if n <= 0:
+            return None, None
+        if '%' in prob:
+            prob = prob.replace('%', '')
+            p = float(prob) / 100
+        else:
+            p = float(prob)
     except ValueError:
-        return
+        return None, None
+    return n, p
 
 
-async def random_kanna(kanna_files: list,
-                       session_manager: SessionManager,
-                       data_manager: DataManager) -> File:
+async def random_picture(files: List[Path], tags: Tuple[str],
+                         session_manager: SessionManager,
+                         data_manager: DataManager) -> Union[File, str]:
     """
-    Returns a tuple of kanna picture and if it's a file.
-    :param kanna_files: list of local kanna files.
+    Returns a random file from local and safebooru with safebooru tags.
+    :param files: list of local files.
+    :param tags: a tuple of safebooru tags.
     :param session_manager: the SessionManager.
     :param data_manager: the data manager.
-    :return: a kanna image as a discord File object.
+    :return: a random image
     """
     _, url, __ = await get_lewd(
-        session_manager, 'safebooru', ('kanna_kamui',), data_manager)
-    path = str(choice(kanna_files))
-    try:
-        if url:
-            url_bytes = await session_manager.bytes_io(url)
-        else:
-            url_bytes = None
-    except:
-        url_bytes = None
-    return choice((File(path), File(url_bytes))) if url_bytes else File(path)
+        session_manager, 'safebooru', tags, data_manager)
+    file = File(str(choice(files)))
+    return choice((file, url)) if url else file
 
 
 def parse_repeat(n, msg) -> tuple:

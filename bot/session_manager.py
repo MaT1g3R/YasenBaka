@@ -3,6 +3,7 @@ from io import BytesIO
 from json import loads
 from logging import WARN
 
+from PIL import Image
 from aiohttp import ClientResponse, ClientSession
 from requests import get
 
@@ -156,9 +157,9 @@ class SessionManager:
             url, allow_redirects=allow_redirects, **kwargs)
         return self.return_response(r, r.status)
 
-    async def bytes_io(self, url) -> BytesIO:
+    async def bytes_img(self, url) -> BytesIO:
         """
-        Convert an url to BytesIO
+        Convert an url image to BytesIO
         :param url: the url.
         :return: a BytesIO object from the get request of the url.
         """
@@ -170,4 +171,4 @@ class SessionManager:
                 self.logger.log(WARN, str(e))
                 raise e
             else:
-                return BytesIO(content)
+                return BytesIO(Image.open(content))

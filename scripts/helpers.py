@@ -1,4 +1,5 @@
 from collections import Iterable
+from itertools import chain
 from textwrap import wrap
 
 
@@ -27,12 +28,6 @@ def flatten(in_) -> list:
     >>> flatten(([None, '1'], ['2', '34'], [[4, 5], 6]))
     ['1', '2', '34', 4, 5, 6]
     """
-    if in_ is None:
-        return []
-    elif isinstance(in_, Iterable) and not isinstance(in_, str):
-        res = []
-        for l in in_:
-            res += flatten(l)
-        return res
-    else:
-        return [in_]
+    if isinstance(in_, Iterable) and not isinstance(in_, str):
+        return list(chain(*(flatten(lst) for lst in in_)))
+    return [in_] if in_ is not None else []

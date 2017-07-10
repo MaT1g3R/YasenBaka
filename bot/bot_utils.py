@@ -1,5 +1,3 @@
-from textwrap import wrap
-
 from discord.ext.commands import CommandOnCooldown, Context
 
 from scripts.checks import AdminError, ManageMessageError, \
