@@ -30,6 +30,7 @@ async def run():
         logger=logger,
         version=v,
         config=config,
+        start_time=start_time,
         data_manager=data_manager,
         api_consumer=APIConsumer(session_manager, config),
         session_manager=session_manager
@@ -38,11 +39,11 @@ async def run():
     kanna_files = [Path(f) for f in
                    data_path.joinpath('kanna_is_cute_af').iterdir()]
 
-    cogs = [Listeners(bot), Fun(bot, kanna_files, karen_files)]
+    cogs = [Listeners(bot), Fun(bot, kanna_files, karen_files), BotInfo(bot)]
     return bot, cogs
 
 
 if __name__ == '__main__':
     loop = get_event_loop()
-    bot, c = loop.run_until_complete(run())
-    bot.start_bot(c)
+    b, c = loop.run_until_complete(run())
+    b.start_bot(c)

@@ -1,4 +1,5 @@
 from collections import Iterable
+from datetime import timedelta
 from itertools import chain
 from textwrap import wrap
 
@@ -31,3 +32,19 @@ def flatten(in_) -> list:
     if isinstance(in_, Iterable) and not isinstance(in_, str):
         return list(chain(*(flatten(lst) for lst in in_)))
     return [in_] if in_ is not None else []
+
+
+def timedelta_str(delta: timedelta) -> str:
+    """
+    Get a string representation of a timedelta object.
+    :param delta: the time delta.
+    :return: a string representation of the timedelta object.
+    """
+    days = delta.days
+    hrs, secs = divmod(delta.seconds, 3600)
+    mins, secs = divmod(secs, 60)
+    res = f'{hrs}h:{mins:02}m:{secs:02}s'
+    if days:
+        day_s = 'day' if days == 1 else 'days'
+        return f'{days} {day_s}, {res}'
+    return res

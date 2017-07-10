@@ -1,6 +1,7 @@
 """
 The yasen bot object
 """
+from datetime import datetime, timedelta
 from itertools import chain
 from logging import CRITICAL, ERROR, WARN
 from traceback import format_exc
@@ -27,12 +28,14 @@ class Yasen(AutoShardedBot):
                  logger,
                  version: str,
                  config: Config,
+                 start_time: int,
                  data_manager: DataManager,
                  api_consumer: APIConsumer,
                  session_manager: SessionManager):
         self.config = config
         self.logger = logger
         self.version = version
+        self.start_time = start_time
         self.data_manager = data_manager
         self.api_consumer = api_consumer
         self.session_manager = session_manager
@@ -54,6 +57,19 @@ class Yasen(AutoShardedBot):
         """
         c = self.get_channel(self.config.error_log)
         return c if isinstance(c, Messageable) else None
+
+    @property
+    def uptime(self) -> timedelta:
+        """
+        Get the uptime of the bot.
+        :return: A timedelta object between now and the start time.
+        """
+        return datetime.now() - datetime.fromtimestamp(self.start_time)
+
+    @property
+    def invite_link(self):
+        return (f'https://discordapp.com/oauth2/authorize?'
+                f'client_id={self.client_id}&scope=bot&permissions=-1')
 
     async def try_change_presence(
             self, retry: bool, *,
