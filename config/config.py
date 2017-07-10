@@ -96,3 +96,7 @@ class Config:
     @property
     def colour(self):
         return int(self.__content['colour'], base=16)
+
+    @property
+    def support(self):
+        return self.__content['support']
