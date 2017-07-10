@@ -64,8 +64,8 @@ def get_console_handler():
                 'DEBUG': 'cyan',
                 'INFO': 'blue',
                 'WARNING': 'yellow',
-                'ERROR': 'red',
-                'CRITICAL': 'red,bg_white',
+                'ERROR': 'purple',
+                'CRITICAL': 'red',
             },
             secondary_log_colors={},
             style='%'
