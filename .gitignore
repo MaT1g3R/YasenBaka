@@ -3,6 +3,8 @@ temp.py
 
 __pycache__/
 
+data/dumps/*.png
+
 data/mydb
 
 tests/\.cache/v/cache/

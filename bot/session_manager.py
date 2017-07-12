@@ -2,6 +2,7 @@ from http import HTTPStatus
 from io import BytesIO
 from json import loads
 from logging import WARN
+from pathlib import Path
 
 from PIL import Image
 from aiohttp import ClientResponse, ClientSession
@@ -172,3 +173,17 @@ class SessionManager:
                 raise e
             else:
                 return BytesIO(Image.open(content))
+
+    async def save_img(self, url, path: Path):
+        """
+        Save an image from url to local disk.
+        :param url: the url.
+        :param path: the path to local disk file.
+        :return: the path.
+        """
+        resp = await self.get(url)
+        async with resp:
+            with path.open('wb') as f:
+                content = await resp.read()
+                f.write(content)
+        return path

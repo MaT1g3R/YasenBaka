@@ -1,6 +1,7 @@
-from typing import Union
+from typing import Optional, Union
 
 from discord import File
+from osu_sig import Mode
 
 from bot import HTTPStatusError, SessionManager
 from config import Config
@@ -10,7 +11,7 @@ class APIConsumer:
     """
     Class to consume various web APIs.
     """
-    __slots__ = ['session_manager', 'config', 'sorry', 'urls', 'headers']
+    __slots__ = ['session_manager', 'config', 'sorry']
 
     def __init__(self, session_manager: SessionManager, config: Config):
         """
@@ -21,14 +22,6 @@ class APIConsumer:
         self.session_manager = session_manager
         self.config = config
         self.sorry = 'Sorry, nothing found.'
-        self.urls = {
-            'program_o': 'http://api.program-o.com/v2/chatbot/?',
-            'wolke_image': 'https://staging-api.ram.moe/images/random?',
-            'safebooru': 'https://safebooru.org//index.php?'
-        }
-        self.headers = {
-            'wolke_image': {'Authorization': self.config.wolke_api}
-        }
 
     async def get_json(self, name, url, params, **kwargs):
         """
@@ -45,34 +38,18 @@ class APIConsumer:
         except HTTPStatusError as e:
             return f'Sorry, something went wrong with the {name} api.\n{e}'
 
-    async def program_o(self, msg: str, convo_id):
-        """
-        Get api response from Program O api.
-        :param msg: the message to send.
-        :param convo_id: the conversation id.
-        :return: the api response string.
-        """
-        params = {
-            'bot_id': '6',
-            'say': msg.replace(' ', '%20'),
-            'convo_id': str(convo_id),
-            'format': 'json'
-        }
-        js = await self.get_json('Program O', self.urls['program_o'], params)
-        if isinstance(js, dict):
-            return js.get('botsay', self.sorry)
-        return js
-
     async def wolke_image(self, type_: str) -> Union[str, File]:
         """
         Get a random image by type from wolke api.
         :param type_: the type of the image.
         :return: the url to the image.
         """
+        url = 'https://staging-api.ram.moe/images/random?'
+        header = {'Authorization': self.config.wolke_api}
         params = {'type': type_}
         js = await self.get_json(
-            'Wolke', self.urls['wolke_image'], params,
-            headers=self.headers['wolke_image']
+            'Wolke', url, params,
+            headers=header
         )
         if isinstance(js, dict):
             url = js.get('url', None)
@@ -80,3 +57,21 @@ class APIConsumer:
                 return self.sorry
             return url
         return js
+
+    async def osu_player(self, name: str,
+                         mode: Optional[Mode] = Mode.osu) -> Union[str, list]:
+        """
+        Get a dict of stats of the osu! player.
+        :param name: the player name.
+        :param mode: the game mode, optional, defaults to Osu!.
+        :return: the python dict of the api response.
+        """
+        url = 'https://osu.ppy.sh/api/get_user?'
+        params = {
+            'k': self.config.osu,
+            'm': mode.value,
+            'u': name,
+            'event_days': 31,
+            'type': 'string'
+        }
+        return await self.get_json('Osu!', url, params)
