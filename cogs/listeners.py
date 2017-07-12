@@ -38,8 +38,8 @@ class Listeners:
     async def on_command_error(self, context: Context, exception):
         """
         Custom command error handling.
-        :param context:
-        :param exception:
+        :param context: the context of the exception raised.
+        :param exception: the exception raised.
         """
         if isinstance(exception, CommandNotFound):
             return

@@ -42,7 +42,7 @@ class Fun:
     async def kanna(self, ctx: Context):
         """
         Description: "Display a random Kanna image."
-        Usage: "{prefix}kanna"
+        Usage: "`{prefix}kanna`"
         """
         await self.__random_img(ctx, self.kanna_files, ('kanna_kamui',))
 
@@ -50,7 +50,7 @@ class Fun:
     async def karen(self, ctx: Context):
         """
         Description: "Display a random Karen image."
-        Usage: "{prefix}karen"
+        Usage: "`{prefix}karen`"
         """
         await self.__random_img(ctx, self.karen_files, ('kujou_karen',))
 
@@ -58,7 +58,7 @@ class Fun:
     async def umi(self, ctx: Context):
         """
         Description: "Display a random Umi image."
-        Usage: "{prefix}umi"
+        Usage: "`{prefix}umi`"
         """
         msg, url, _ = await get_lewd(
             self.bot.session_manager, 'safebooru',
@@ -74,7 +74,7 @@ class Fun:
     async def repeat(self, ctx: Context, n=None, *, msg=None):
         """
         Description: "Repeat a message x number of times, where 1 <= x <= 5."
-        Usage: "{prefix}repeat 3 my message"
+        Usage: "`{prefix}repeat 3 my message`"
         Cooldown: "Once every 5 seconds per user."
         """
         try:
@@ -89,7 +89,7 @@ class Fun:
     async def ayaya(self, ctx: Context):
         """
         Description: "Ayaya!"
-        Usage: "{prefix}ayaya"
+        Usage: "`{prefix}ayaya`"
         """
         await ctx.send(file=File(str(data_path.joinpath('ayaya.png'))))
 
@@ -97,7 +97,7 @@ class Fun:
     async def lewd(self, ctx: Context):
         """
         Description: "Onii chan no baka, echhi, hentai!"
-        Usage: "{prefix}lewd"
+        Usage: "`{prefix}lewd`"
         """
         img = await self.bot.api_consumer.wolke_image('lewd')
         await ctx.send(img)
@@ -106,7 +106,7 @@ class Fun:
     async def roll(self, ctx: Context, dice: str = ''):
         """
         Description: "Rolls dice in NdN format."
-        Usage: "**{prefix}roll 5d6** This rolls a D6 5 times."
+        Usage: "`{prefix}roll 5d6` This rolls a D6 5 times."
         """
         await ctx.send(generate_dice_rolls(dice.lower()))
 
@@ -115,7 +115,7 @@ class Fun:
         """
         Description: "Chooses between multiple choices. Choices are separated
         by spaces."
-        Usage: "{prefix}choose 0 1 2 3"
+        Usage: "`{prefix}choose 0 1 2 3`"
         """
         if not choices:
             await ctx.send('Please enter some choices for me to choose from.')
@@ -127,8 +127,8 @@ class Fun:
         """
         Description: "Chance of an event happening given number of trials and
         the probability of the event."
-        Usage: "**{prefix}salt 10 0.03** this is the same as
-        **{prefix}salt 10 3%**"
+        Usage: "`{prefix}salt 10 0.03` this is the same as
+        `{prefix}salt 10 3%`"
         """
         n, p = parse_salt(num, prob)
         if n is None or p is None:
@@ -142,6 +142,6 @@ class Fun:
     async def chensaw(self, ctx: Context):
         """
         Description: "Display a chensaw gif."
-        Usage: "{prefix}chensaw"
+        Usage: "`{prefix}chensaw`"
         """
         await ctx.send(file=File(str(data_path.joinpath('chensaw.gif'))))

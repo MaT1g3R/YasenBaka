@@ -1,7 +1,9 @@
+import re
 from collections import Iterable
 from datetime import timedelta
 from itertools import chain
 from textwrap import wrap
+from typing import List
 
 
 def code_block(s: str, lan: str = ''):
@@ -48,3 +50,13 @@ def timedelta_str(delta: timedelta) -> str:
         day_s = 'day' if days == 1 else 'days'
         return f'{days} {day_s}, {res}'
     return res
+
+
+def split_camel(s: str) -> List[str]:
+    """
+    Split a string by starting chars of UpperCamelCase
+    :param s: the input string.
+    :return: a list of strings that was split by capital letters.
+    """
+    regex = re.compile('[A-Z][^A-Z]*')
+    return regex.findall(s)
