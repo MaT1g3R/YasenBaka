@@ -1,4 +1,5 @@
-from discord.ext.commands import CommandOnCooldown, Context
+from discord.ext.commands import BadArgument, CommandOnCooldown, Context, \
+    NoPrivateMessage
 
 from scripts.checks import AdminError, ManageMessageError, \
     ManageRoleError, NsfwError, OwnerError
@@ -11,7 +12,8 @@ def command_error_handler(exception):
     :return: the message to be sent based on the exception type
     """
     checked = (CommandOnCooldown, NsfwError, ManageMessageError,
-               ManageRoleError, AdminError, OwnerError)
+               ManageRoleError, AdminError, OwnerError, NoPrivateMessage,
+               BadArgument)
     if isinstance(exception, checked):
         return str(exception)
     raise exception

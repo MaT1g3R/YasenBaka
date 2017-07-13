@@ -13,7 +13,6 @@ from discord.ext.commands import AutoShardedBot, Context
 
 from bot import SessionManager
 from config import Config
-from core.api_consumer import APIConsumer
 from data_manager import DataManager
 from data_manager.data_utils import get_prefix
 from scripts.helpers import code_block
@@ -30,14 +29,12 @@ class Yasen(AutoShardedBot):
                  config: Config,
                  start_time: int,
                  data_manager: DataManager,
-                 api_consumer: APIConsumer,
                  session_manager: SessionManager):
         self.config = config
         self.logger = logger
         self.version = version
         self.start_time = start_time
         self.data_manager = data_manager
-        self.api_consumer = api_consumer
         self.session_manager = session_manager
         super().__init__(get_prefix)
 
