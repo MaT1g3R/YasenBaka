@@ -14,6 +14,7 @@ class Config:
         :param beta: True to use the beta_config.json for the config file.
         """
         name = 'beta_config.json' if beta else 'config.json'
+        self.is_beta = beta
         self.path = Path(Path(__file__).parent.joinpath(name))
         with self.path.open() as f:
             self.__content = load(f)

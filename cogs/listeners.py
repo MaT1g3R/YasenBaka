@@ -1,12 +1,13 @@
 import re
+from json import dumps
 from logging import INFO, WARN
 from traceback import format_exc
 
-from discord import File, Game, Message, TextChannel
+from discord import File, Game, Guild, Message, TextChannel
 from discord.abc import Messageable
 from discord.ext.commands import CommandNotFound, Context
 
-from bot import Yasen
+from bot import HTTPStatusError, Yasen
 from bot.bot_utils import command_error_handler, format_command_error
 from data import data_path
 from data_manager.data_utils import get_prefix
@@ -31,6 +32,7 @@ class Listeners:
         self.bot.logger.log(INFO, f'Logged in as: {self.bot.user}')
         self.bot.logger.log(INFO, f'Client Id: {self.bot.client_id}')
         await self.bot.try_change_presence(True, game=g)
+        await self.__post_guild_count()
         _mention = f'<@!?{self.bot.client_id}>'
         self.mention = re.compile(_mention)
         self.mention_msg = re.compile(f'^{_mention}\s*[^\s]+.*$')
@@ -89,6 +91,45 @@ class Listeners:
             await channel.send('/o/')
         elif content == 'o7':
             await channel.send(file=self.o7)
+
+    async def on_guild_join(self, guild: Guild):
+        """
+        Event for joining a guild.
+        :param guild: the guild the Bot joined.
+        """
+        self.bot.logger.log(INFO, f'Joined guild {guild.name}')
+        await self.__post_guild_count()
+
+    async def on_guild_remove(self, guild: Guild):
+        """
+        Event for removing from a guild.
+        :param guild: the guild the Bot was removed from.
+        """
+        self.bot.logger.log(INFO, f'Left guild {guild.name}')
+        await self.__post_guild_count()
+
+    async def __post_guild_count(self):
+        """
+        Post guild count to discordbots.org
+        """
+        if self.bot.config.is_beta:
+            return
+        url = f'https://discordbots.org/api/bots/{self.bot.client_id}/stats'
+        data = dumps({
+            'shard_id': str(self.bot.shard_id),
+            'shard_count': str(self.bot.shard_count),
+            'server_count': len(self.bot.guilds)
+        })
+        header = {
+            'authorization': self.bot.config.botsorgapi,
+            'content-type': 'application/json'
+        }
+        try:
+            resp = await self.bot.session_manager.post(
+                url, data=data, headers=header)
+            await resp.release()
+        except HTTPStatusError as e:
+            self.bot.logger.log(WARN, str(e))
 
     def __strip_mention(self, s: str):
         """

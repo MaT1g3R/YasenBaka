@@ -2,11 +2,8 @@ from http import HTTPStatus
 from io import BytesIO
 from json import loads
 from logging import WARN
-from pathlib import Path
 
-from PIL import Image
 from aiohttp import ClientResponse, ClientSession
-from requests import get
 
 
 class HTTPStatusError(Exception):
@@ -44,17 +41,6 @@ class SessionManager:
         """
         self.session.close()
 
-    def get_msg(self, code: int):
-        """
-        Get the message from an HTTP status code.
-        :param code: the status code.
-        :return: the message.
-        """
-        try:
-            return self.codes[code]
-        except KeyError:
-            return None
-
     def return_response(self, res, code):
         """
         Return an Aiohttp or Request response object.
@@ -65,29 +51,7 @@ class SessionManager:
         """
         if 200 <= code < 300:
             return res
-        raise HTTPStatusError(code, self.get_msg(code))
-
-    def __json_sync(self, url, params, **kwargs):
-        """
-        Return the json content from an HTTP request using requests.
-        :param url: the url.
-        :param params: the request params.
-        :return: the json content in a python dict.
-        :raises HTTPStatusError: if the status code isn't in the 200s
-        """
-        try:
-            res = self.sync_get(url, params, **kwargs)
-        except HTTPStatusError as e:
-            raise e
-        else:
-            with res:
-                try:
-                    js = res.json()
-                except Exception as e:
-                    self.logger.log(WARN, str(e))
-                    text = res.text
-                    js = loads(text) if text else None
-                return js
+        raise HTTPStatusError(code, self.codes.get(code, None))
 
     async def __json_async(self, url, params, **kwargs):
         """
@@ -101,15 +65,10 @@ class SessionManager:
             res = await self.get(url, params=params, **kwargs)
         except HTTPStatusError as e:
             raise e
-        else:
-            async with res:
-                try:
-                    js = await res.json()
-                except Exception as e:
-                    self.logger.log(WARN, str(e))
-                    text = await res.text()
-                    js = loads(text) if text else None
-                return js
+
+        async with res:
+            content = await res.read()
+            return loads(content)
 
     async def get_json(self, url: str, params: dict = None, **kwargs):
         """
@@ -119,44 +78,47 @@ class SessionManager:
         :return: the json content in a dict if success, else the error message.
         :raises HTTPStatusError: if the status code isn't in the 200s
         """
-        try:
-            return await self.__json_async(url, params, **kwargs)
-        except Exception as e:
-            if isinstance(e, HTTPStatusError):
-                raise e
-            else:
-                self.logger.log(WARN, str(e))
-                return self.__json_sync(url, params, **kwargs)
-
-    def sync_get(self, url, params=None, **kwargs):
-        """
-        A fall back get method using requests.get
-        :param url: URL for the new :class:`Request` object.
-        :param params: (optional) Dictionary or bytes to be sent in the query
-        string for the :class:`Request`.
-        :param kwargs: Optional arguments that ``request`` takes.
-        :return: :class:`Response <Response>` object
-        :rtype: requests.Response
-        :raises: HTTPStatusError if status code isn't 200
-        """
-        res = get(url, params=params, **kwargs)
-        return self.return_response(res, code=res.status_code)
+        return await self.__json_async(url, params, **kwargs)
 
     async def get(
             self, url, *, allow_redirects=True, **kwargs) -> ClientResponse:
         """
         Make HTTP GET request
+
         :param url: Request URL, str or URL
+
         :param allow_redirects: If set to False, do not follow redirects.
         True by default (optional).
+
         :param kwargs: In order to modify inner request parameters,
         provide kwargs.
+
         :return: a client response object.
-        :raises: HTTPStatusError if status code isn't 200
+
+        :raises: HTTPStatusError if status code isn't between 200-299
         """
         r = await self.session.get(
             url, allow_redirects=allow_redirects, **kwargs)
         return self.return_response(r, r.status)
+
+    async def post(self, url, *, data=None, **kwargs) -> ClientResponse:
+        """
+        Make HTTP POST request.
+
+        :param url: Request URL, str or URL
+
+        :param data: Dictionary, bytes, or file-like object to send in the
+        body of the request (optional)
+
+        :param kwargs: In order to modify inner request parameters,
+        provide kwargs.
+
+        :return: a client response object.
+
+        :raises: HTTPStatusError if status code isn't between 200-299
+        """
+        resp = await self.session.post(url, data=data, **kwargs)
+        return self.return_response(resp, resp.status)
 
     async def bytes_img(self, url) -> BytesIO:
         """
@@ -172,18 +134,4 @@ class SessionManager:
                 self.logger.log(WARN, str(e))
                 raise e
             else:
-                return BytesIO(Image.open(content))
-
-    async def save_img(self, url, path: Path):
-        """
-        Save an image from url to local disk.
-        :param url: the url.
-        :param path: the path to local disk file.
-        :return: the path.
-        """
-        resp = await self.get(url)
-        async with resp:
-            with path.open('wb') as f:
-                content = await resp.read()
-                f.write(content)
-        return path
+                return BytesIO(content)
