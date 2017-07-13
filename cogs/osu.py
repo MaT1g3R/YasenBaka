@@ -1,9 +1,8 @@
-from discord import File
 from discord.ext import commands
 from discord.ext.commands import Context
 
 from bot import Yasen
-from core.osu_core import osu_player, parse_query
+from core.osu_core import generate_sig, get_player_resp, osu_player, parse_query
 
 
 class Osu:
@@ -32,14 +31,21 @@ class Osu:
         replace **--flag** with a flag listed above if you intend to use it."
         """
         name, mode = parse_query(query)
-        res = await osu_player(self.bot.api_consumer, name, mode)
-        if isinstance(res, str):
-            await ctx.send(res)
+        resp = await get_player_resp(
+            self.bot.session_manager, self.bot.config.osu, name, mode
+        )
+        if isinstance(resp, str):
+            await ctx.send(resp)
             return
-        embed, img, path = res
-        if isinstance(img, File):
-            await ctx.send(embed=embed)
-            await ctx.send(file=img)
-            path.unlink()
+        embed = await osu_player(resp, mode, self.bot.config.colour)
+        if isinstance(embed, str):
+            await ctx.send(embed)
+            return
+
+        await ctx.send(embed=embed)
+        sig = await generate_sig(
+            name, mode, self.bot.config.colour_str, self.bot.session_manager)
+        if isinstance(sig, str):
+            await ctx.send(str)
         else:
-            await ctx.send(img, embed=embed)
+            await ctx.send(file=sig)

@@ -1,30 +1,25 @@
+from logging import WARN
 from math import ceil
-from time import time
 from typing import Union
 
 from discord import Embed, File
 from osu_sig import Mode, generate
 
-from core.api_consumer import APIConsumer
-from data import data_path
+from bot import HTTPStatusError, SessionManager
 
 
-async def osu_player(api_consumer: APIConsumer, name: str,
-                     mode: Mode = None) -> Union[str, tuple]:
+async def osu_player(player_data: list, mode: Mode,
+                     colour) -> Union[str, Embed]:
     """
     Generate osu player info.
-    :param api_consumer: the APIConsumer instance.
-    :param name: the name of the player.
+    :param player_data: the player data.
     :param mode: the game mode.
-    :return: a tuple of (embed, image file, file path) if success,
-    else an error msg.
+    :param colour: the colour used for the embed.
+    :return: A discord embed if success else an error message.
     """
-    js = await api_consumer.osu_player(name, mode)
-    if isinstance(js, str):
-        return js
-    if not js:
+    if not player_data:
         return 'Player not found!'
-    res = js[0]
+    res = player_data[0]
     name = res['username']
     id_ = res['user_id']
     playcount = res['playcount']
@@ -46,7 +41,7 @@ async def osu_player(api_consumer: APIConsumer, name: str,
     s = res['count_rank_s']
     a = res['count_rank_a']
 
-    embed = Embed(colour=api_consumer.config.colour)
+    embed = Embed(colour=colour)
     mode_str = {
         Mode.osu: 'osu!',
         Mode.taiko: 'Taiko',
@@ -74,19 +69,53 @@ async def osu_player(api_consumer: APIConsumer, name: str,
         name='Country', value=f':flag_{country}: (#{int(c_rank):,})')
     embed.add_field(name='Accuracy', value=f'{acc}%')
     embed.add_field(name='Profile', value=profile)
+    return embed
 
+
+async def generate_sig(name: str, mode: Mode, colour_str,
+                       session_manager: SessionManager) -> Union[str, File]:
+    """
+    Generate an osu! player signature.
+    :param name: the name of the player.
+    :param mode: the osu! game mode.
+    :param colour_str: the colour used for the signature.
+    :param session_manager: the SessionManager instance.
+    :return: A discord File object if success, else an error message.
+    """
     sig = generate(
-        name, api_consumer.config.colour_str, mode, 1,
+        name, colour_str, mode, 1,
         xpbar=True, xpbarhex=True, onlineindicator=3
     )
     try:
-        path = data_path.joinpath('dumps').joinpath(
-            f'osu_player_{name}_{int(time())}.png')
-        file = File(str(await api_consumer.session_manager.save_img(sig, path)))
-    except Exception as e:
-        file = f'Could not generate player signature.\n{e}'
-        path = None
-    return embed, file, path
+        bytes_io = await session_manager.bytes_img(sig)
+    except HTTPStatusError as e:
+        session_manager.logger.log(WARN, str(e))
+        return f'Could not generate player signature.'
+    return File(bytes_io, 'osu.png')
+
+
+async def get_player_resp(session_manager: SessionManager, key: str, name: str,
+                          mode: Mode = Mode.osu) -> Union[str, list]:
+    """
+    Get api response for player from osu api.
+    :param session_manager: the SessionManager instance.
+    :param key: the api key.
+    :param name: the name of the player.
+    :param mode: the game mode, defaults to osu!
+    :return: the json api response if success else an error message.
+    """
+    url = 'https://osu.ppy.sh/api/get_user?'
+    params = {
+        'k': key,
+        'm': mode.value,
+        'u': name,
+        'event_days': 31,
+        'type': 'string'
+    }
+    try:
+        return await session_manager.get_json(url, params)
+    except HTTPStatusError as e:
+        return f'Sorry, something went wrong with the osu! api.\n{e}'
 
 
 def parse_query(query: tuple) -> tuple:
