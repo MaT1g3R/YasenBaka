@@ -34,8 +34,7 @@ async def run():
         session_manager=session_manager
     )
     karen_files = [Path(f) for f in data_path.joinpath('Karen').iterdir()]
-    kanna_files = [Path(f) for f in
-                   data_path.joinpath('kanna_is_cute_af').iterdir()]
+    kanna_files = [Path(f) for f in data_path.joinpath('Kanna').iterdir()]
 
     cogs = [Listeners(bot), Fun(bot), Weeb(bot, kanna_files, karen_files),
             BotInfo(bot), Nsfw(bot), Osu(bot), Utility(bot)]
