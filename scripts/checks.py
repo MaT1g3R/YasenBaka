@@ -3,7 +3,7 @@ Checks for commands
 """
 
 from discord import DMChannel, TextChannel
-from discord.ext.commands import CommandError, Context
+from discord.ext.commands import CommandError, Context, NoPrivateMessage
 
 from scripts.discord_utils import try_get_member
 
@@ -11,29 +11,19 @@ _generic = ':no_entry_sign: Sorry, you need {} premission to use this command.'
 
 
 class NsfwError(CommandError):
-    def __str__(self):
-        return ('NSFW commands must be used in DM or a channel with a name '
-                'that is equal to or starts with `nsfw` (case insensitive)')
+    pass
 
 
 class ManageRoleError(CommandError):
-    def __str__(self):
-        return _generic.format('Manage Roles')
+    pass
 
 
 class AdminError(CommandError):
-    def __str__(self):
-        return _generic.format('Administrator')
+    pass
 
 
 class ManageMessageError(CommandError):
-    def __str__(self):
-        return _generic.format('Manage Message')
-
-
-class OwnerError(CommandError):
-    def __str__(self):
-        return ':no_entry_sign: Only my owner can use this command.'
+    pass
 
 
 def is_nsfw(ctx: Context):
@@ -48,7 +38,8 @@ def is_nsfw(ctx: Context):
     if (isinstance(channel, TextChannel) and
             channel.name.lower().startswith('nsfw')):
         return True
-    raise NsfwError
+    raise NsfwError('NSFW commands must be used in DM or a channel with a name '
+                    'that is equal to or starts with `nsfw` (case insensitive)')
 
 
 def has_manage_role(ctx: Context):
@@ -61,7 +52,7 @@ def has_manage_role(ctx: Context):
     member = try_get_member(ctx, ManageRoleError)
     if member.guild_permissions.manage_roles:
         return True
-    raise ManageRoleError
+    raise ManageRoleError(_generic.format('Manage Roles'))
 
 
 def is_admin(ctx):
@@ -73,7 +64,7 @@ def is_admin(ctx):
     member = try_get_member(ctx, AdminError)
     if member.guild_permissions.administrator:
         return True
-    raise AdminError
+    raise AdminError(_generic.format('Administrator'))
 
 
 def has_manage_message(ctx):
@@ -85,14 +76,17 @@ def has_manage_message(ctx):
     member = try_get_member(ctx, ManageMessageError)
     if member.guild_permissions.manage_messages:
         return True
-    raise ManageMessageError
+    raise ManageMessageError(_generic.format('Manage Message'))
 
 
-def is_owner(ctx: Context):
+def no_pm(ctx):
+    """A :func:`.check` that indicates this command must only be used in a
+    guild context only. Basically, no private messages are allowed when
+    using the command.
+
+    This check raises a special exception, :exc:`.NoPrivateMessage`
+    that is derived from :exc:`.CheckFailure`.
     """
-    :param ctx: the discord context
-    :return: True if the user is the bot owner
-    """
-    if ctx.author.id in ctx.bot.config.owners:
+    if ctx.guild:
         return True
-    raise OwnerError
+    raise NoPrivateMessage('This command cannot be used in private messages.')

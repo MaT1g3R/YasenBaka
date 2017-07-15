@@ -102,6 +102,26 @@ class Weeb:
         await ctx.send('https://www.youtube.com/watch?v=THrCQ1ftuTU')
 
     @commands.command()
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
+    async def safebooru(self, ctx: Context, *query):
+        """
+        Description: "Search safebooru for a picture."
+        Usage: "`{prefix}safebooru your tags` if no tags given this will
+        search for a random image."
+        Cooldown: "One every 5 seconds per user."
+        """
+        msg, url, tags = await get_lewd(
+            self.bot.session_manager, 'safebooru', query,
+            self.bot.data_manager, *self.bot.config.danbooru
+        )
+        if msg:
+            await ctx.send(msg)
+        if url:
+            await ctx.send(url)
+        if tags:
+            self.bot.data_manager.set_nsfw_tags('safebooru', tags)
+
+    @commands.command()
     async def anime(self, ctx, *, search=None):
         """
         Description: "Search for an anime."
