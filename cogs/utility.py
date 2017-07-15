@@ -1,6 +1,6 @@
 from discord import Embed, File, Member, User
 from discord.ext import commands
-from discord.ext.commands import Context
+from discord.ext.commands import BadArgument, Context
 
 from bot import Yasen
 from core.util_core import convert_currency, generate_latex_online, get_avatar
@@ -30,7 +30,7 @@ class Utility:
             await ctx.send(res)
 
     @commands.command()
-    async def avatar(self, ctx: Context, user: User = None):
+    async def avatar(self, ctx: Context, *, user: User = None):
         """
         Description: "Display the avatar of a user."
         Usage: |
@@ -45,7 +45,7 @@ class Utility:
 
     @commands.command()
     @commands.guild_only()
-    async def joined(self, ctx: Context, member: Member = None):
+    async def joined(self, ctx: Context, *, member: Member = None):
         """
         Description: "Display when the member joined the guild."
         Restriction: Cannot be used in private message.

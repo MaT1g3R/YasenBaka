@@ -10,6 +10,7 @@ from typing import Optional
 from discord import ConnectionClosed, Game, Status
 from discord.abc import Messageable
 from discord.ext.commands import AutoShardedBot, Context
+from discord.utils import oauth_url
 
 from bot import SessionManager
 from config import Config
@@ -65,8 +66,7 @@ class Yasen(AutoShardedBot):
 
     @property
     def invite_link(self):
-        return (f'https://discordapp.com/oauth2/authorize?'
-                f'client_id={self.client_id}&scope=bot&permissions=-1')
+        return oauth_url(self.client_id, permissions=-1)
 
     async def try_change_presence(
             self, retry: bool, *,

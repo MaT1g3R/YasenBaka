@@ -1,5 +1,6 @@
 from logging import WARN
 from math import ceil
+from time import time
 from typing import Union
 
 from discord import Embed, File
@@ -91,7 +92,7 @@ async def generate_sig(name: str, mode: Mode, colour_str,
     except HTTPStatusError as e:
         session_manager.logger.log(WARN, str(e))
         return f'Could not generate player signature.'
-    return File(bytes_io, 'osu.png')
+    return File(bytes_io, f'{int(time())}osu.png')
 
 
 async def get_player_resp(session_manager: SessionManager, key: str, name: str,

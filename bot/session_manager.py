@@ -68,7 +68,7 @@ class SessionManager:
 
         async with res:
             content = await res.read()
-            return loads(content)
+            return loads(content) if content else None
 
     async def get_json(self, url: str, params: dict = None, **kwargs):
         """

@@ -22,7 +22,7 @@ class Osu:
         """
         Description: "Get an osu! player's data."
         Flags: |
-            "You can use a flag to specify the game mode for the data. Default is osu!"
+            You can use a flag to specify the game mode. Default is osu!
             `--o` osu!
             `--t` Taiko
             `--c` Catch the Beat

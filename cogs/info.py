@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord.ext.commands import Context
 
 from bot import Yasen
-from core.bot_info_core import get_info_embed
+from core.info_core import get_info_embed
 from core.help import cmd_help_embed, general_help, get_doc
 from data_manager.data_utils import get_prefix
 from scripts.checks import is_admin
