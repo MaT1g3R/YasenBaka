@@ -8,7 +8,7 @@ from discord.abc import Messageable
 from discord.ext.commands import CommandNotFound, Context
 
 from bot import HTTPStatusError, Yasen
-from bot.bot_utils import command_error_handler, format_command_error
+from bot.error_handler import command_error_handler, format_command_error
 from data import data_path
 from data_manager.data_utils import get_prefix
 
@@ -74,17 +74,14 @@ class Listeners:
                 not isinstance(channel, Messageable)):
             return
 
-        is_guild = isinstance(channel, TextChannel)
         stripped = self.__strip_mention(content)
-        if stripped and stripped.lower() == 'prefix' and is_guild:
+        if stripped and stripped.lower() == 'prefix' \
+                and isinstance(channel, TextChannel):
             msg = (f'The prefix for this guild is: `{prefix}`\n'
                    f'`{prefix}prefix set <YOUR_PREFIX>` to set the '
                    f'prefix for this guild.\n`{prefix} reset` to reset'
                    f' the prefix for this guild to default. `({prefix})`')
             await channel.send(msg)
-        elif stripped:
-            resp = await self.bot.api_consumer.program_o(stripped, author.id)
-            await channel.send(resp)
         elif content == '/o/':
             await channel.send('\\o\\')
         elif content == '\\o\\':
