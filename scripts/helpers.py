@@ -3,7 +3,7 @@ from collections import Iterable
 from datetime import timedelta
 from itertools import chain
 from textwrap import wrap
-from typing import List
+from typing import List, Type, Union
 
 
 def code_block(s: str, lan: str = ''):
@@ -14,9 +14,7 @@ def code_block(s: str, lan: str = ''):
     :return: the list of code block strings.
     """
     res = wrap(s, 1800, replace_whitespace=False)
-    str_out = [f'```{lan}\n' + s.replace('`', chr(0x1fef)) + '\n```'
-               for s in res]
-    return str_out
+    return [f"```{lan}\n{s.replace('`', chr(0x1fef))}\n```" for s in res]
 
 
 def flatten(in_) -> list:
@@ -60,3 +58,26 @@ def split_camel(s: str) -> List[str]:
     """
     regex = re.compile('[A-Z][^A-Z]*')
     return regex.findall(s)
+
+
+def lower_words(s: str) -> str:
+    """
+    Turn a word into lower case if it makes sense. (like "of", "is", etc.)
+    :param s: the input string.
+    :return: the output might be lower case.
+    """
+    tup = ('of',)
+    return s.lower() if s.lower() in tup else s
+
+
+def parse_number(s: str, t: Type) -> Union[int, float, None]:
+    """
+    Parse a string into a number.
+    :param s: the string.
+    :param t: the type of the number, int or float.
+    :return: the parsed number if success, else None.
+    """
+    try:
+        return t(s)
+    except (TypeError, ValueError):
+        return None

@@ -37,7 +37,8 @@ async def run():
     kanna_files = [Path(f) for f in data_path.joinpath('Kanna').iterdir()]
 
     cogs = [Listeners(bot), Fun(bot), Weeb(bot, kanna_files, karen_files),
-            BotInfo(bot), Nsfw(bot), Osu(bot), Utility(bot)]
+            BotInfo(bot), Nsfw(bot), Osu(bot), Utility(bot), Moderation(bot),
+            WorldOfWarships(bot)]
     return bot, cogs
 
 
