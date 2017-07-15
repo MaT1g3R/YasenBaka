@@ -15,7 +15,7 @@ from data_manager import DataManager
 
 
 async def run():
-    config = Config(True)
+    config = Config('beta_config.json')
     start_time = int(time())
     logger = setup_logging(start_time, data_path.joinpath('logs'))
     if config.console_logging:

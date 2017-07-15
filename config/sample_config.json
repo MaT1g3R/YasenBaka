@@ -8,7 +8,8 @@
     "YOUR DANBOORU USER NAME",
     "YOUR DANBOORU API KEY"
   ],
-  "Botsorgapi": "YOUR https://discordbots.org/ API KEY",
+  "Botsorgapi": "YOUR https://discordbots.org/ API KEY, Optional. Leave empty if you do not wish to post to this API.",
+  "bots_discord_pw": "Your https://bots.discord.pw/ API KEY, Optional. Leave empty if you do not wish to post to this API.",
   "default_prefix": "?",
   "enable_console_logging": false,
   "error_log": null,

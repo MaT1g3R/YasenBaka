@@ -28,7 +28,8 @@ class Listeners:
         """
         Event for when bot gets ready.
         """
-        g = Game(name=f'{self.bot.version} | {self.bot.default_prefix}help')
+        prefix = self.bot.default_prefix
+        g = Game(name=f'{prefix}help | {prefix}info | {self.bot.version}')
         self.bot.logger.log(INFO, f'Logged in as: {self.bot.user}')
         self.bot.logger.log(INFO, f'Client Id: {self.bot.client_id}')
         await self.bot.try_change_presence(True, game=g)
@@ -105,29 +106,6 @@ class Listeners:
         self.bot.logger.log(INFO, f'Left guild {guild.name}')
         await self.__post_guild_count()
 
-    async def __post_guild_count(self):
-        """
-        Post guild count to discordbots.org
-        """
-        if self.bot.config.is_beta:
-            return
-        url = f'https://discordbots.org/api/bots/{self.bot.client_id}/stats'
-        data = dumps({
-            'shard_id': str(self.bot.shard_id),
-            'shard_count': str(self.bot.shard_count),
-            'server_count': len(self.bot.guilds)
-        })
-        header = {
-            'authorization': self.bot.config.botsorgapi,
-            'content-type': 'application/json'
-        }
-        try:
-            resp = await self.bot.session_manager.post(
-                url, data=data, headers=header)
-            await resp.release()
-        except HTTPStatusError as e:
-            self.bot.logger.log(WARN, str(e))
-
     def __strip_mention(self, s: str):
         """
         Strip message starts with mention to the bot.
@@ -140,3 +118,42 @@ class Listeners:
         mention = self.mention.findall(s)
         if match and mention:
             return match.string.replace(mention[0], '', 1).strip()
+
+    async def __post_guild_count(self):
+        """
+        Post guild count to
+        https://discordbots.org/ and https://bots.discord.pw/
+        """
+        botsorgapi = self.bot.config.botsorgapi
+        bots_discord_pw = self.bot.config.bots_discord_pw
+        if not bots_discord_pw and not botsorgapi:
+            return
+        data = dumps({
+            'shard_id': str(self.bot.shard_id),
+            'shard_count': str(self.bot.shard_count),
+            'server_count': len(self.bot.guilds)
+        })
+        if botsorgapi:
+            await self.__try_post('discordbots.org', data, botsorgapi)
+        if bots_discord_pw:
+            await self.__try_post('bots.discord.pw', data, bots_discord_pw)
+
+    async def __try_post(self, site, data, key):
+        """
+        Try to post guild count to the site.
+        :param site: the site name.
+        :param data: the data to post.
+        :param key: the api key.
+        """
+        url = f'https://{site}/api/bots/{self.bot.client_id}/stats'
+        header = {
+            'authorization': key,
+            'content-type': 'application/json'
+        }
+        try:
+            resp = await self.bot.session_manager.post(
+                url, data=data, headers=header)
+            await resp.release()
+            self.bot.logger.log(INFO, f'Posted {data} to {site}')
+        except HTTPStatusError as e:
+            self.bot.logger.log(WARN, str(e))

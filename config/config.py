@@ -8,13 +8,11 @@ class Config:
     Class to hold bot configs.
     """
 
-    def __init__(self, beta=False):
+    def __init__(self, name):
         """
         Initialize the instance.
-        :param beta: True to use the beta_config.json for the config file.
+        :param name: the config file name.
         """
-        name = 'beta_config.json' if beta else 'config.json'
-        self.is_beta = beta
         self.path = Path(Path(__file__).parent.joinpath(name))
         with self.path.open() as f:
             self.__content = load(f)
@@ -61,6 +59,10 @@ class Config:
     @property
     def botsorgapi(self):
         return self.__content['Botsorgapi']
+
+    @property
+    def bots_discord_pw(self):
+        return self.__content['bots_discord_pw']
 
     @property
     def default_prefix(self):
