@@ -23,9 +23,9 @@ class Fun:
     @commands.cooldown(rate=1, per=5, type=BucketType.user)
     async def repeat(self, ctx: Context, n=None, *, msg=None):
         """
-        Description: "Repeat a message x number of times, where 1 <= x <= 5."
+        Description: Repeat a message x number of times, where 1 <= x <= 5.
         Usage: "`{prefix}repeat 3 my message`"
-        Cooldown: "Once every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         try:
             _n, _msg = parse_repeat(n, msg)
@@ -38,7 +38,7 @@ class Fun:
     @commands.command()
     async def roll(self, ctx: Context, dice: str = ''):
         """
-        Description: "Rolls dice in NdN format."
+        Description: Rolls dice in NdN format.
         Usage: "`{prefix}roll 5d6` This rolls a D6 5 times."
         """
         await ctx.send(generate_dice_rolls(dice.lower()))

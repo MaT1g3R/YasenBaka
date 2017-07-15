@@ -17,7 +17,7 @@ class BotInfo:
     @commands.command()
     async def info(self, ctx: Context):
         """
-        Description: "Displays information about the bot."
+        Description: Displays information about the bot.
         Usage: "`{prefix}info`"
         """
         await ctx.send(embed=get_info_embed(self.bot))
@@ -25,7 +25,7 @@ class BotInfo:
     @commands.command()
     async def help(self, ctx: Context, *args):
         """
-        Description: "Help command."
+        Description: Help command.
         Usage: "`{prefix}help` for a list of all commands,
         `{prefix}help command name` for help for the  specific command."
         """
@@ -44,7 +44,7 @@ class BotInfo:
     @commands.command()
     async def ping(self, ctx: Context):
         """
-        Description: "Command to check network ping."
+        Description: Check network ping.
         Usage: "`{prefix}ping`"
         """
         start = time()
@@ -56,7 +56,7 @@ class BotInfo:
     @commands.group()
     async def prefix(self, ctx: Context):
         """
-        Description: "Command to check prefix."
+        Description: Command to check prefix.
         Usage: |
             `{prefix}prefix` to check the prefix.
             `{prefix}prefix set` to set the prefix for the current guild.
@@ -99,11 +99,11 @@ class BotInfo:
     @commands.check(is_admin)
     async def set(self, ctx, prefix: str = None):
         """
-        Description: "Set the prefix for this guild."
+        Description: Set the prefix for this guild.
         Restrictions: |
             Cannot be used in private message.
-            Prefix may not contain "\", "/", "@", "#", or mentions.
-        Permission Required: "Administrator"
+            Prefix may not contain \, /, @, #, or mentions.
+        Permission Required: Administrator
         Usage: "`{prefix}prefix set YOUR_PREFIX`"
         """
         old_prefix = get_prefix(self.bot, ctx.message)
@@ -114,9 +114,9 @@ class BotInfo:
     @commands.check(is_admin)
     async def reset(self, ctx):
         """
-        Description: "Reset the prefix for this guild to default."
-        Restrictions: "Cannot be used in private message."
-        Permission Required: "Administrator"
+        Description: Reset the prefix for this guild to default.
+        Restrictions: Cannot be used in private message.
+        Permission Required: Administrator
         Usage: "`{prefix}prefix reset`"
         """
         old_prefix = get_prefix(self.bot, ctx.message)

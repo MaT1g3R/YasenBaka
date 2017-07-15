@@ -45,7 +45,7 @@ class Nsfw:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def danbooru(self, ctx: Context, *query):
         """
-        Description: "Search danbooru for lewds."
+        Description: Search danbooru for lewds.
         Usage: "`{prefix}danbooru up_to two_tags` if no tags given this will
         search for a random image."
         Restrictions: |
@@ -53,7 +53,7 @@ class Nsfw:
             starts with `nsfw` (case insensitive)
 
             Only accepts up to 2 tags.
-        Cooldown: "One every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         await self.__process_lewd(ctx, 'danbooru', query)
 
@@ -61,12 +61,12 @@ class Nsfw:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def gelbooru(self, ctx: Context, *query):
         """
-        Description: "Search gelbooru for lewds."
+        Description: Search gelbooru for lewds.
         Usage: "`{prefix}gelbooru your tags` if no tags given this will
         search for a random image."
         Restrictions: "Can only be used in DM or a channel with a name that is
         equal to or starts with `nsfw` (case insensitive)"
-        Cooldown: "One every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         await self.__process_lewd(ctx, 'gelbooru', query)
 
@@ -74,12 +74,12 @@ class Nsfw:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def konachan(self, ctx: Context, *query):
         """
-        Description: "Search konachan for lewds."
+        Description: Search konachan for lewds.
         Usage: "`{prefix}konachan your tags` if no tags given this will
         search for a random image."
         Restrictions: "Can only be used in DM or a channel with a name that is
         equal to or starts with `nsfw` (case insensitive)"
-        Cooldown: "One every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         await self.__process_lewd(ctx, 'konachan', query)
 
@@ -87,12 +87,12 @@ class Nsfw:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def yandere(self, ctx: Context, *query):
         """
-        Description: "Search yandere for lewds."
+        Description: Search yandere for lewds.
         Usage: "`{prefix}yandere your tags` if no tags given this will
         search for a random image."
         Restrictions: "Can only be used in DM or a channel with a name that is
         equal to or starts with `nsfw` (case insensitive)"
-        Cooldown: "One every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         await self.__process_lewd(ctx, 'yandere', query)
 
@@ -100,12 +100,12 @@ class Nsfw:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def e621(self, ctx: Context, *query):
         """
-        Description: "Search e621 for lewds."
+        Description: Search e621 for lewds.
         Usage: "`{prefix}e621 your tags` if no tags given this will
         search for a random image."
         Restrictions: "Can only be used in DM or a channel with a name that is
         equal to or starts with `nsfw` (case insensitive)"
-        Cooldown: "One every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         await self.__process_lewd(ctx, 'e621', query)
 
@@ -113,11 +113,11 @@ class Nsfw:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def rule34(self, ctx: Context, *query):
         """
-        Description: "Search rule34 for lewds."
+        Description: Search rule34 for lewds.
         Usage: "`{prefix}rule34 your tags` if no tags given this will
         search for a random image."
         Restrictions: "Can only be used in DM or a channel with a name that is
         equal to or starts with `nsfw` (case insensitive)"
-        Cooldown: "One every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         await self.__process_lewd(ctx, 'rule34', query)

@@ -35,7 +35,8 @@ class WorldOfWarships:
     async def shamelist(self, ctx: Context):
         """
         Description: "Get the list of players registered in the database in
-        this guild."
+        this guild. Note this list is not global and is only for the
+        current guild."
         Restriction: Cannot be used in PM.
         Usage: |
             `{prefix}shamelist` to get the list of players.

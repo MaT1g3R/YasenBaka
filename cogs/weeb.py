@@ -39,7 +39,7 @@ class Weeb:
     @commands.command()
     async def kanna(self, ctx: Context):
         """
-        Description: "Display a random Kanna image."
+        Description: Display a random Kanna image.
         Usage: "`{prefix}kanna`"
         """
         await self.__random_img(ctx, self.kanna_files, ('kanna_kamui',))
@@ -47,7 +47,7 @@ class Weeb:
     @commands.command()
     async def karen(self, ctx: Context):
         """
-        Description: "Display a random Karen image."
+        Description: Display a random Karen image.
         Usage: "`{prefix}karen`"
         """
         await self.__random_img(ctx, self.karen_files, ('kujou_karen',))
@@ -55,7 +55,7 @@ class Weeb:
     @commands.command()
     async def umi(self, ctx: Context):
         """
-        Description: "Display a random Umi image."
+        Description: Display a random Umi image.
         Usage: "`{prefix}umi`"
         """
         msg, url, _ = await get_lewd(
@@ -88,7 +88,7 @@ class Weeb:
     @commands.command()
     async def chensaw(self, ctx: Context):
         """
-        Description: "Display a chensaw gif."
+        Description: Display a chensaw gif.
         Usage: "`{prefix}chensaw`"
         """
         await ctx.send(file=File(str(data_path.joinpath('chensaw.gif'))))
@@ -96,7 +96,7 @@ class Weeb:
     @commands.command()
     async def joke(self, ctx):
         """
-        Description: "Is Joke!"
+        Description: Is Joke!
         Usage: "`{prefix}joke`"
         """
         await ctx.send('https://www.youtube.com/watch?v=THrCQ1ftuTU')
@@ -105,10 +105,10 @@ class Weeb:
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.user)
     async def safebooru(self, ctx: Context, *query):
         """
-        Description: "Search safebooru for a picture."
+        Description: Search safebooru for a picture.
         Usage: "`{prefix}safebooru your tags` if no tags given this will
         search for a random image."
-        Cooldown: "One every 5 seconds per user."
+        Cooldown: Once every 5 seconds per user.
         """
         msg, url, tags = await get_lewd(
             self.bot.session_manager, 'safebooru', query,
@@ -124,7 +124,7 @@ class Weeb:
     @commands.command()
     async def anime(self, ctx, *, search=None):
         """
-        Description: "Search for an anime."
+        Description: Search for an anime.
         Usage: "`{prefix}anime Saenai Heroine no Sodatekata`"
         """
         raise NotImplementedError
@@ -132,7 +132,7 @@ class Weeb:
     @commands.command()
     async def manga(self, ctx, *, search=None):
         """
-        Description: "Search for a manga."
+        Description: Search for a manga.
         Usage: "`{prefix}manga Kami nomi zo Shiru Sekai`"
         """
         raise NotImplementedError
@@ -140,7 +140,7 @@ class Weeb:
     @commands.command(name='LN')
     async def _light_novel(self, ctx, *, search=None):
         """
-        Description: "Search for a light novel."
+        Description: Search for a light novel.
         Usage: "`{prefix}LN Overlord`"
         """
         raise NotImplementedError

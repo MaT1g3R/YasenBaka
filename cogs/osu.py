@@ -20,7 +20,7 @@ class Osu:
     @commands.command()
     async def osu(self, ctx: Context, *query):
         """
-        Description: "Get an osu! player's data."
+        Description: Get an osu! player's data.
         Flags: |
             You can use a flag to specify the game mode. Default is osu!
             `--o` osu!

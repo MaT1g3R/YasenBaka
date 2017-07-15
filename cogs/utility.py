@@ -21,7 +21,7 @@ class Utility:
     @commands.command()
     async def latex(self, ctx: Context, *, expression: str = None):
         """
-        Description: "Compile a LaTeX erpression into an image."
+        Description: Compile a LaTeX erpression into an image.
         Usage: "`{prefix}latex \\\int_0^{\\\infty} \\\\frac{x}{3} dx`"
         """
         if not expression:
@@ -36,7 +36,7 @@ class Utility:
     @commands.command()
     async def avatar(self, ctx: Context, *, user: User = None):
         """
-        Description: "Display the avatar of a user."
+        Description: Display the avatar of a user.
         Usage: |
             `{prefix}avatar some_user` for avatar of the given user.
             `{prefix}avatar` for your own avatar.
@@ -51,7 +51,7 @@ class Utility:
     @commands.guild_only()
     async def joined(self, ctx: Context, *, member: Member = None):
         """
-        Description: "Display when the member joined the guild."
+        Description: Display when the member joined the guild.
         Restriction: Cannot be used in private message.
         Usage: |
             `{prefix}joined some_user` for join time of the given user.
@@ -67,7 +67,7 @@ class Utility:
         """
         Description: Currency conversion.
         Usage: |
-            `{prefix} FROM TO [AMOUNT]` if amount is not provided it defaults to 1.
+            `{prefix} FROM TO AMOUNT` amount defaults to 1 if not provided.
             `{prefix} CAD USD 12` to convert 12 Canadian dollars to US dollars.
             `{prefix} EUR JPY` to convert 1 Euro to Japanese Yen.
         """
