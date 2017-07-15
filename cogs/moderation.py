@@ -61,14 +61,14 @@ class Moderation:
 
     @commands.command()
     @commands.check(has_manage_message)
-    async def clean(self, ctx: Context, num=None):
+    async def purge(self, ctx: Context, num=None):
         """
-        Description: Clean up to 99 messages in the current channel.
+        Description: Purge up to 99 messages in the current channel.
         Restriction: |
             Cannot be used in private message.
-            Can only clean from 1 to 99 (inclusive) messages at once.
+            Can only purge from 1 to 99 (inclusive) messages at once.
         Permission Required: Manage Messages
-        Usage: "`{prefix}clean num` where num is a number between 1 and 99."
+        Usage: "`{prefix}purge num` where num is a number between 1 and 99."
         """
         num = parse_number(num, int) or 0
         if not 1 <= num <= 99:
@@ -86,4 +86,4 @@ class Moderation:
             deleted_num = len(deleted) - 1
             msg_str = (f'{deleted_num} message' if num == 1
                        else f'{deleted_num} messages')
-            await ctx.send(f':recycle: Cleaned {msg_str}.', delete_after=3)
+            await ctx.send(f':recycle: Purged {msg_str}.', delete_after=3)
