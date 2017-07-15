@@ -6,7 +6,7 @@ from discord.ext.commands import Group
 from yaml import YAMLError, safe_load
 
 from bot import Yasen, __title__ as name
-from scripts.helpers import split_camel
+from scripts.helpers import lower_words, split_camel
 
 
 def general_help(bot: Yasen, prefix: str) -> Embed:
@@ -21,15 +21,22 @@ def general_help(bot: Yasen, prefix: str) -> Embed:
     embed.set_author(name=f'{name} Help', icon_url=bot.user.avatar_url)
     cog_cmd = {}
     for command in bot.commands:
-        cog_name = ' '.join(split_camel(command.cog_name) + ['Commands'])
+        cog_name = ' '.join(
+            [lower_words(s) for s in split_camel(command.cog_name)]
+        )
+        cog_name = f'{cog_name} Commands'
         if cog_name not in cog_cmd:
             cog_cmd[cog_name] = []
         cog_cmd[cog_name].append(f'`{command.name}`')
         if isinstance(command, Group):
             cog_cmd[cog_name] += [f'`{command.name} {sub.name}`' for
                                   sub in command.all_commands.values()]
+    count = 0
     for key in sorted(cog_cmd.keys()):
-        embed.add_field(name=key, value=', '.join(cog_cmd[key]), inline=False)
+        lst = cog_cmd[key]
+        count += len(lst)
+        embed.add_field(name=key, value=', '.join(lst), inline=False)
+    embed.set_footer(text=f'Command count: {count}')
     return embed
 
 
