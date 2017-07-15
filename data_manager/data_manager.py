@@ -67,24 +67,22 @@ class DataManager:
                 res[g] = {}
             if m not in res[g]:
                 res[g][m] = {}
-            res[g][m] = {
-                'region': r,
-                'player_id': p
-            }
-
+            res[g][m][r] = p
         return res
 
-    def get_shame(self, guild_id: str, member_id: str) -> dict:
+    def get_shame(self, guild_id: str,
+                  member_id: str, region: str) -> Optional[str]:
         """
         Get the player data for a member.
         :param guild_id: the guild id.
         :param member_id: the member id.
-        :return: a dict of {'region': region, 'player_id': player_id}
+        :param region: the player region.
+        :return: the player id found.
         """
         try:
-            return self.shame[guild_id][member_id]
+            return self.shame[guild_id][member_id][region]
         except KeyError:
-            return {}
+            return None
 
     def set_shame(self, guild_id: str, member_id: str, region: str,
                   player_id: str):
@@ -95,14 +93,13 @@ class DataManager:
         :param region: the region.
         :param player_id: the player id.
         """
-        new = {'region': region, 'player_id': player_id}
-        if self.get_shame(guild_id, member_id) == new:
+        if self.get_shame(guild_id, member_id, region) == player_id:
             return
         if guild_id not in self.shame:
             self.shame[guild_id] = {}
         if member_id not in self.shame[guild_id]:
             self.shame[guild_id][member_id] = {}
-        self.shame[guild_id][member_id] = new
+        self.shame[guild_id][member_id][region] = player_id
         self.connection.execute(
             'REPLACE INTO shame VALUES (?,?,?,?)',
             (guild_id, member_id, region, player_id)

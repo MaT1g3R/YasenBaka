@@ -1,3 +1,5 @@
+from random import randint, sample
+
 from pytest import fixture
 
 from data_manager import DataManager
@@ -9,6 +11,25 @@ def manager():
     _manager = get_manager()
     yield _manager
     clear_db()
+
+
+def random_players(amt):
+    """
+    Generate a list of random players.
+    :param amt: the amount of players to generate.
+    :return: a list of random players.
+    """
+    ids = random_strs(5 * amt)
+    players = []
+    _regions = ('NA', 'EU', 'RU', 'AS')
+    for _ in range(amt):
+        regions = sample(_regions, randint(1, 4))
+        player = {}
+        for region in regions:
+            player[region] = ids.pop()
+        res = (player, ids.pop())
+        players.append(res)
+    return players
 
 
 def test_prefix(manager: DataManager):
@@ -32,22 +53,17 @@ def test_shame(manager: DataManager):
     """
     assert manager.get_all_shame() == {}
     guild_nums = 10
-    player_nums = 4
     guild_ids = random_strs(guild_nums)
     expected = {}
-    for guild_id in guild_ids:
-        expected[guild_id] = {}
-        it = (random_strs(player_nums), random_strs(player_nums),
-              random_strs(player_nums))
-        for member, region, player_id in zip(it[0], it[1], it[2]):
-            entry = {
-                'region': region,
-                'player_id': player_id
-            }
-            expected[guild_id][member] = entry
-            manager.set_shame(guild_id, member, region, player_id)
-            assert manager.get_shame(guild_id, member) == entry
-    assert manager.get_all_shame() == expected == manager.shame
+    for guild in guild_ids:
+        player_amt = randint(1, 10)
+        expected[guild] = {}
+        for player, member in random_players(player_amt):
+            for reg, id_ in player.items():
+                manager.set_shame(guild, member, reg, id_)
+                assert manager.get_shame(guild, member, reg) == id_
+            expected[guild][member] = player
+    assert expected == manager.get_all_shame() == manager.shame
 
 
 def test_nsfw(manager: DataManager):
