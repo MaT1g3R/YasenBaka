@@ -1,9 +1,13 @@
+from html import unescape
+
 from discord import Embed, File, Member, User
 from discord.ext import commands
-from discord.ext.commands import BadArgument, Context
+from discord.ext.commands import Context
 
 from bot import Yasen
+from core.stackoverflow import stackoverflow
 from core.util_core import convert_currency, generate_latex_online, get_avatar
+from scripts.helpers import code_block
 
 
 class Utility:
@@ -85,3 +89,21 @@ class Utility:
                 from_, to, amount
             )
         )
+
+    @commands.command()
+    async def stackoverflow(self, ctx: Context, *query):
+        """
+        Description: Search Stack Overflow.
+        Usage: "`{prefix}stackoverflow my question`"
+        """
+        res, title, tags, succ = await stackoverflow(
+            self.bot.session_manager, self.bot.config.stack_exchange, query)
+        if succ:
+            title_text = f'**{unescape(title)}**' if title else ''
+            tag_text = f'Tags: `{", ".join(tags)}`' if tags else ''
+            if title_text or tag_text:
+                await ctx.send(f'{title_text}\n{tag_text}')
+            for code in code_block(res, 'markdown'):
+                await ctx.send(code)
+        else:
+            await ctx.send(res)
