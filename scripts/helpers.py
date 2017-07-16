@@ -1,6 +1,6 @@
 import re
 from collections import Iterable
-from datetime import timedelta
+from datetime import date, timedelta
 from itertools import chain
 from textwrap import wrap
 from typing import List, Type, Union
@@ -81,3 +81,13 @@ def parse_number(s: str, t: Type) -> Union[int, float, None]:
         return t(s)
     except (TypeError, ValueError):
         return None
+
+
+def get_date(diff: int) -> str:
+    """
+    Return a day's date by diff.
+    :param diff: the difference in date in days.
+    :return: the date in format YYYYMMDD
+    """
+    yesterday = date.today() - timedelta(diff)
+    return yesterday.strftime('%Y%m%d')
