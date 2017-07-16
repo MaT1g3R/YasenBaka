@@ -91,3 +91,13 @@ def get_date(diff: int) -> str:
     """
     yesterday = date.today() - timedelta(diff)
     return yesterday.strftime('%Y%m%d')
+
+
+def try_divide(numerator: Union[int, float], denominator: Union[int, float]):
+    """
+    Try to divide two numbers.
+    :param numerator: the numerator.
+    :param denominator: the denominator.
+    :return: the result of the division if denominator is not zero else 0.
+    """
+    return numerator / denominator if denominator else 0
