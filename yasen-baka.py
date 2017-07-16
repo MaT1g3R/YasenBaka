@@ -52,4 +52,8 @@ if __name__ == '__main__':
         set_event_loop_policy(EventLoopPolicy())
     loop = get_event_loop()
     b, c = loop.run_until_complete(run())
-    b.start_bot(c)
+    try:
+        b.start_bot(c)
+    except KeyboardInterrupt:
+        loop.close()
+        exit(0)

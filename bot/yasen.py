@@ -7,7 +7,7 @@ from logging import CRITICAL, ERROR, WARN
 from traceback import format_exc
 from typing import Optional
 
-from discord import ConnectionClosed, Game, Status
+from discord import ConnectionClosed, Game, Permissions, Status
 from discord.abc import Messageable
 from discord.ext.commands import AutoShardedBot, Context
 from discord.utils import oauth_url
@@ -66,7 +66,7 @@ class Yasen(AutoShardedBot):
 
     @property
     def invite_link(self):
-        return oauth_url(self.client_id, permissions=-1)
+        return oauth_url(self.client_id, permissions=Permissions.all())
 
     async def try_change_presence(
             self, retry: bool, *,

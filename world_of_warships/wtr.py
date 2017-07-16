@@ -1,5 +1,4 @@
-from asyncio import Queue
-from typing import Dict
+from wowspy import Region, WowsAsync
 
 from bot import SessionManager
 from scripts.helpers import try_divide
@@ -19,7 +18,7 @@ async def get_coeff(region: str, session_manager: SessionManager) -> dict:
     )
 
 
-async def coeff_all_region(session_manager: SessionManager) -> Dict[dict]:
+async def coeff_all_region(session_manager: SessionManager) -> dict:
     """
     Get coefficients for all regions.
     :param session_manager: the SessionManager.
@@ -39,6 +38,15 @@ async def coeff_all_region(session_manager: SessionManager) -> Dict[dict]:
             tmp[key] = resp[key]
         tmp['expected'] = expected
         res[region] = tmp
+    return res
+
+
+async def get_ship_dicts(wows_api: WowsAsync):
+    res = {}
+    for region in Region:
+        resp = await wows_api.warships(region, fields='tier', language='en')
+        data = resp['data']
+        res[region.name] = {key: val['tier'] for key, val in data.items()}
     return res
 
 
@@ -80,8 +88,9 @@ def calc_wtr(expected, actual, coefficients, average_level) -> float:
 
     if expected['planes_killed'] + expected['frags'] > 0:
         aircraft_frags_coef = (
-            (expected['planes_killed'] / (expected['planes_killed']))
-            + (ship_frags_importance_weight * expected['frags'])
+            expected['planes_killed'] / (
+                expected['planes_killed'] +
+                ship_frags_importance_weight * expected['frags'])
         )
 
         ship_frags_coef = 1 - aircraft_frags_coef
@@ -129,30 +138,23 @@ async def wtr_absolute(all_expected, coeff, actual: dict, ship_dict) -> int:
     :param ship_dict: dict of ship_id mapped to ship tier
     :return: the wtr of the player
     """
-    q = Queue()
+    total, total_battles = 0, 0
     for ship_id, stat in actual.items():
         expected = all_expected.get(str(ship_id), None)
         if not expected:
             continue
         tier = ship_dict.get(ship_id, 7.5)
-        await q.put(__wtr(expected, ship_id, stat, tier, coeff))
-    await q.join()
-    total, total_battles = 0, 0
-    while True:
-        if q.empty():
-            break
-        wtr, battles = await q.get()
+        wtr, battles = await __wtr(expected, stat, tier, coeff)
         total += wtr
         total_battles += battles
     return round(total / max((total_battles, 1)))
 
 
-async def __wtr(expected, ship_id, actual, tier, coeff):
+async def __wtr(expected, stats, tier, coeff):
     """
     Helper function for wtr_absolute
     See wtr_absolute for parameters
     """
-    stats = actual[ship_id]
     battles = stats.get('battles', None)
     if battles:
         stats_for_calc = {
@@ -166,7 +168,7 @@ async def __wtr(expected, ship_id, actual, tier, coeff):
         wtr = calc_wtr(expected, stats_for_calc, coeff, tier)
         total = wtr * battles
         return total, battles
-    return None, None
+    return 0, 0
 
 
 def choose_colour(wtr: int) -> int:

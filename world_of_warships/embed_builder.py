@@ -76,8 +76,9 @@ def get_shame_embed(embed: Embed, all_time_stats, wtr, nick_name, clan_tag,
         avg_frags = recent_stats['frags'] / recent_battles
         avg_dmg = recent_stats['damage_dealt'] // recent_battles
         a(
-            name='Recent Stats',
-            value=f'{recent_battles} Battles ({recent_date})',
+            name=f'Recent Stats (Since {recent_date[:4]}-'
+                 f'{recent_date[4:6]}-{recent_date[6:]})',
+            value=f'{recent_battles} Battles',
             inline=False
         )
 
