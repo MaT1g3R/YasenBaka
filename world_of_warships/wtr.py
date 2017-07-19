@@ -3,13 +3,14 @@ from wowspy import Region, WowsAsync
 from bot import SessionManager
 from scripts.helpers import try_divide
 
-
 CONVERT_REGION = {
     Region.NA: 'na',
     Region.EU: 'eu',
     Region.RU: 'ru',
     Region.AS: 'asia'
 }
+
+
 async def get_coeff(region: str, session_manager: SessionManager) -> dict:
     """
     Get the coefficients used for WTR calculations.
@@ -153,7 +154,7 @@ async def wtr_absolute(all_expected, coeff, actual: dict, ship_dict) -> int:
         wtr, battles = await __wtr(expected, stat, tier, coeff)
         total += wtr
         total_battles += battles
-    return round(total / max((total_battles, 1)))
+    return round(try_divide(total, total_battles))
 
 
 async def __wtr(expected, stats, tier, coeff):

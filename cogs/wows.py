@@ -5,9 +5,11 @@ from discord.ext import commands
 from discord.ext.commands import Context
 from wowspy import Region
 
+import world_of_warships.war_gaming as wg
 from bot import Yasen
-from world_of_warships.shell_handler import ConvertRegion, get_player_id
-from world_of_warships.war_gaming import get_clan_id
+from data_manager.data_utils import get_prefix
+from world_of_warships.shell_handler import ConvertRegion, get_clan_id, \
+    get_player_id
 
 
 class WorldOfWarships:
@@ -50,11 +52,7 @@ class WorldOfWarships:
             return
         async with ctx.typing():
             region = region or Region.NA
-            clan_id = await get_clan_id(region, self.bot.wows_api,
-                                        self.bot.logger, name)
-            if not clan_id:
-                await ctx.send(f'Clan **{name}** not found.')
-                return
+            clan_id = await get_clan_id(ctx, name, region)
             embed, players = await self.bot.wows_manager.process_clan(
                 region, clan_id)
         if isinstance(embed, Embed):
@@ -77,12 +75,33 @@ class WorldOfWarships:
             `{prefix}shamelist add` to add yourself to the shamelist.
             `{prefix}shamelist remove` to remove yourself from the shamelist.
         """
-        if not ctx.invoked_subcommand:
-            raise NotImplementedError
+        if ctx.invoked_subcommand:
+            return
+        prefix = get_prefix(self.bot, ctx.message)
+        empty_msg = (f'Your guild does not have a shamelist. '
+                     f'Use `{prefix}shamelist add` '
+                     f'to add yourself to the shamelist.')
+        guild = ctx.guild
+        shame_list = self.bot.data_manager.get_shame_list(
+            guild.members, str(guild.id)
+        )
+        if not shame_list:
+            await ctx.send(empty_msg)
+            return
+        embed = Embed(
+            colour=self.bot.config.colour,
+            title=f'Shamelist for {guild}'
+        )
+        for key, val in shame_list.items():
+            if val:
+                embed.add_field(
+                    name=key, value=f'`{", ".join(val)}`', inline=False
+                )
+        await ctx.send(embed=embed)
 
     @shamelist.command()
     @commands.guild_only()
-    async def add(self, ctx, name, region: ConvertRegion() = None):
+    async def add(self, ctx, name=None, region: ConvertRegion() = None):
         """
         Description: "Add yourself to the guild shamelist.
         Note this list is not global and is only for the current guild."
@@ -93,11 +112,27 @@ class WorldOfWarships:
         Usage: "`{prefix}shamelist add my_wows_name region` region defaults
         to NA if not provided."
         """
-        raise NotImplementedError
+        if not name:
+            await ctx.send('Please enter a World of Warships player name.')
+            return
+        region = region or Region.NA
+        player_id = await wg.get_player_id(
+            region, self.bot.wows_api, self.bot.logger, name
+        )
+        if not player_id:
+            await ctx.send(f'Player **{name}** not found!')
+        else:
+            self.bot.data_manager.set_shame(
+                str(ctx.guild.id), str(ctx.author.id),
+                region.name, str(player_id)
+            )
+            await ctx.send(
+                f'You have set your player for {region} region to {name}'
+            )
 
     @shamelist.command()
     @commands.guild_only()
-    async def remove(self, ctx, region: ConvertRegion() = None):
+    async def remove(self, ctx, region=None):
         """
         Description: "Remove yourself from the guild shamelist.
         Note this list is not global and is only for the current guild."
@@ -106,4 +141,14 @@ class WorldOfWarships:
         Usage: "`{prefix}shamelist remove region` you must provide a region.
         Use `all` to remove all regions that you have registered."
         """
-        raise NotImplementedError
+        region = region.upper() if region else None
+        if region not in ('ALL', 'NA', 'EU', 'AS', 'RU'):
+            await ctx.send('Please enter a region in `all, NA, EU, RU, AS`')
+            return
+        self.bot.data_manager.delete_shame(
+            str(ctx.guild.id), str(ctx.author.id), region
+        )
+        noun = 'regions' if region == 'ALL' else 'region'
+        await ctx.send(
+            f'You deleted yourself from the shamelist in {region} {noun}'
+        )

@@ -1,6 +1,9 @@
+from collections import OrderedDict
 from difflib import get_close_matches
 from sqlite3 import Connection
 from typing import List, Optional
+
+from discord.utils import get
 
 
 class DataManager:
@@ -79,6 +82,7 @@ class DataManager:
         :param region: the player region.
         :return: the player id found.
         """
+        assert region in ('NA', 'EU', 'AS', 'RU')
         try:
             return self.shame[guild_id][member_id][region]
         except KeyError:
@@ -93,6 +97,7 @@ class DataManager:
         :param region: the region.
         :param player_id: the player id.
         """
+        assert region in ('NA', 'EU', 'AS', 'RU')
         if self.get_shame(guild_id, member_id, region) == player_id:
             return
         if guild_id not in self.shame:
@@ -105,6 +110,62 @@ class DataManager:
             (guild_id, member_id, region, player_id)
         )
         self.connection.commit()
+
+    def delete_shame(self, guild_id: str, member_id: str, region: str):
+        """
+        Delete a shame entry from the db.
+        :param guild_id: the guild id.
+        :param member_id: the member id.
+        :param region: the region.
+        """
+        assert region in ('ALL', 'NA', 'EU', 'AS', 'RU')
+        if region == 'ALL':
+            sql = 'DELETE FROM shame WHERE guild_id=? AND member_id=?'
+            self.connection.execute(sql, (guild_id, member_id))
+            try:
+                self.shame[guild_id].pop(member_id)
+            except KeyError:
+                pass
+        else:
+            sql = ('DELETE FROM shame '
+                   'WHERE guild_id=? AND member_id=? AND region=?')
+            self.connection.execute(sql, (guild_id, member_id, region))
+            try:
+                self.shame[guild_id][member_id].pop(region)
+            except KeyError:
+                pass
+        self.connection.commit()
+
+    def get_shame_list(self, members, guild_id: str):
+        """
+
+        :param members:
+        :param guild_id:
+        :return:
+        """
+        guild = self.shame.get(guild_id, None)
+        if not guild:
+            return
+        bad = []
+        res = OrderedDict({
+            'NA': [],
+            'EU': [],
+            'AS': [],
+            'RU': []
+        })
+        for member_id, val in guild.items():
+            if not val or not any(val.values()):
+                continue
+            member = get(members, id=int(member_id))
+            if not member:
+                bad.append(member_id)
+                continue
+            for r in val:
+                if val[r]:
+                    res[r].append(str(member))
+        for bad_id in set(bad):
+            self.delete_shame(guild_id, bad_id, 'ALL')
+        return res if any(res.values()) else None
 
     def get_nsfw_tags(self) -> dict:
         """

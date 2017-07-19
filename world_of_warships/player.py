@@ -67,6 +67,7 @@ class Player:
         if self.hidden:
             return
         updated = await self.update(wows_api, expected, coeff, ship_dict, True)
+        self.updating = False
         if not updated and self.__embed is not None:
             return self.__embed
         colour = choose_colour(self.wtr)
@@ -205,34 +206,31 @@ class Player:
         :return: True if updated.
         """
         self.updating = True
+        all_time, nick = await self.fetch(wows_api)
+        clan = await self.fetch_clan(wows_api)
+        name_change = self.nick != nick or self.clan != clan
+        self.nick = nick
+        self.clan = clan
+        if self.stats and \
+                (all_time.get('battles') == self.stats.get('battles')):
+            return name_change
+        if not all_time:
+            return False
+        self.stats = all_time
         try:
-            all_time, nick = await self.fetch(wows_api)
-            clan = await self.fetch_clan(wows_api)
-            name_change = self.nick != nick or self.clan != clan
-            self.nick = nick
-            self.clan = clan
-            if self.stats and \
-                    (all_time.get('battles') == self.stats.get('battles')):
-                return name_change
-            if not all_time:
-                return False
-            self.stats = all_time
-            try:
-                recent_stats, recent_date = await self.fetch_recent(wows_api)
-            except Exception as e:
-                self.logger.log(WARN, str(e))
-                recent_stats, recent_date = None, None
-            if recent_stats:
-                self.recent_stats = recent_stats
-            if recent_date:
-                self.recent_date = recent_date
-            if update_ships:
-                ship_stats = await self.fetch_ship_stats(wows_api)
-                if ship_stats:
-                    self.ship_stats = ship_stats
-            self.wtr = await wtr_absolute(
-                expected, coeff, self.ship_stats, ship_dict
-            )
-            return True
-        finally:
-            self.updating = False
+            recent_stats, recent_date = await self.fetch_recent(wows_api)
+        except Exception as e:
+            self.logger.log(WARN, str(e))
+            recent_stats, recent_date = None, None
+        if recent_stats:
+            self.recent_stats = recent_stats
+        if recent_date:
+            self.recent_date = recent_date
+        if update_ships:
+            ship_stats = await self.fetch_ship_stats(wows_api)
+            if ship_stats:
+                self.ship_stats = ship_stats
+        self.wtr = await wtr_absolute(
+            expected, coeff, self.ship_stats, ship_dict
+        )
+        return True

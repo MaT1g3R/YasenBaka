@@ -205,12 +205,16 @@ class WowsManager:
         :param players: a list of Players.
         """
         for player in players:
-            await player.update(
-                self.wows_api,
-                self.expected(region),
-                self.coeff(region),
-                self.ship_dict[region.name], False
-            )
+            try:
+                await player.update(
+                    self.wows_api,
+                    self.expected(region),
+                    self.coeff(region),
+                    self.ship_dict[region.name], False
+                )
+            except Exception as e:
+                self.logger.warn(str(e))
+            player.updating = False
 
     async def process_clan(self, region: Region, clan_id: int):
         """
