@@ -35,8 +35,7 @@ def get_shame_embed(embed: Embed, all_time_stats, wtr, nick_name, clan_tag,
     # max_xp = str(all_time_stats['max_xp'])
     # max_planes_killed = str(all_time_stats['max_planes_killed'])
 
-    kda = f'{(warships_killed / deaths):.2f}' if deaths > 0 \
-        else '\u221E'
+    kda = f'{(warships_killed / deaths):.2f}' if deaths else '\u221E'
     a(name='All Time Stats', value=f'{battles:,} Battles', inline=False)
     a(name='WTR', value=f'{wtr:,}')
     a(name='Win Rate', value=f'{((wins / battles) * 100):.2f}%')
@@ -85,6 +84,7 @@ def get_shame_embed(embed: Embed, all_time_stats, wtr, nick_name, clan_tag,
         a(name='Win Rate', value=f'{(avg_wins * 100):.2f}%')
         a(name='Average Damage', value=f'{avg_dmg:,}')
         a(name='Average Kills', value=f'{avg_frags:.2f}')
+    del a
     return embed
 
 
@@ -116,11 +116,11 @@ def build_clan_embed(embed: Embed, total_stats, clan_name, clan_description,
 
     a(name='Tag', value=clan_tag)
     a(name='Description', value=clan_description)
-    a(name='Active', value=clan_active)
+    a(name='Active', value=str(clan_active))
     a(name='Created At', value=clan_creation_date)
     a(name='Creator', value=creator_name)
     a(name='Leader', value=leader_name)
-    a(name='Members Count', value=members_count)
+    a(name='Members Count', value=str(members_count))
     a(name='Clan Average Stats', value=f'In total of {battles:,} Battles',
       inline=False)
 
@@ -138,4 +138,5 @@ def build_clan_embed(embed: Embed, total_stats, clan_name, clan_description,
     a(name='Torpedo Hit Rate', value=f'{100*torp_hits/torp_shots:.2f}%')
     a(name='Survival Rate', value=f'{100*survived_battles/battles:.2f}%')
     a(name='Kills/Deaths', value=f'{kills/(battles-survived_battles):.2f}')
+    del a
     return embed

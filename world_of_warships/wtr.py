@@ -4,6 +4,12 @@ from bot import SessionManager
 from scripts.helpers import try_divide
 
 
+CONVERT_REGION = {
+    Region.NA: 'na',
+    Region.EU: 'eu',
+    Region.RU: 'ru',
+    Region.AS: 'asia'
+}
 async def get_coeff(region: str, session_manager: SessionManager) -> dict:
     """
     Get the coefficients used for WTR calculations.

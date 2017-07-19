@@ -11,12 +11,14 @@ from discord import ConnectionClosed, Game, Permissions, Status
 from discord.abc import Messageable
 from discord.ext.commands import AutoShardedBot, Context
 from discord.utils import oauth_url
+from wowspy import WowsAsync
 
 from bot import SessionManager
 from config import Config
 from data_manager import DataManager
 from data_manager.data_utils import get_prefix
 from scripts.helpers import code_block
+from world_of_warships import WowsManager
 
 
 class Yasen(AutoShardedBot):
@@ -29,7 +31,9 @@ class Yasen(AutoShardedBot):
                  version: str,
                  config: Config,
                  start_time: int,
+                 wows_api=WowsAsync,
                  data_manager: DataManager,
+                 wows_manager: WowsManager,
                  session_manager: SessionManager):
         self.config = config
         self.logger = logger
@@ -37,6 +41,8 @@ class Yasen(AutoShardedBot):
         self.start_time = start_time
         self.data_manager = data_manager
         self.session_manager = session_manager
+        self.wows_manager = wows_manager
+        self.wows_api = wows_api
         super().__init__(get_prefix)
 
     @property

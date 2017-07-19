@@ -1,8 +1,3 @@
-from wowspy import Region
+from world_of_warships.wows_manager import WowsManager
 
-_CONVERT_REGION = {
-    Region.NA: ('NA', 'na'),
-    Region.EU: ('EU', 'eu'),
-    Region.RU: ('RU', 'ru'),
-    Region.AS: ('AS', 'asia')
-}
+__all__ = ['WowsManager']

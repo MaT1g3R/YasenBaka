@@ -5,43 +5,43 @@ from discord import Embed
 from wowspy import Region, WowsAsync
 
 from scripts.helpers import get_date
-from world_of_warships import _CONVERT_REGION
 from world_of_warships.embed_builder import get_shame_embed
-from world_of_warships.wtr import choose_colour, wtr_absolute
+from world_of_warships.wtr import CONVERT_REGION, choose_colour, wtr_absolute
 
 
 class Player:
-    def __init__(self, id_: str, region: Region, logger,
-                 stats=None, recent_stats=None, recent_date=None,
-                 ship_stats=None):
+    def __init__(self, region: Region, id_: str, logger, ship_stats=None):
         """
         :param id_: the player id.
         :param region: the player region.
         :param logger: the logger.
-
-        :param stats: the player stats, optional.
-        :param recent_stats: player recent stats, optional.
-        :param recent_date: player recent stats date, optional.
         :param ship_stats: player ship stats, optional.
         """
         self.region = region
-        self.player_id: str = id_
-        self.region_db, self.region_today = _CONVERT_REGION[region]
-        self.stats = stats
-        self.recent_stats = recent_stats
-        self.recent_date = recent_date
+        self.player_id = id_
+        self.stats = {}
+        self.recent_stats = {}
+        self.recent_date = None
         self.ship_stats = ship_stats
         self.logger = logger
-        self.nick = stats.get('nickname', None) if stats else None
+        self.nick = None
         self.hidden = False
         self.wtr = None
         self.clan = None
+        self.updating = False
         self.__embed = None
+
+    @property
+    def region_today(self) -> str:
+        """
+        :return: Player region in Warships Today string format.
+        """
+        return CONVERT_REGION[self.region]
 
     @property
     def warships_today_sig(self) -> str:
         """
-        :return: Player warshipstoday signiture url.
+        :return: Player Warships Today signiture url.
         """
         return (f'http://{self.region_today}.warshipstoday.com/signature/'
                 f'{self.player_id}/dark.png')
@@ -49,7 +49,7 @@ class Player:
     @property
     def warships_today_url(self) -> str:
         """
-        :return: Player profile url on warshipstoday.
+        :return: Player profile url on Warships Today.
         """
         return (f'https://{self.region_today}.warships.today/'
                 f'player/{self.player_id}/{self.nick}')
@@ -64,10 +64,9 @@ class Player:
         :param ship_dict: a dict of {ship_id: tier}
         :return: player stats embed if any.
         """
-
         if self.hidden:
             return
-        updated = await self.update(wows_api, expected, coeff, ship_dict)
+        updated = await self.update(wows_api, expected, coeff, ship_dict, True)
         if not updated and self.__embed is not None:
             return self.__embed
         colour = choose_colour(self.wtr)
@@ -195,39 +194,45 @@ class Player:
             return
 
     async def update(self, wows_api: WowsAsync,
-                     expected, coeff, ship_dict) -> bool:
+                     expected, coeff, ship_dict, update_ships: bool) -> bool:
         """
         Update the player stats.
         :param wows_api: the WowsAsync instance.
         :param expected: the expected server average.
         :param coeff: the coefficents used in WTR calculation.
         :param ship_dict: a dict of {ship_id: tier}
+        :param update_ships: True to update player ship stats.
         :return: True if updated.
         """
-        all_time, nick = await self.fetch(wows_api)
-        clan = await self.fetch_clan(wows_api)
-        if not all_time:
-            return False
-        name_change = self.nick != nick or self.clan != clan
-        self.nick = nick
-        self.clan = clan
-        if self.stats and all_time.get('battles') == self.stats.get('battles'):
-            return name_change
-        self.stats = all_time
+        self.updating = True
         try:
-            recent_stats, recent_date = await self.fetch_recent(wows_api)
-        except Exception as e:
-            self.logger.log(WARN, str(e))
-            recent_stats, recent_date = None, None
-        if recent_stats:
-            self.recent_stats = recent_stats
-        if recent_date:
-            self.recent_date = recent_date
-        ship_stats = await self.fetch_ship_stats(wows_api)
-        if ship_stats:
-            self.ship_stats = ship_stats
-        if ship_stats:
+            all_time, nick = await self.fetch(wows_api)
+            clan = await self.fetch_clan(wows_api)
+            name_change = self.nick != nick or self.clan != clan
+            self.nick = nick
+            self.clan = clan
+            if self.stats and \
+                    (all_time.get('battles') == self.stats.get('battles')):
+                return name_change
+            if not all_time:
+                return False
+            self.stats = all_time
+            try:
+                recent_stats, recent_date = await self.fetch_recent(wows_api)
+            except Exception as e:
+                self.logger.log(WARN, str(e))
+                recent_stats, recent_date = None, None
+            if recent_stats:
+                self.recent_stats = recent_stats
+            if recent_date:
+                self.recent_date = recent_date
+            if update_ships:
+                ship_stats = await self.fetch_ship_stats(wows_api)
+                if ship_stats:
+                    self.ship_stats = ship_stats
             self.wtr = await wtr_absolute(
-                expected, coeff, ship_stats, ship_dict
+                expected, coeff, self.ship_stats, ship_dict
             )
-        return True
+            return True
+        finally:
+            self.updating = False

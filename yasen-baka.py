@@ -5,6 +5,7 @@ from sqlite3 import connect
 from time import time
 
 from aiohttp import ClientSession
+from wowspy import WowsAsync
 
 from bot import SessionManager, Yasen, version_info as vs
 from bot.logger import get_console_handler, setup_logging
@@ -12,6 +13,7 @@ from cogs import *
 from config import Config
 from data import data_path
 from data_manager import DataManager
+from world_of_warships import WowsManager
 
 try:
     from uvloop import EventLoopPolicy
@@ -20,6 +22,7 @@ except ImportError:
 
 
 async def run():
+    session = ClientSession()
     config = Config('beta_config.json')
     start_time = int(time())
     logger = setup_logging(start_time, data_path.joinpath('logs'))
@@ -29,14 +32,20 @@ async def run():
     if vs.serial:
         v += f'-{vs.serial}'
     data_manager = DataManager(connect('./tests/test_data/test_db'))
-    session_manager = SessionManager(ClientSession(), logger)
+    session_manager = SessionManager(session, logger)
+    wows_api = WowsAsync(config.wows, session)
+    wows_manager = await WowsManager.wows_manager(
+        session_manager, wows_api, logger
+    )
     bot = Yasen(
         logger=logger,
         version=v,
         config=config,
         start_time=start_time,
         data_manager=data_manager,
-        session_manager=session_manager
+        session_manager=session_manager,
+        wows_manager=wows_manager,
+        wows_api=wows_api
     )
     karen_files = [Path(f) for f in data_path.joinpath('Karen').iterdir()]
     kanna_files = [Path(f) for f in data_path.joinpath('Kanna').iterdir()]
