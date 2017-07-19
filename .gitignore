@@ -18,3 +18,7 @@ tests/\.cache/v/cache/
 config/beta_config\.json
 
 config/config\.json
+
+data/expected_and_coeff\.json
+
+data/ship_dict\.json
