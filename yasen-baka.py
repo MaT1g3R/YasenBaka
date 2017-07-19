@@ -52,7 +52,7 @@ async def run():
 
     cogs = [Listeners(bot), Fun(bot), Weeb(bot, kanna_files, karen_files),
             BotInfo(bot), Nsfw(bot), Osu(bot), Utility(bot), Moderation(bot),
-            WorldOfWarships(bot)]
+            WorldOfWarships(bot), Music(bot)]
     return bot, cogs
 
 

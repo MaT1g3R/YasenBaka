@@ -15,5 +15,6 @@
   "error_log": null,
   "wolke_api": "WOLKE API KEY, GET ONE HERE: discord.gg/y5MPvUC",
   "colour": "A hex colour code to use for embeds. Example: 1660A5",
-  "support": "Your support server invite link"
+  "support": "Your support server invite link",
+  "music_path": "A path to the directory that contains your default playlist. Leave blank if you don't want one."
 }
