@@ -35,7 +35,7 @@ def general_help(bot: Yasen, prefix: str) -> Embed:
     for key in sorted(cog_cmd.keys()):
         lst = cog_cmd[key]
         count += len(lst)
-        embed.add_field(name=key, value=', '.join(lst), inline=False)
+        embed.add_field(name=key, value=', '.join(sorted(lst)), inline=False)
     embed.set_footer(text=f'Command count: {count}')
     return embed
 
