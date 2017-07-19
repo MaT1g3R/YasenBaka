@@ -27,7 +27,7 @@ def setup_logging(start_time, path: Path):
     :return: the logger object
     """
     Formatter.converter = timestamp
-    logger = getLogger()
+    logger = getLogger('discord')
     logger.setLevel(INFO)
     logger.addHandler(get_file_handler(path, start_time))
     return logger

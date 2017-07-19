@@ -10,7 +10,7 @@ def clean():
         if not file.name.startswith('.'):
             try:
                 file.unlink()
-            except FileNotFoundError:
+            except (FileNotFoundError, ValueError, OSError):
                 continue
 
 

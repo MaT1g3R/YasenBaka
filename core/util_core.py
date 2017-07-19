@@ -31,8 +31,7 @@ def get_avatar(target: Union[User, Member]) -> str:
     :return: the avatar url of the target.
     """
     if target.avatar and target.avatar.startswith('a'):
-        return (f'https://cdn.discordapp.com/avatars/{target.id}/'
-                f'{target.avatar}.gif')
+        return f'{target.avatar_url}.gif'
     else:
         return target.avatar_url
 

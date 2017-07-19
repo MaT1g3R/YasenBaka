@@ -1,5 +1,5 @@
 from pathlib import Path
-from random import choice
+from random import choice, random
 from typing import List, Tuple, Union
 
 from discord import File
@@ -44,7 +44,9 @@ async def random_picture(files: List[Path], tags: Tuple[str],
     :param data_manager: the data manager.
     :return: a random image
     """
+    file = File(str(choice(files)))
+    if random() < 0.5:
+        return file
     _, url, __ = await get_lewd(
         session_manager, 'safebooru', tags, data_manager)
-    file = File(str(choice(files)))
-    return choice((file, url)) if url else file
+    return url or file
