@@ -22,3 +22,4 @@ config/config\.json
 data/expected_and_coeff\.json
 
 data/ship_dict\.json
+/run.sh

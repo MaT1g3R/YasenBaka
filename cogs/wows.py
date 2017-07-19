@@ -48,13 +48,21 @@ class WorldOfWarships:
         if not name:
             await ctx.send('Please enter a clan name.')
             return
-        region = region or Region.NA
-        clan_id = await get_clan_id(region, self.bot.wows_api,
-                                    self.bot.logger, name)
-        if not clan_id:
-            await ctx.send(f'Clan **{name}** not found.')
-            return
-        await self.bot.wows_manager.process_clan(ctx, region, clan_id)
+        async with ctx.typing():
+            region = region or Region.NA
+            clan_id = await get_clan_id(region, self.bot.wows_api,
+                                        self.bot.logger, name)
+            if not clan_id:
+                await ctx.send(f'Clan **{name}** not found.')
+                return
+            embed, players = await self.bot.wows_manager.process_clan(
+                region, clan_id)
+        if isinstance(embed, Embed):
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send(embed)
+        if players:
+            await self.bot.wows_manager.cache_players(region, players)
 
     @commands.group()
     @commands.guild_only()

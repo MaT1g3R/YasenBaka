@@ -2,10 +2,9 @@ from asyncio import sleep
 from datetime import date
 from json import dumps
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from discord import Embed
-from discord.ext.commands import Context
 from wowspy import Region, WowsAsync
 
 from bot import SessionManager
@@ -27,7 +26,7 @@ class WowsManager:
         self.wows_api = wows_api
         self.expected_and_coeff = None
         self.ship_dict = None
-        self.players: Dict[Region, Dict[str, Player]] = {
+        self.players = {
             Region.NA: {},
             Region.EU: {},
             Region.RU: {},
@@ -81,16 +80,25 @@ class WowsManager:
         Update data used for wtr calculations.
         :param session_manager: SessionManager instance.
         """
+        generic = 'Updating data from'
+        self.logger.info(f'{generic} Warships Today.')
         coeff = await self.__update_data(
             coeff_all_region(session_manager), self.e_and_c_path
         )
         if coeff:
             self.expected_and_coeff = coeff
+            self.logger.info(f'{generic} Warships Today success.')
+        else:
+            self.logger.warn(f'{generic} from Warships Today failed.')
+        self.logger.info(f'{generic} from Wargaming.')
         ships = await self.__update_data(
             get_ship_dicts(self.wows_api), self.ship_path
         )
         if ships:
             self.ship_dict = ships
+            self.logger.info(f'{generic} from Wargaming success.')
+        else:
+            self.logger.warn(f'{generic} from Wargaming failed.')
 
     async def get_player(self, region: Region, id_: str) -> Player:
         """
@@ -119,6 +127,8 @@ class WowsManager:
             new.ship_stats = await new.fetch_ship_stats(self.wows_api)
             if new.ship_stats:
                 players.append(new)
+        for player in players:
+            player.updating = True
         return players
 
     async def clan_meta(self, region: Region, id_: int) -> Optional[dict]:
@@ -194,43 +204,32 @@ class WowsManager:
         :param region: the region.
         :param players: a list of Players.
         """
-        coros = []
         for player in players:
-            player.updating = True
-            coros.append(player.update(
+            await player.update(
                 self.wows_api,
                 self.expected(region),
                 self.coeff(region),
                 self.ship_dict[region.name], False
-            ))
-        for coro in coros:
-            await coro
+            )
 
-    async def process_clan(self, ctx: Context, region: Region, clan_id: int):
+    async def process_clan(self, region: Region, clan_id: int):
         """
         Process a request for getting clan info.
-        :param ctx: the Context.
         :param region: the region.
         :param clan_id: the clan id.
         """
         if not self.check_data():
             msg = 'Data needed for WTR calculation not available'
-            await ctx.send(msg)
             self.logger.warn(f'{type(self)}: {msg}')
-            return
-        async with ctx.typing():
-            meta = await self.clan_meta(region, clan_id)
-            player_ids = meta.get('members_ids', [])
-            players = await self.get_clan_players(region, player_ids)
-            if not players:
-                await ctx.send(
-                    Embed(
-                        title='Error',
-                        description="The clan doesn't have any players.",
-                        colour=0x930D0D
-                    )
-                )
-                return
-            embed = await self.clan_embed(region, players, meta)
-        await ctx.send(embed=embed)
-        await self.cache_players(region, players)
+            return msg, None
+
+        meta = await self.clan_meta(region, clan_id)
+        player_ids = meta.get('members_ids', [])
+        players = await self.get_clan_players(region, player_ids)
+        if not players:
+            return Embed(
+                title='Error',
+                description="The clan doesn't have any players.",
+                colour=0x930D0D
+            ), None
+        return await self.clan_embed(region, players, meta), players
