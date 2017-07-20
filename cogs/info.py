@@ -9,6 +9,7 @@ from core.info_core import get_info_embed
 from data_manager.data_utils import get_prefix
 from scripts.checks import is_admin
 
+
 class BotInfo:
     def __init__(self, bot: Yasen):
         self.bot = bot
@@ -22,14 +23,13 @@ class BotInfo:
         await ctx.send(embed=get_info_embed(self.bot))
 
     @commands.command()
-    async def help(self, ctx: Context, *args):
+    async def help(self, ctx: Context, *, name=None):
         """
         Description: Help command.
         Usage: "`{prefix}help` for a list of all commands,
         `{prefix}help command name` for help for the  specific command."
         """
         prefix = get_prefix(self.bot, ctx.message)
-        name = ' '.join(args)
         doc = get_doc(self.bot, name)
         if doc:
             res = cmd_help_embed(

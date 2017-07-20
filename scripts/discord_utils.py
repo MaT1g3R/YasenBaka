@@ -1,8 +1,11 @@
 import re
+from typing import Optional
 
 from discord import Member
 from discord.ext.commands import Context
-from discord.utils import get
+from discord.utils import find, get
+
+from bot import Yasen
 
 
 def try_get_member(ctx: Context, ex=None) -> Member:
@@ -55,3 +58,15 @@ def leading_members(ctx: Context, msg: str) -> tuple:
     ids, left = leading_mentions(msg)
     guild = ctx.guild
     return [m for m in (get(guild.members, id=i) for i in set(ids)) if m], left
+
+
+def find_member(bot: Yasen, name: str) -> Optional[Member]:
+    """
+    Find a member by full name with discriminator.
+    :param bot: the bot.
+    :param name: the full name.
+    :return: the member if found.
+    """
+    name, discrim = name[:-5], name[-4:]
+    predicate = lambda u: u.name == name and u.discriminator == discrim
+    return find(predicate, bot.get_all_members())

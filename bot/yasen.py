@@ -129,6 +129,20 @@ class Yasen(AutoShardedBot):
             self.add_cog(cog)
         self.run(self.config.token)
 
+    def get_channels(self, type_: Optional[type] = None):
+        """
+        Get all channels the bot can see with an optional filter.
+        :param type_: the type of the channel desired, None for all.
+        :return: A generator that retrives all channels with type `type_`
+        """
+        if type_:
+            for guild in self.guilds:
+                for channel in guild.channels:
+                    if isinstance(channel, type_):
+                        yield channel
+        else:
+            yield from super().get_all_channels()
+
     async def on_error(self, event_method, *args, **kwargs):
         """
         General error handling for discord

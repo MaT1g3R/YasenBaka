@@ -21,22 +21,24 @@ def parse_salt(trials: str, prob: str) -> tuple:
     arguments.
     :param trials: the number of trials
     :param prob: the probability of the event happeneing
-    :return: (trials, prob) if the numbers are valid
+    :return: (trials, prob, is_percent) if the numbers are valid
     """
     if trials is None or prob is None:
-        return None, None
+        return None, None, None
     try:
         n = int(trials)
         if n <= 0:
             return None, None
         if '%' in prob:
+            is_percent = True
             prob = prob.replace('%', '')
             p = float(prob) / 100
         else:
+            is_percent = False
             p = float(prob)
     except ValueError:
-        return None, None
-    return n, p
+        return None, None, None
+    return n, p, is_percent
 
 
 def parse_repeat(n, msg) -> tuple:

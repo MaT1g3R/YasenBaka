@@ -17,7 +17,7 @@ version_info = VersionInfo(
 )
 
 __title__ = 'Yasen-Baka'
-__author__ = ['ラブアローシュート#6728']
+__author__ = 'ラブアローシュート#6728'
 __license__ = 'Apache License 2.0'
 __copyright__ = 'Copyright 2016-2017 MaT1g3R'
 __version__ = '.'.join([str(i) for i in list(version_info)[:3]])

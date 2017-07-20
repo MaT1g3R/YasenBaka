@@ -25,3 +25,5 @@ data/ship_dict\.json
 /run.sh
 
 no_wows\.py
+
+config/no_wows\.json

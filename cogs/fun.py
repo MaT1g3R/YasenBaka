@@ -63,10 +63,13 @@ class Fun:
         Usage: "`{prefix}salt 10 0.03` this is the same as
         `{prefix}salt 10 3%`"
         """
-        n, p = parse_salt(num, prob)
+        n, p, is_percent = parse_salt(num, prob)
         if n is None or p is None:
             await ctx.send('Please enter a vaild number of trials and a '
                            'vaild probability (in decimal or percentage)')
+            return
+        res = 1 - (1 - p) ** n
+        if is_percent:
+            await ctx.send(f'**{res*100:.3g}%** chance.')
         else:
-            res = round((1 - (1 - p) ** n), 4)
-            await ctx.send(f'{res*100}% chance of happeneing')
+            await ctx.send(f'**{res:.3g}** probability.')
