@@ -115,7 +115,8 @@ class Yasen(AutoShardedBot):
                 await self.logout()
                 await self.login(self.config.token)
                 await self.try_change_presence(
-                    retry, game=game, status=status, afk=afk, shard_id=shard_id)
+                    retry, game=game, status=status, afk=afk,
+                    shard_id=shard_id)
             else:
                 raise e
 

@@ -137,7 +137,9 @@ class Player:
             stats = date_stats.get(date, None)
             if not stats:
                 continue
-            battle_diff = self.stats.get('battles', 0) - stats.get('battles', 0)
+            battle_diff = (
+                self.stats.get('battles', 0) - stats.get('battles', 0)
+            )
             if battle_diff:
                 recent = stats
                 final_date = date

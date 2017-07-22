@@ -26,7 +26,7 @@ class Music:
             You must be in a voice channel.
         Usage: "`{prefix}play some song name or url`
         Must provide a name or url."
-        Note: This will terminate the default playlist if it is playing.
+        Note: This will terminate the default playlist if it is current.
         """
         raise NotImplementedError
 
@@ -46,9 +46,9 @@ class Music:
     @commands.command()
     async def playing(self, ctx: Context):
         """
-        Description: "Check what's playing."
+        Description: "Check what's current."
         Restriction: Cannot be used in private message.
-        Usage: "`{prefix}playing`"
+        Usage: "`{prefix}current`"
         """
         raise NotImplementedError
 
@@ -88,7 +88,7 @@ class Music:
     @commands.check(is_admin)
     async def stop(self, ctx: Context):
         """
-        Description: "Stop whatever is playing and leave the voice channel.
+        Description: "Stop whatever is current and leave the voice channel.
         This will also delete any song queued in the playlist."
         Restriction: Cannot be used in private message.
         Permission Required: Administrator

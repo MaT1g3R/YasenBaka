@@ -169,7 +169,8 @@ async def __wtr(expected, stats, tier, coeff):
             'planes_killed': stats['planes_killed'] / battles,
             'damage_dealt': stats['damage_dealt'] / battles,
             'frags': stats['frags'] / battles,
-            'dropped_capture_points': stats['dropped_capture_points'] / battles,
+            'dropped_capture_points':
+                stats['dropped_capture_points'] / battles,
             'wins': stats['wins'] / battles
         }
         wtr = calc_wtr(expected, stats_for_calc, coeff, tier)

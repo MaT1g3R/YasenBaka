@@ -120,5 +120,7 @@ class BotInfo:
         """
         old_prefix = get_prefix(self.bot, ctx.message)
         await ctx.send(
-            self.__set_prefix(ctx.guild.id, old_prefix, self.bot.default_prefix)
+            self.__set_prefix(
+                ctx.guild.id, old_prefix, self.bot.default_prefix
+            )
         )

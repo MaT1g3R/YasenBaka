@@ -131,7 +131,7 @@ def __get_site_params(
     :param site: the site name.
     :param api_key: the danbooru api key, not required for other sites.
     :param user: the danbooru username, not required for other sites.
-    :return: the request url, the file url formatter, the key for the tag string
+    :return: (request url, file url formatter, key for the tag string)
     """
     request_url = {
         'danbooru': 'https://danbooru.donmai.us//posts.json?',

@@ -38,8 +38,9 @@ def is_nsfw(ctx: Context):
     if (isinstance(channel, TextChannel) and
             channel.name.lower().startswith('nsfw')):
         return True
-    raise NsfwError('NSFW commands must be used in DM or a channel with a name '
-                    'that is equal to or starts with `nsfw` (case insensitive)')
+    raise NsfwError('NSFW commands must be used in DM or a channel with a '
+                    'name that is equal to or starts with `nsfw` '
+                    '(case insensitive)')
 
 
 def has_manage_role(ctx: Context):

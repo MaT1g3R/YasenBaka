@@ -1,7 +1,8 @@
 """
-YasenBaka
+Yasen-Baka
 ~~~~~~~~~~~~~~~~~~~
-YasenBaka, a multifunctional Discord bot with special World of Warships commands
+Yasen-Baka, a multifunctional Discord bot
+with special World of Warships commands.
 :copyright: (c) Copyright 2016-2017 MaT1g3R
 :license: Apache License 2.0, see LICENSE for more details.
 """
@@ -10,7 +11,8 @@ from collections import namedtuple
 from bot.session_manager import HTTPStatusError, SessionManager
 from bot.yasen import Yasen
 
-VersionInfo = namedtuple('VersionInfo', 'major minor micro releaselevel serial')
+VersionInfo = namedtuple(
+    'VersionInfo', 'major minor micro releaselevel serial')
 
 version_info = VersionInfo(
     major=0, minor=9, micro=0, releaselevel='beta', serial=0

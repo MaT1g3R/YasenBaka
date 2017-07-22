@@ -9,8 +9,8 @@ def generate_dice_rolls(s: str):
     """
     try:
         rolls, limit = [int(s) for s in s.split('d')]
-        return (':game_die: '
-                + ', '.join(str(randint(1, limit)) for _ in range(rolls)))
+        return (f':game_die: '
+                f'{", ".join(str(randint(1, limit)) for _ in range(rolls))}')
     except ValueError:
         return 'Format must to be in NdN!'
 

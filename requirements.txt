@@ -1,0 +1,10 @@
+pytest
+distro
+psutil
+osu_sig
+pytz
+colorlog
+wowspy
+aiohttp
+flake8
+PyYAML

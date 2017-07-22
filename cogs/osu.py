@@ -2,7 +2,8 @@ from discord.ext import commands
 from discord.ext.commands import Context
 
 from bot import Yasen
-from core.osu_core import generate_sig, get_player_resp, osu_player, parse_query
+from core.osu_core import generate_sig, get_player_resp, osu_player, \
+    parse_query
 
 
 class Osu:
