@@ -109,7 +109,7 @@ class Config:
         return self.__content['support']
 
     @property
-    def music(self) -> Optional[Path]:
+    def music_path(self) -> Optional[Path]:
         with Path(self.__content['music_path']) as p:
             if p.is_dir() and tuple(p.iterdir()):
                 return p

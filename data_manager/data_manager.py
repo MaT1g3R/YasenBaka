@@ -20,6 +20,7 @@ class DataManager:
         self.nsfw = self.get_nsfw_tags()
         self.prefix = self.get_all_prefix()
         self.shame = self.get_all_shame()
+        self.skip_count = self.get_all_skips()
 
     def get_all_prefix(self) -> dict:
         """
@@ -28,9 +29,7 @@ class DataManager:
         """
         cur = self.connection.execute('SELECT * FROM prefix')
         rows = cur.fetchall()
-        if not rows:
-            return {}
-        return {i: p for i, p in rows}
+        return {i: p for i, p in rows} if rows else {}
 
     def get_prefix(self, guild_id: str) -> Optional[str]:
         """
@@ -136,12 +135,12 @@ class DataManager:
                 pass
         self.connection.commit()
 
-    def get_shame_list(self, members, guild_id: str):
+    def get_shame_list(self, members, guild_id: str) -> Optional[OrderedDict]:
         """
-
-        :param members:
-        :param guild_id:
-        :return:
+        Get shamelist for a given guild.
+        :param members: the list of discord Member objects in the guild list.
+        :param guild_id: the guild id.
+        :return: an OrderedDict of {region: player discord name}
         """
         guild = self.shame.get(guild_id, None)
         if not guild:
@@ -225,3 +224,34 @@ class DataManager:
         :return: True if the tag exists.
         """
         return site in self.nsfw and tag in self.nsfw[site]
+
+    def get_all_skips(self) -> dict:
+        """
+        Get all skip count for all guilds.
+        :return: a dict of {guild_id: skip count}
+        """
+        cur = self.connection.execute('SELECT * FROM skip_count')
+        rows = cur.fetchall()
+        return {id_: count for id_, count in rows} if rows else {}
+
+    def get_skip(self, guild_id: str) -> Optional[int]:
+        """
+
+        :param guild_id:
+        :return:
+        """
+        return self.skip_count.get(guild_id, None)
+
+    def set_skip(self, guild_id: str, count: int):
+        """
+        Set the skip count for a guild.
+        :param guild_id: the guild id.
+        :param count: the count.
+        """
+        if self.skip_count.get(guild_id, None) == count:
+            return
+        self.skip_count[guild_id] = count
+        self.connection.execute(
+            'REPLACE INTO skip_count VALUES (?, ?)', (guild_id, count)
+        )
+        self.connection.commit()
