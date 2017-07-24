@@ -1,7 +1,6 @@
 __pycache__/
 .cache/
 data/dumps/*.png
-data/mydb
 \.idea/
 
 
@@ -15,3 +14,4 @@ temp.py
 config/no_wows\.json
 *.directory
 *.log
+/data/yasen_db

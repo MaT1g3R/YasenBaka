@@ -8,9 +8,7 @@ from tests import *
 
 @fixture(scope='function')
 def manager():
-    _manager = get_manager()
-    yield _manager
-    clear_db()
+    return get_manager()
 
 
 def random_players(amt):
@@ -40,7 +38,7 @@ def test_prefix(manager: DataManager):
     expected = {}
     amt = 10
     prefixes, ids = random_strs(amt), random_strs(amt)
-    for id_, prefix in zip(prefixes, ids):
+    for id_, prefix in zip(ids, prefixes):
         manager.set_prefix(id_, prefix)
         assert manager.get_prefix(id_) == prefix
         expected[id_] = prefix
@@ -77,3 +75,18 @@ def test_nsfw(manager: DataManager):
         expected[site] = tags
         manager.set_nsfw_tags(site, tags)
     assert manager.get_nsfw_tags() == expected == manager.nsfw
+
+
+def test_skip_count(manager: DataManager):
+    """
+    Test skip count methods in DataManager
+    """
+    assert manager.get_all_skips() == {}
+    expected = {}
+    amt = 10
+    skips, ids = [randint(0, 255) for _ in range(amt)], random_strs(amt)
+    for id_, skip in zip(ids, skips):
+        manager.set_skip(id_, skip)
+        assert manager.get_skip(id_) == skip
+        expected[id_] = skip
+    assert manager.get_all_skips() == expected == manager.skip_count

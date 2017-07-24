@@ -31,7 +31,7 @@ async def run():
     v = f'{vs.releaselevel} {vs.major}.{vs.minor}.{vs.micro}'
     if vs.serial:
         v += f'-{vs.serial}'
-    data_manager = DataManager(connect('./tests/test_data/test_db'))
+    data_manager = DataManager(connect(f'{data_path.joinpath("yasen_db")}'))
     session_manager = SessionManager(session, logger)
     wows_api = WowsAsync(config.wows, session)
     wows_manager = await WowsManager.wows_manager(
