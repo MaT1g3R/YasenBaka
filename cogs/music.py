@@ -2,7 +2,9 @@ from discord.ext import commands
 from discord.ext.commands import Context
 
 from bot import Yasen
-from music import MusicPlayer, PlayingStatus
+from music.music_player import MusicPlayer
+from music.music_util import check_conditions
+from music.playing_status import PlayingStatus
 from scripts.checks import is_admin, no_pm
 from scripts.helpers import parse_number
 
@@ -20,6 +22,12 @@ class Music:
         return no_pm(ctx)
 
     def get_player(self, guild_id: int, create_new) -> MusicPlayer:
+        """
+        Get a `MusicPlayer` instance for the guild.
+        :param guild_id: the gulid id.
+        :param create_new: True to create a new `MusicPlayer` for the guild.
+        :return: a `MusicPlayer` instance for the guild, if any.
+        """
         player = self.music_players.get(guild_id, None)
         if not create_new:
             return player
@@ -27,18 +35,6 @@ class Music:
             player = MusicPlayer(self.bot.config.music_path)
             self.music_players[guild_id] = player
         return player
-
-    def check_conditions(self, ctx, music_player):
-        ch = ctx.author.voice.channel
-        status = music_player.playing_status
-        if status == PlayingStatus.NO and not ch:
-            return False, 'You must be in a voice channel to use this command.'
-        if status != PlayingStatus.NO and ch not in self.bot.voice_clients:
-            return False, (
-                'You must be in the same voice'
-                'channel as me to use this command.'
-            )
-        return True, None
 
     @commands.command()
     async def play(self, ctx: Context, *, search=None):
@@ -58,10 +54,12 @@ class Music:
             await ctx.send('Please enter a link or a search term.')
             return
         music_player = self.get_player(ctx.guild.id, True)
-        condition, msg = self.check_conditions(ctx, music_player)
+        condition, msg = check_conditions(ctx, music_player)
         if not condition:
             await ctx.send(msg)
             return
+        if music_player.playing_status == PlayingStatus.NO:
+            await ctx.author.voice.channel.connect()
         await music_player.queue(ctx, search)
         await music_player.play(ctx)
 
@@ -77,7 +75,7 @@ class Music:
         Note: "This will be terminated by the `{prefix}play` command."
         """
         music_player = self.get_player(ctx.guild.id, True)
-        condition, msg = self.check_conditions(ctx, music_player)
+        condition, msg = check_conditions(ctx, music_player)
         if not condition:
             await ctx.send(msg)
             return
@@ -86,6 +84,12 @@ class Music:
                            'please wait for the queue to be empty'
                            'to use this command.')
             return
+        if (not music_player.default_path or
+                not music_player.default_path.is_dir()):
+            await ctx.send("Sorry, I don't have a default playlist.")
+            return
+        if music_player.playing_status == PlayingStatus.NO:
+            await ctx.author.voice.channel.connect()
         await music_player.play_default(ctx)
 
     @commands.command()
@@ -103,7 +107,7 @@ class Music:
         if music_player.playing_status == PlayingStatus.NO:
             await ctx.send(not_playing)
             return
-        await ctx.send(str(music_player.current))
+        await ctx.send(music_player.current.detail())
 
     @commands.command()
     async def playlist(self, ctx: Context):
@@ -136,7 +140,8 @@ class Music:
         if music_player.playing_status == PlayingStatus.NO:
             await ctx.send(not_playing)
             return
-        await music_player.skip(ctx, False)
+        force = music_player.playing_status == PlayingStatus.FILE
+        await music_player.skip(ctx, force)
 
     @commands.command()
     @commands.check(is_admin)
@@ -170,5 +175,8 @@ class Music:
         music_player = self.get_player(ctx.guild.id, False)
         if not music_player:
             return
+        await ctx.send('Turning off now! Bye bye ^-^ :wave:')
+        music_player.playing_status = PlayingStatus.NO
+        music_player.skip(ctx, True)
         await ctx.voice_client.disconnect()
         del self.music_players[ctx.guild.id]

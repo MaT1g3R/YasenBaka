@@ -110,6 +110,6 @@ class Config:
 
     @property
     def music_path(self) -> Optional[Path]:
-        with Path(self.__content['music_path']) as p:
-            if p.is_dir() and tuple(p.iterdir()):
-                return p
+        p = Path(self.__content['music_path'])
+        if p.is_dir() and tuple(p.iterdir()):
+            return p

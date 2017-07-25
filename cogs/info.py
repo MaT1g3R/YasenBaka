@@ -30,6 +30,7 @@ class BotInfo:
         `{prefix}help command name` for help for the  specific command."
         """
         prefix = get_prefix(self.bot, ctx.message)
+        name = str(name).lower()
         doc = get_doc(self.bot, name)
         if doc:
             res = cmd_help_embed(

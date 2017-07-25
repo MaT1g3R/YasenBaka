@@ -37,7 +37,7 @@ def is_nsfw(ctx: Context):
         return True
     if isinstance(channel, TextChannel) and channel.is_nsfw():
         return True
-    raise NsfwError('NSFW commands must be used in DM'
+    raise NsfwError('NSFW commands must be used in DM '
                     'or a channel with NSFW enabled.')
 
 
