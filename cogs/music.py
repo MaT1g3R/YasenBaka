@@ -32,7 +32,7 @@ class Music:
         if not create_new:
             return player
         if not player:
-            player = MusicPlayer(self.bot.config.music_path)
+            player = MusicPlayer(self.bot.logger, self.bot.config.music_path)
             self.music_players[guild_id] = player
         return player
 
@@ -140,8 +140,7 @@ class Music:
         if music_player.playing_status == PlayingStatus.NO:
             await ctx.send(not_playing)
             return
-        force = music_player.playing_status == PlayingStatus.FILE
-        await music_player.skip(ctx, force)
+        await music_player.skip(ctx, False)
 
     @commands.command()
     @commands.check(is_admin)
@@ -177,6 +176,6 @@ class Music:
             return
         await ctx.send('Turning off now! Bye bye ^-^ :wave:')
         music_player.playing_status = PlayingStatus.NO
-        music_player.skip(ctx, True)
+        await music_player.skip(ctx, True)
         await ctx.voice_client.disconnect()
         del self.music_players[ctx.guild.id]

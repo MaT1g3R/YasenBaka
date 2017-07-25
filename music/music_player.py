@@ -1,4 +1,4 @@
-from asyncio import Queue, sleep, wait_for
+from asyncio import Queue, wait_for
 from pathlib import Path
 from random import shuffle
 from typing import List, Optional
@@ -28,33 +28,21 @@ class MusicPlayer:
         An `Entry` object that is currently playing.
     """
     __slots__ = ('default_path', 'default_files', 'default_queue',
-                 'guild_queue', 'playing_status', 'current')
+                 'guild_queue', 'playing_status', 'current', 'logger')
 
-    def __init__(self, default_path: Optional[Path] = None):
+    def __init__(self, logger, default_path: Optional[Path] = None):
         """
         Init the instance.
         :param default_path:
             Path that points to the default playlist dir, optional.
         """
+        self.logger = logger
         self.default_path = default_path
         self.default_files = None
         self.default_queue = Queue()
         self.guild_queue = Queue()
         self.playing_status = PlayingStatus.NO
         self.current = None
-
-    @staticmethod
-    def __del_q(q: Queue):
-        """
-        Delete all entries from a Queue
-        :param q: the `Queue` instance.
-        """
-        while True:
-            if q.empty():
-                return
-            entry = q.get_nowait()
-            print(f'Deleting entry: {entry}')
-            del entry
 
     def __del__(self):
         self.__del_q(self.default_queue)
@@ -63,6 +51,25 @@ class MusicPlayer:
         del self.default_queue
         del self.current
         del self.default_files
+
+    def __log_del(self, entry: Entry):
+        """
+        Log the deletion of an entry.
+        :param entry: the entry deleted.
+        """
+        self.logger.info(f'Deleting entry: {entry}')
+
+    def __del_q(self, q: Queue):
+        """
+        Delete all entries from a Queue
+        :param q: the `Queue` instance.
+        """
+        while True:
+            if q.empty():
+                return
+            entry = q.get_nowait()
+            self.__log_del(entry)
+            del entry
 
     async def play_list_str(self) -> str:
         """
@@ -109,13 +116,11 @@ class MusicPlayer:
         :param ctx: discord `Context` object
         """
         await ctx.send(f'Now playing:{self.current.detail()}')
-        while True:
-            if self.current is not None:
-                break
-            await sleep(3)
         await self.current.play(ctx)
-        del self.current
-        self.current = None
+        if self.current:
+            self.__log_del(self.current)
+            del self.current
+            self.current = None
 
     async def skip(self, ctx: Context, force: bool):
         """
@@ -131,11 +136,12 @@ class MusicPlayer:
         else:
             skipped = await self.current.skip(ctx)
         if skipped:
-            if ctx.author == self.current.requester:
+            if ctx.author == self.current.requester and not force:
                 await ctx.send('Song skipped by requester.')
-            else:
+            elif not force:
                 await ctx.send('Song has been voted to be skipped.')
             ctx.voice_client.stop()
+            self.__log_del(self.current)
             del self.current
             self.current = None
 

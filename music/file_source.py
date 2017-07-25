@@ -1,6 +1,6 @@
 from asyncio import sleep
 
-from discord import FFmpegPCMAudio, PCMVolumeTransformer
+from discord import FFmpegPCMAudio, PCMVolumeTransformer, VoiceClient
 from discord.ext.commands import Context
 
 from music.abstract_source import AbstractSource
@@ -41,12 +41,12 @@ class FileSource(AbstractSource):
         """
         See `AbstractSource.play`
         """
-        vc = ctx.voice_client
+        vc: VoiceClient = ctx.voice_client
         vc.play(
             self.__source,
             after=lambda e: ctx.bot.logger.warn(str(e))
         )
         while True:
+            await sleep(5)
             if not vc.is_playing():
                 return
-            await sleep(3)
