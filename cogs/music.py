@@ -37,9 +37,9 @@ class Music:
         """
         while True:
             player = self.music_players.get(guild_id, None)
-            if guild_id not in self.deleting:
-                if not player or not player.deleting:
-                    return
+            if (guild_id not in self.deleting) and \
+                    (not player or not player.deleting):
+                return
             await sleep(2)
 
     async def get_player(self, guild_id: int, create_new: bool) -> MusicPlayer:
