@@ -1,3 +1,5 @@
+from asyncio import sleep
+
 from discord import opus
 from discord.ext import commands
 from discord.ext.commands import Context
@@ -14,11 +16,12 @@ class Music:
     """
     Muisc Commands.
     """
-    __slots__ = ('bot', 'music_players')
+    __slots__ = ('bot', 'music_players', 'deleting')
 
     def __init__(self, bot: Yasen):
         self.bot = bot
         self.music_players = {}
+        self.deleting = []
         if not opus.is_loaded():
             raise ValueError('libopus is not loaded, please install the'
                              'library through your package manager or add'
@@ -27,13 +30,26 @@ class Music:
     def __local_check(self, ctx: Context):
         return no_pm(ctx)
 
-    def get_player(self, guild_id: int, create_new) -> MusicPlayer:
+    async def __wait_delete(self, guild_id: int):
+        """
+        Wait for a MusicPlayer instance to be deleted.
+        :param guild_id: the guild id.
+        """
+        while True:
+            player = self.music_players.get(guild_id, None)
+            if guild_id not in self.deleting:
+                if not player or not player.deleting:
+                    return
+            await sleep(2)
+
+    async def get_player(self, guild_id: int, create_new: bool) -> MusicPlayer:
         """
         Get a `MusicPlayer` instance for the guild.
         :param guild_id: the gulid id.
         :param create_new: True to create a new `MusicPlayer` for the guild.
         :return: a `MusicPlayer` instance for the guild, if any.
         """
+        await self.__wait_delete(guild_id)
         player = self.music_players.get(guild_id, None)
         if not create_new:
             return player
@@ -59,17 +75,18 @@ class Music:
         if not search:
             await ctx.send('Please enter a link or a search term.')
             return
-        music_player = self.get_player(ctx.guild.id, True)
+        music_player = await self.get_player(ctx.guild.id, True)
         condition, msg = check_conditions(ctx, music_player)
         if not condition:
             await ctx.send(msg)
             return
         if music_player.playing_status == PlayingStatus.NO:
             await ctx.author.voice.channel.connect()
-        await music_player.queue(ctx, search)
+        await music_player.enqueue(ctx, search)
         await music_player.play(ctx)
 
     @commands.command()
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
     async def playdefault(self, ctx: Context):
         """
         Description: Play the default playlist in your current voice channel.
@@ -77,10 +94,11 @@ class Music:
             Cannot be used in private message.
             Can only play music in one voice channel for each guild.
             You must be in a voice channel.
+        Cooldown: Once every 5 seconds per guild.
         Usage: "`{prefix}playdefault`"
         Note: "This will be terminated by the `{prefix}play` command."
         """
-        music_player = self.get_player(ctx.guild.id, True)
+        music_player = await self.get_player(ctx.guild.id, True)
         condition, msg = check_conditions(ctx, music_player)
         if not condition:
             await ctx.send(msg)
@@ -106,7 +124,7 @@ class Music:
         Usage: "`{prefix}current`"
         """
         not_playing = 'Not playing anything.'
-        music_player = self.get_player(ctx.guild.id, False)
+        music_player = await self.get_player(ctx.guild.id, False)
         if not music_player:
             await ctx.send(not_playing)
             return
@@ -122,12 +140,12 @@ class Music:
         Restriction: Cannot be used in private message.
         Usage: "`{prefix}playlist`"
         """
-        empty = 'The playlist is empty.'
-        music_player = self.get_player(ctx.guild.id, False)
+        empty = 'Playlist is empty.'
+        music_player = await self.get_player(ctx.guild.id, False)
         if not music_player:
             await ctx.send(empty)
             return
-        await ctx.send(await music_player.play_list_str())
+        await ctx.send(music_player.play_list)
 
     @commands.command()
     async def skip(self, ctx: Context):
@@ -139,7 +157,7 @@ class Music:
         Note: "Vote count can be set in `{prefix}setskip` default is 3."
         """
         not_playing = 'Not playing anything.'
-        music_player = self.get_player(ctx.guild.id, False)
+        music_player = await self.get_player(ctx.guild.id, False)
         if not music_player:
             await ctx.send(not_playing)
             return
@@ -170,18 +188,24 @@ class Music:
         )
 
     @commands.command()
+    @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
     async def stop(self, ctx: Context):
         """
         Description: "Stop whatever is current and leave the voice channel.
         This will also delete any song queued in the playlist."
         Restriction: Cannot be used in private message.
+        Cooldown: Once every 5 seconds per guild.
         Usage: "`{prefix}stop`"
         """
-
+        self.deleting.append(ctx.guild.id)
         music_player = self.music_players.pop(ctx.guild.id, None)
         if music_player:
-            music_player.playing_status = PlayingStatus.NO
+            await music_player.stop(ctx)
         del music_player
         if ctx.voice_client:
             await ctx.voice_client.disconnect()
         await ctx.send('Turning off now! Bye bye ^-^ :wave:')
+        try:
+            self.deleting.remove(ctx.guild.id)
+        except ValueError:
+            pass

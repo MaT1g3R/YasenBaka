@@ -1,7 +1,8 @@
 from asyncio import Queue
+from collections import deque
 from pathlib import Path
 from random import shuffle
-from typing import List, Optional
+from typing import Optional
 
 from discord.ext.commands import Context
 
@@ -14,141 +15,72 @@ class MusicPlayer:
     A music player object for a single guild.
 
     === Attributes ===
+    :type logger: Logger
+        A logger object to do logging.
     :type default_path: Optional[Path]
         Path that points to the directory containing the default playlist.
-    :type default_files: Optional[List[str]]
-        A list of file paths in the default playlist directory.
-    :type default_queue: asyncio.Queue:
-        A queue of `Entry` for music on the local file system.
-    :type guild_queue: asyncio.Queue
-        A queue of `Entry` for music on the local file system.
+    :type file_queue: deque
+        A deque of file paths in the default playlist directory.
+    :type query_queue: deque
+        A deque of user queries cached to save RAM.
+    :type entry_queue: asyncio.Queue:
+        A queue of `Entry`.
     :type playing_status: PlayingStatus
         A value that represents the current playing status.
     :type current: Optional[Entry]
         An `Entry` object that is currently playing.
+    :type deleting: bool:
+        Boolen to signal if this instance is being deleted.
     """
-    __slots__ = ('default_path', 'default_files', 'default_queue',
-                 'guild_queue', 'playing_status', 'current', 'logger',
-                 'guild_queries')
+
+    __slots__ = ('logger', 'default_path', 'file_queue', 'query_queue',
+                 'entry_queue', 'playing_status', 'current', 'deleting')
 
     def __init__(self, logger, default_path: Optional[Path] = None):
         """
         Init the instance.
+        :param logger: logger used for logging.
         :param default_path:
             Path that points to the default playlist dir, optional.
         """
         self.logger = logger
         self.default_path = default_path
-        self.default_files = Queue()
-        self.default_queue = Queue()
-        self.guild_queue = Queue()
-        self.guild_queries = Queue()
+        self.file_queue = deque()
+        self.query_queue = deque()
+        self.entry_queue = Queue()
         self.playing_status = PlayingStatus.NO
         self.current = None
+        self.deleting = False
 
     def __del__(self):
-        self.__del_q(self.default_queue)
-        self.__del_q(self.guild_queue)
-        self.__del_q(self.guild_queries)
-        del self.guild_queue
-        del self.guild_queries
-        del self.default_queue
-        del self.current
-        del self.default_files
+        self.deleting = True
+        self.__del_q(False)
+        del self.file_queue
+        del self.query_queue
+        del self.playing_status
 
-    def __log_del(self, entry: Entry):
-        """
-        Log the deletion of an entry.
-        :param entry: the entry deleted.
-        """
-        self.logger.info(f'Deleting entry: {entry}')
-
-    def __del_q(self, q: Queue):
-        """
-        Delete all entries from a Queue
-        :param q: the `Queue` instance.
-        """
-        while True:
-            if q.empty():
-                return
-            entry = q.get_nowait()
-            self.__log_del(entry)
-            del entry
-
-    async def play_list_str(self) -> str:
+    @property
+    def play_list(self) -> str:
         """
         Get the playlist for the guild as string.
         :return: a string representation of the platlist queued for the guild.
         """
+        if self.playing_status == PlayingStatus.NO:
+            return 'Playlist is empty.'
+        q = self.entry_queue._queue
+        extra_length = None
         if self.playing_status == PlayingStatus.FILE:
-            q = self.default_queue._queue
-            extra_length = self.default_files.qsize()
+            extra_length = len(self.file_queue)
         elif self.playing_status == PlayingStatus.WEB:
-            q = self.guild_queue._queue
-            extra_length = self.guild_queries.qsize()
-        else:
-            return 'Playlist is empty'
+            extra_length = len(self.query_queue)
         lst_str = '\n'.join((str(entry) for entry in q))
         if self.current:
-            lst_str = f'Current -> {self.current}\n{lst_str}'
+            lst_str = f'Current ➡️ {self.current}\n{lst_str}'
         if lst_str:
             extra = f'And {extra_length} more.' if extra_length else ''
             return f'```\n{lst_str}\n```{extra}'
         else:
-            return 'Playlist is empty'
-
-    def get_files(self) -> Optional[List[str]]:
-        """
-        Get a list of file paths.
-        :return: A list of file paths under `self.default_path` if any.
-        """
-        if not self.default_path or not self.default_path.is_dir():
-            return None
-        lst = [str(f) for f in self.default_path.iterdir()]
-        shuffle(lst)
-        for f in lst:
-            self.default_files.put_nowait(f)
-
-    async def put_file_entries(self, ctx: Context):
-        """
-        Put max of 5 file entries into `self.default_queue`
-        :param ctx: discord `Context` object
-        """
-        if self.default_files.qsize() <= 1:
-            self.get_files()
-        while True:
-            if self.default_files.empty() or self.default_queue.qsize() >= 5:
-                return
-            file = await self.default_files.get()
-            entry = Entry.from_file(ctx, file)
-            await self.default_queue.put(entry)
-
-    async def put_guild_entries(self):
-        """
-        Put max of 5 entries into the guild queue from the quild query queue.
-        """
-        while True:
-            if self.guild_queries.empty() or self.guild_queue.qsize() >= 5:
-                return
-            query, ctx = await self.guild_queries.get()
-            entry = await Entry.from_yt(ctx, query)
-            if not entry:
-                await ctx.send(f'Query `{query}` enqueued by {ctx.author}'
-                               f'could not be found, skipping.')
-                continue
-            await self.guild_queue.put(entry)
-
-    async def __play_current(self, ctx):
-        """
-        Play the current entry.
-        :param ctx: discord `Context` object
-        """
-        await ctx.send(f'Now playing:{self.current.detail}')
-        await self.current.play(ctx)
-        if self.current:
-            self.__log_del(self.current)
-            del self.current
-            self.current = None
+            return 'Playlist is empty.'
 
     async def skip(self, ctx: Context, force: bool):
         """
@@ -174,21 +106,37 @@ class MusicPlayer:
             del self.current
             self.current = None
 
-    async def queue(self, ctx: Context, query: str):
+    async def stop(self, ctx: Context):
+        """
+        Stop playing music and clear the entry queue.
+        :param ctx: discord `Context` object
+        """
+        self.playing_status = PlayingStatus.NO
+        self.__del_q(True)
+        if ctx.voice_client:
+            await ctx.voice_client.disconnect()
+        try:
+            del self.current
+        except AttributeError:
+            pass
+
+    async def enqueue(self, ctx: Context, query: str):
         """
         Enqueue a song from youtube-dl into the guild queue.
         :param ctx: discord `Context` object
         :param query: a search query or url.
         """
-        if self.guild_queue.qsize() >= 5:
-            await self.guild_queries.put((query, ctx))
+        if self.playing_status == PlayingStatus.FILE:
+            self.__del_q(True)
+        if self.entry_queue.qsize() >= 5:
+            self.query_queue.append((query, ctx))
             await ctx.send(f'Enqueued query: `{query}`')
             return
         entry = await Entry.from_yt(ctx, query)
         if not entry:
             await ctx.send(f'Sorry, query: `{query}` not found.')
             return
-        await self.guild_queue.put(entry)
+        await self.entry_queue.put(entry)
         await ctx.send(f'Enqueued: {entry.detail}')
 
     async def play_default(self, ctx: Context):
@@ -196,19 +144,12 @@ class MusicPlayer:
         Play the default playlist.
         :param ctx: discord `Context` object
         """
-        if self.playing_status == PlayingStatus.FILE:
+        if self.playing_status != PlayingStatus.NO:
             return
-        if not self.default_files:
-            self.default_files = self.get_files()
-        while True:
-            await self.put_file_entries(ctx)
-            self.playing_status = PlayingStatus.FILE
-            self.current = await self.default_queue.get()
-            await self.__play_current(ctx)
-            if self.playing_status != PlayingStatus.FILE:
-                if ctx.voice_client:
-                    await ctx.voice_client.disconnect()
-                return
+        if not self.file_queue:
+            self.__put_files()
+        self.playing_status = PlayingStatus.FILE
+        await self.__play(ctx, True)
 
     async def play(self, ctx: Context):
         """
@@ -216,30 +157,124 @@ class MusicPlayer:
 
         If the default playlist is playing, this will stop it and clear it.
 
-        Will dissconnect from the voice channel after 10 minutes if nothing is
-        playing.
+        Will dissconnect from the voice channel after queue is empty.
 
         :param ctx: discord `Context` object
         """
         if self.playing_status == PlayingStatus.WEB:
             return
+        await self.__play(ctx, False)
+
+    async def __play(self, ctx: Context, is_file: bool):
+        """
+        Helper method to play music.
+        :param ctx: discord `Context` object
+        :param is_file: True to play default files, False to play user quries.
+        """
         while True:
-            if self.playing_status == PlayingStatus.FILE:
-                self.playing_status = PlayingStatus.WEB
-                self.__del_q(self.default_queue)
-                del self.default_queue
-                self.default_queue = Queue()
+            if not is_file and self.playing_status == PlayingStatus.FILE:
                 await self.skip(ctx, True)
-            self.playing_status = PlayingStatus.WEB
-            await self.put_guild_entries()
-            if self.guild_queue.empty():
+            if not is_file:
+                self.playing_status = PlayingStatus.WEB
+            await self.__put_entries(is_file, ctx)
+            if self.entry_queue.empty():
                 self.playing_status = PlayingStatus.NO
-                if ctx.voice_client:
-                    await ctx.voice_client.disconnect()
+                await self.stop(ctx)
                 return
-            self.current = await self.guild_queue.get()
             await self.__play_current(ctx)
-            if self.playing_status != PlayingStatus.WEB:
-                if ctx.voice_client:
-                    await ctx.voice_client.disconnect()
+            if (is_file and self.playing_status != PlayingStatus.FILE) or \
+                    (not is_file and self.playing_status != PlayingStatus.WEB):
+                await self.stop(ctx)
                 return
+
+    async def __play_current(self, ctx):
+        """
+        Play the current entry.
+        :param ctx: discord `Context` object
+        """
+        self.current = await self.entry_queue.get()
+        await ctx.send(f'Now playing:{self.current.detail}')
+        await self.current.play(ctx)
+        try:
+            if self.current:
+                current_name = str(self.current)
+                del self.current
+                self.__log_del(current_name)
+                self.current = None
+        except AttributeError:
+            pass
+
+    async def __put_entries(self, is_file: bool, ctx: Context = None):
+        """
+        Put entries into the entry queue.
+        :param is_file: True to put file entries, False to put ytdl entries.
+        :param ctx: discord `Context` object
+        """
+        assert ctx is not None or not is_file
+        if is_file:
+            await self.__put_file_entries(ctx)
+        else:
+            await self.__put_guild_entries()
+
+    def __log_del(self, entry_name: str):
+        """
+        Log the deletion of an entry.
+        :param entry_name: the name of entry deleted.
+        """
+        self.logger.info(f'Deleted entry: {entry_name}')
+
+    def __del_q(self, reset: bool):
+        """
+        Delete all entries from self.entry_queue.
+        :param reset: If True, generate a new empty Queue for entry queue.
+        """
+        while True:
+            if self.entry_queue.empty():
+                break
+            entry = self.entry_queue.get_nowait()
+            entry_name = str(entry)
+            del entry
+            self.__log_del(entry_name)
+        del self.entry_queue
+        if reset:
+            self.entry_queue = Queue()
+
+    def __put_files(self):
+        """
+        Get a list of file paths.
+        :return: A list of file paths under `self.default_path` if any.
+        """
+        if not self.default_path or not self.default_path.is_dir():
+            return None
+        lst = [str(f) for f in self.default_path.iterdir()]
+        shuffle(lst)
+        self.file_queue.extend(lst)
+
+    async def __put_file_entries(self, ctx: Context):
+        """
+        Put max of 5 file entries into `self.default_queue`
+        :param ctx: discord `Context` object
+        """
+        if len(self.file_queue) <= 1:
+            self.__put_files()
+        while True:
+            if not self.file_queue or self.entry_queue.qsize() >= 5:
+                return
+            file = self.file_queue.popleft()
+            entry = Entry.from_file(ctx, file)
+            await self.entry_queue.put(entry)
+
+    async def __put_guild_entries(self):
+        """
+        Put max of 5 entries into the guild queue from the quild query queue.
+        """
+        while True:
+            if not self.query_queue or self.entry_queue.qsize() >= 5:
+                return
+            query, ctx = self.query_queue.popleft()
+            entry = await Entry.from_yt(ctx, query)
+            if not entry:
+                await ctx.send(f'Query `{query}` enqueued by {ctx.author}'
+                               f'could not be found, skipping.')
+                continue
+            await self.entry_queue.put(entry)
