@@ -1,9 +1,34 @@
-from discord import Member
+from asyncio import get_event_loop
+from functools import partial
+
+import youtube_dl
+from discord import FFmpegPCMAudio, Member
 from discord.ext.commands import Context
 
 from music.abstract_source import AbstractSource
 from music.file_source import FileSource
 from music.ytdl_source import YTDLSource
+
+ytdl_format_options = {
+    'format': 'bestaudio/best',
+    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'restrictfilenames': True,
+    'noplaylist': True,
+    'nocheckcertificate': True,
+    'ignoreerrors': False,
+    'logtostderr': False,
+    'quiet': True,
+    'no_warnings': True,
+    'default_search': 'auto',
+    'source_address': '0.0.0.0'
+}
+
+ffmpeg_options = {
+    'before_options': '-nostdin',
+    'options': '-vn'
+}
+
+ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 
 class Entry:
@@ -29,11 +54,12 @@ class Entry:
         del self.source
         del self.skip_members
 
+    @property
     def detail(self) -> str:
         """
         :return: A detailed string representation for the entry.
         """
-        return self.source.detail()
+        return self.source.detail
 
     @classmethod
     def from_file(cls, ctx: Context, file: str):
@@ -43,19 +69,31 @@ class Entry:
         :param file: the file path string.
         :return: `Entry` instance from a file.
         """
-        source = FileSource(file)
+        source = FileSource(file, ffmpeg_options)
         return cls(ctx.author, source)
 
     @classmethod
-    def from_yt(cls, ctx, query):
+    async def from_yt(cls, ctx, query):
         """
         Get an `Entry` instace from a youtube-dl search query or url.
         :param ctx: discord `Context` object
         :param query: the search query.
         :return: `Entry` instance from a search query or url.
         """
-        source = YTDLSource(query)
-        return cls(ctx.author, source)
+        loop = get_event_loop()
+        func = partial(ytdl.extract_info, query, download=False)
+        data = await loop.run_in_executor(None, func)
+        if 'entries' in data:
+            data = data['entries'][0]
+        download_url = data.get('url')
+        if not download_url:
+            return
+        data['requester'] = str(ctx.author)
+        filename = ytdl.prepare_filename(data)
+        yt = YTDLSource(
+            FFmpegPCMAudio(download_url, **ffmpeg_options), filename, data
+        )
+        return cls(ctx.author, yt)
 
     async def play(self, ctx):
         """

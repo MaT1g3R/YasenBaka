@@ -107,7 +107,7 @@ class Music:
         if music_player.playing_status == PlayingStatus.NO:
             await ctx.send(not_playing)
             return
-        await ctx.send(music_player.current.detail())
+        await ctx.send(music_player.current.detail)
 
     @commands.command()
     async def playlist(self, ctx: Context):
@@ -174,8 +174,9 @@ class Music:
         music_player = self.get_player(ctx.guild.id, False)
         if not music_player:
             return
+        p = self.music_players.pop(ctx.guild.id)
+        p.playing_status = PlayingStatus.NO
+        del p
+        if ctx.voice_client:
+            await ctx.voice_client.disconnect()
         await ctx.send('Turning off now! Bye bye ^-^ :wave:')
-        music_player.playing_status = PlayingStatus.NO
-        await music_player.skip(ctx, True)
-        await ctx.voice_client.disconnect()
-        del self.music_players[ctx.guild.id]

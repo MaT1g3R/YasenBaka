@@ -1,3 +1,4 @@
+youtube_dl
 mutagen
 pytest
 distro
