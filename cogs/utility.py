@@ -14,6 +14,7 @@ class Utility:
     """
     Class for Utility commands.
     """
+    __slots__ = ('bot',)
 
     def __init__(self, bot: Yasen):
         self.bot = bot

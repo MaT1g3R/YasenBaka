@@ -10,6 +10,10 @@ from world_of_warships.wtr import CONVERT_REGION, choose_colour, wtr_absolute
 
 
 class Player:
+    __slots__ = ('region', 'player_id', 'stats', 'recent_stats',
+                 'recent_date', 'ship_stats', 'logger', 'nick', 'hidden',
+                 'wtr', 'clan', 'updating', '__embed')
+
     def __init__(self, region: Region, id_: str, logger, ship_stats=None):
         """
         :param id_: the player id.

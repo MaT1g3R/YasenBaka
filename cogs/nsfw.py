@@ -10,6 +10,8 @@ class Nsfw:
     """
     Class of Nsfw commands.
     """
+    __slots__ = ('bot',)
+
     def __init__(self, bot: Yasen):
         """
         Init the instance of this class.

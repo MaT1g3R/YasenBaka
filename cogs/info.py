@@ -11,6 +11,8 @@ from scripts.checks import is_admin
 
 
 class BotInfo:
+    __slots__ = ('bot',)
+
     def __init__(self, bot: Yasen):
         self.bot = bot
 

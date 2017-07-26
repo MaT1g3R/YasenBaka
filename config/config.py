@@ -7,6 +7,7 @@ class Config:
     """
     Class to hold bot configs.
     """
+    __slots__ = ('path', '__content')
 
     def __init__(self, name):
         """

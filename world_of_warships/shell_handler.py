@@ -8,6 +8,8 @@ from world_of_warships.war_gaming import get_clan_id as gcid, \
 
 
 class ConvertRegion(Converter):
+    __slots__ = ()
+
     async def convert(self, ctx, argument) -> Region:
         try:
             return Region[str(argument).upper()] if argument else Region.NA

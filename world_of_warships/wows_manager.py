@@ -17,6 +17,9 @@ from world_of_warships.wtr import CONVERT_REGION, choose_colour, \
 
 
 class WowsManager:
+    __slots__ = ('logger', 'wows_api', 'expected_and_coeff', 'ship_dict',
+                 'players', 'e_and_c_path', 'ship_path')
+
     def __init__(self, wows_api: WowsAsync, logger):
         """
         :param wows_api: WowsAsync instance.

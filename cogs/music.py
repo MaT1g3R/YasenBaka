@@ -177,12 +177,11 @@ class Music:
         Restriction: Cannot be used in private message.
         Usage: "`{prefix}stop`"
         """
-        music_player = self.get_player(ctx.guild.id, False)
-        if not music_player:
-            return
-        p = self.music_players.pop(ctx.guild.id)
-        p.playing_status = PlayingStatus.NO
-        del p
+
+        music_player = self.music_players.pop(ctx.guild.id, None)
+        if music_player:
+            music_player.playing_status = PlayingStatus.NO
+        del music_player
         if ctx.voice_client:
             await ctx.voice_client.disconnect()
         await ctx.send('Turning off now! Bye bye ^-^ :wave:')

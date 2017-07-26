@@ -17,6 +17,7 @@ class Listeners:
     """
     Class for event listeners.
     """
+    __slots__ = ('bot', 'mention', 'mention_msg', 'o7')
 
     def __init__(self, bot: Yasen):
         self.bot = bot

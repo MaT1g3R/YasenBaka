@@ -10,6 +10,7 @@ class Osu:
     """
     Class of Osu commands.
     """
+    __slots__ = ('bot',)
 
     def __init__(self, bot: Yasen):
         """

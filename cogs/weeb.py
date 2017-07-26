@@ -15,6 +15,7 @@ class Weeb:
     """
     Class to hold weeb commands.
     """
+    __slots__ = ('bot', 'kanna_files', 'karen_files')
 
     def __init__(self, bot: Yasen,
                  kanna_files: List[Path], karen_files: List[Path]):

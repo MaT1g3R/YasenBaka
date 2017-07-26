@@ -6,6 +6,8 @@ from music.abstract_source import AbstractSource
 
 
 class YTDLSource(AbstractSource):
+    __slots__ = ()
+
     def __init__(self, pcm: FFmpegPCMAudio, fname: str, data: dict):
         """
         :param pcm: a FFmpegPCMAudio object.

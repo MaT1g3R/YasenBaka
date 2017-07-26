@@ -11,6 +11,7 @@ class Fun:
     """
     Class to hold `Fun` commands.
     """
+    __slots__ = ('bot',)
 
     def __init__(self, bot: Yasen):
         """

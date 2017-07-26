@@ -22,7 +22,7 @@ class SessionManager:
     """
     An aiohttp client session manager.
     """
-    __slots__ = ['session', 'logger', 'codes']
+    __slots__ = ('session', 'logger', 'codes')
 
     def __init__(self, session: ClientSession, logger):
         """

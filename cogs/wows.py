@@ -13,6 +13,8 @@ from world_of_warships.shell_handler import ConvertRegion, get_clan_id, \
 
 
 class WorldOfWarships:
+    __slots__ = ('bot',)
+
     def __init__(self, bot: Yasen):
         self.bot = bot
 

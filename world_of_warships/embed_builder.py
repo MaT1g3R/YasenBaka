@@ -1,10 +1,26 @@
+from typing import Optional
+
 from discord import Embed
 
 from scripts.helpers import try_divide
 
 
-def get_shame_embed(embed: Embed, all_time_stats, wtr, nick_name, clan_tag,
-                    recent_stats, recent_date, profile_url) -> Embed:
+def get_shame_embed(embed: Embed, all_time_stats: dict, wtr: int,
+                    nick_name: str, clan_tag: Optional[str],
+                    recent_stats: Optional[dict], recent_date: Optional[str],
+                    profile_url: str) -> Embed:
+    """
+    Build an embed for player stats.
+    :param embed: the initial embed object.
+    :param all_time_stats: player's all time stats.
+    :param wtr: player's WTR.
+    :param nick_name: player nickname.
+    :param clan_tag: player's clan tag.
+    :param recent_stats: player's recent stats.
+    :param recent_date: the date the player recent stats starts from.
+    :param profile_url: player's profile url.
+    :return: the player stats embed.
+    """
     a = embed.add_field
     embed.set_author(
         name=f'{nick_name} | Clan: {clan_tag} <- Link to profile',
@@ -88,9 +104,26 @@ def get_shame_embed(embed: Embed, all_time_stats, wtr, nick_name, clan_tag,
     return embed
 
 
-def build_clan_embed(embed: Embed, total_stats, clan_name, clan_description,
-                     clan_wtr, clan_tag, clan_active, clan_creation_date,
-                     creator_name, leader_name, members_count) -> Embed:
+def build_clan_embed(embed: Embed, total_stats: dict, clan_name: str,
+                     clan_description: Optional[str], clan_wtr: int,
+                     clan_tag: str, clan_active: bool,
+                     clan_creation_date: str, creator_name: str,
+                     leader_name: str, members_count: int) -> Embed:
+    """
+    Get an embed for clan stats.
+    :param embed: the initial embed object.
+    :param total_stats: the clan total stats.
+    :param clan_name: the clan name.
+    :param clan_description: the clan description.
+    :param clan_wtr: the clan wtr.
+    :param clan_tag: the clan tag.
+    :param clan_active: Boolean for clan is active.
+    :param clan_creation_date: the clan creation date.
+    :param creator_name:  the clan creator name.
+    :param leader_name: the clan leader name.
+    :param members_count: the clan member count.
+    :return: An embed for the clan stats.
+    """
     embed.set_author(name=clan_name)
     a = embed.add_field
     battles = total_stats['battles']

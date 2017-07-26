@@ -10,6 +10,7 @@ class DataManager:
     """
     A SQLite3 data manager.
     """
+    __slots__ = ('connection', 'nsfw', 'prefix', 'shame', 'skip_count')
 
     def __init__(self, connection: Connection):
         """
