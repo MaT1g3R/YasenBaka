@@ -4,7 +4,7 @@ python:
   - 3.6
 install:
   - pip install -Ur requirements.txt
-  - sh install.sh
+  - sh .travis_install.sh
 script:
   - flake8
   - pytest -v --capture=sys
