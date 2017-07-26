@@ -1,3 +1,4 @@
+from discord import opus
 from discord.ext import commands
 from discord.ext.commands import Context
 
@@ -13,10 +14,15 @@ class Music:
     """
     Muisc Commands.
     """
+    __slots__ = ('bot', 'music_players')
 
     def __init__(self, bot: Yasen):
         self.bot = bot
         self.music_players = {}
+        if not opus.is_loaded():
+            raise ValueError('libopus is not loaded, please install the'
+                             'library through your package manager or add'
+                             'it to your PATH.')
 
     def __local_check(self, ctx: Context):
         return no_pm(ctx)

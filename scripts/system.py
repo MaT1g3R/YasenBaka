@@ -1,4 +1,5 @@
 import re
+import sys
 from os import getpid
 from pathlib import Path
 from platform import release, system
@@ -9,6 +10,22 @@ try:
     from distro import linux_distribution
 except ImportError:
     linux_distribution = None
+
+
+def is_linux():
+    """
+    Check if the system is linux.
+    :return: True if the system is linux.
+    """
+    return sys.platform.lower().startswith('linux')
+
+
+def is_mac():
+    """
+    Check if the system is macOS.
+    :return: True if the system is macOS.
+    """
+    return sys.platform.lower().startswith('darwin')
 
 
 def ram_usage() -> float:
