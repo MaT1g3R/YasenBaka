@@ -38,6 +38,6 @@ class AbstractSource:
             after=lambda e: ctx.bot.logger.warn(str(e))
         )
         while True:
+            await sleep(5)
             if not vc.is_playing():
                 return
-            await sleep(5)

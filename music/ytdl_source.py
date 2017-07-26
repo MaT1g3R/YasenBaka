@@ -6,7 +6,7 @@ from music.abstract_source import AbstractSource
 
 
 class YTDLSource(AbstractSource):
-    __slots__ = ()
+    __slots__ = ('requester',)
 
     def __init__(self, pcm: FFmpegPCMAudio, fname: str, data: dict):
         """
@@ -17,7 +17,7 @@ class YTDLSource(AbstractSource):
         title = data.get('title', fname)
         duration = data.get('duration')
         uploader = data.get('uploader')
-        requester = data['requester']
+        self.requester = data['requester']
         date = data.get('upload_date')
         if date:
             try:
@@ -27,14 +27,16 @@ class YTDLSource(AbstractSource):
         super().__init__(
             PCMVolumeTransformer(pcm),
             title,
-            self.__get_detail(title, duration, uploader, requester, date)
+            self.__get_detail(title, duration, uploader, self.requester, date)
         )
         del data
         del title
         del duration
         del uploader
-        del requester
         del date
+
+    def __str__(self):
+        return f'{super().__str__()}\tRequested by {self.requester}'
 
     @staticmethod
     def __get_detail(title, duration, uploader, requester, date) -> str:

@@ -13,6 +13,7 @@ class FileSource(AbstractSource):
     def __init__(self, file_path: str, opts: dict):
         """
         :param file_path: the file path.
+        :param opts: the ffmpeg kwargs.
         """
         title, genre, artist, album, length = get_file_info(file_path)
         super().__init__(
