@@ -37,8 +37,11 @@ class Entry:
         return str(self.source)
 
     def __del__(self):
-        del self.source
         del self.skip_members
+        try:
+            del self.source
+        except AttributeError:
+            pass
 
     @property
     def detail(self) -> str:
@@ -106,6 +109,7 @@ class Entry:
         while True:
             await sleep(5)
             if not vc.is_playing():
+                del self.source
                 return
 
     def __calc_skip(self, ctx) -> tuple:

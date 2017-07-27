@@ -24,7 +24,7 @@ def check_conditions(ctx: Context, music_player) -> tuple:
         (the playing condition has been matched, the message to send if any,
         voice channel)
     """
-    ch = ctx.author.voice.channel
+    ch = ctx.author.voice.channel if ctx.author.voice else None
     status = music_player.playing_status
     try:
         ctx_ch = ctx.voice_client.channel

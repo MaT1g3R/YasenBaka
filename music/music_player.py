@@ -1,3 +1,4 @@
+import gc
 from asyncio import Queue
 from collections import deque
 from pathlib import Path
@@ -198,14 +199,10 @@ class MusicPlayer:
         self.current = await self.entry_queue.get()
         await ctx.send(f'Now playing:{self.current.detail}')
         await self.current.play(ctx, channel)
-        try:
-            if self.current:
-                current_name = str(self.current)
-                del self.current
-                self.__log_del(current_name)
-                self.current = None
-        except AttributeError:
-            pass
+        self.current = None
+        self.logger.info(
+            f'gc.collect returned {gc.collect()} unreachable objects.'
+        )
 
     async def __put_entries(self, is_file: bool, ctx: Context = None):
         """
