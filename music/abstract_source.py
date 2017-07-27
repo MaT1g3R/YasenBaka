@@ -1,43 +1,28 @@
-from asyncio import sleep
-
-from discord.ext.commands import Context
-
-
 class AbstractSource:
     """
     An abstract class for an audio source.
-    === Attributes ===
-    :type detail: str
-        A detailed description of the audio source.
     """
-    __slots__ = ('__source', 'title', 'detail')
+    __slots__ = ('__detail', '__get_detail')
 
-    def __init__(self, source, title: str, detail: str):
-        self.__source = source
-        self.detail = detail
-        self.title = title
+    def __init__(self, __get_detail: callable):
+        self.__detail = None
+        self.__get_detail = __get_detail
 
     def __str__(self):
-        return self.title
+        raise NotImplementedError
 
     def __del__(self):
-        del self.__source
-        del self.detail
-        del self.title
+        raise NotImplementedError
 
-    async def play(self, ctx: Context):
+    @property
+    def detail(self):
+        if not self.__detail:
+            self.__detail = self.__get_detail()
+            del self.__get_detail
+        return self.__detail
+
+    async def true_name(self) -> str:
         """
-        Play the audio source in ctx.
-        :param ctx: discord `Context` object
+        :return: Name used by `FFmpegPCMAudio`
         """
-        vc = ctx.voice_client
-        if not vc:
-            return
-        vc.play(
-            self.__source,
-            after=lambda e: ctx.bot.logger.warn(str(e))
-        )
-        while True:
-            await sleep(5)
-            if not vc.is_playing():
-                return
+        raise NotImplementedError

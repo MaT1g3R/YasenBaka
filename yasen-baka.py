@@ -9,6 +9,7 @@ from wowspy import WowsAsync
 
 from bot import SessionManager, Yasen, version_info as vs
 from bot.logger import get_console_handler, setup_logging
+from clear_cache import clean
 from cogs import *
 from config import Config
 from data import data_path
@@ -57,6 +58,7 @@ async def run():
 
 
 if __name__ == '__main__':
+    clean(('dumps', 'music_cache'))
     if EventLoopPolicy:
         set_event_loop_policy(EventLoopPolicy())
     loop = get_event_loop()

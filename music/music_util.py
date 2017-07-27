@@ -1,4 +1,6 @@
+from asyncio import get_event_loop
 from collections import Iterable
+from functools import partial
 from pathlib import Path
 from typing import Optional, Union
 
@@ -7,6 +9,7 @@ from mutagen import MutagenError
 from mutagen.easymp4 import EasyMP4
 from mutagen.flac import FLAC
 from mutagen.mp3 import EasyMP3
+from youtube_dl import YoutubeDL
 
 from music.playing_status import PlayingStatus
 
@@ -88,3 +91,73 @@ def get_file_info(file_path: str) -> tuple:
         return empty()
     finally:
         del tag
+
+
+def file_detail(title, genre, artist, album, length) -> str:
+    """
+    :return: a detailed string repersentation of a file audio source.
+    """
+    artist = f'\nArtist:\n`{artist}`' if artist else ''
+    album = f'\nAlbum:\n`{album}\n`' if album else ''
+    genre = f'\nGenre:\n`{genre}`' if genre else ''
+    length = f' [{length}]' if length else ''
+    return f'\t{title}{length}\n{artist}\n{album}\n{genre}'
+
+
+def get_ytdl_format(out_format):
+    return {
+        'format': 'bestaudio/best',
+        'outtmpl': out_format,
+        'restrictfilenames': True,
+        'noplaylist': True,
+        'nocheckcertificate': True,
+        'ignoreerrors': False,
+        'logtostderr': False,
+        'quiet': True,
+        'no_warnings': True,
+        'default_search': 'auto',
+        'source_address': '0.0.0.0'
+    }
+
+
+async def fetch_ytdl_info(ytdl: YoutubeDL, query: str) -> dict:
+    """
+    Fetch video data using YoutubeDL.
+    :param ytdl: the YoutubeDL instance.
+    :param query: the search query.
+    :return: the video data.
+    """
+    loop = get_event_loop()
+    func = partial(ytdl.extract_info, query, download=False)
+    data = await loop.run_in_executor(None, func)
+    return data
+
+
+def ytdl_detail(title, duration, uploader, requester, date) -> str:
+    """
+    :return: a detailed string repersentation of a youtube-dl audio source.
+    """
+    try:
+        if duration:
+            duration = int(duration)
+            minutes, seconds = divmod(duration, 60)
+            hours = 0
+            if minutes > 60:
+                hours, minutes = divmod(minutes, 60)
+            length_list = []
+            if hours:
+                length_list.append(f'{int(hours)}hr')
+            if minutes:
+                length_list.append(f'{int(minutes):02d}min')
+            length_list.append(f'{round(seconds):02d}sec')
+            length = f' [{" ".join(length_list)}]'
+        else:
+            length = ''
+    except ValueError:
+        length = ''
+    uploader = f'\nUploaded by: `{uploader}`' if uploader else ''
+    date = f'\tUpload date: `{date}`' if date else ''
+    return (
+        f'\n{title}{length}\tRequested by: `{requester}`'
+        f'{uploader}{date}'
+    )

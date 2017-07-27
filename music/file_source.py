@@ -1,35 +1,35 @@
-from discord import FFmpegPCMAudio, PCMVolumeTransformer
+from functools import partial
 
 from music.abstract_source import AbstractSource
-from music.music_util import get_file_info
+from music.music_util import file_detail, get_file_info
 
 
 class FileSource(AbstractSource):
     """
-    A audio source from a file.
+    An audio source from a file.
     """
-    __slots__ = ()
 
-    def __init__(self, file_path: str, opts: dict):
+    __slots__ = ('file_path', 'title')
+
+    def __init__(self, file_path: str):
         """
         :param file_path: the file path.
-        :param opts: the ffmpeg kwargs.
         """
-        title, genre, artist, album, length = get_file_info(file_path)
+        self.title, genre, artist, album, length = get_file_info(file_path)
+        self.file_path = file_path
         super().__init__(
-            PCMVolumeTransformer(FFmpegPCMAudio(file_path, **opts)),
-            title,
-            self.__get_detail(title, genre, artist, album, length)
+            partial(file_detail, self.title, genre, artist, album, length)
         )
 
-    @staticmethod
-    def __get_detail(title, genre, artist, album, length) -> str:
+    def __str__(self):
+        return self.title
+
+    def __del__(self):
+        del self.title
+        del self.file_path
+
+    async def true_name(self) -> str:
         """
-        See `AbstractSource.detail`
+        See `AbstractSource.true_name`
         """
-        artist = f'\nArtist:\n`{artist}`' if artist else ''
-        album = f'\nAlbum:\n`{album}\n`' if album else ''
-        genre = f'\nGenre:\n`{genre}`' if genre else ''
-        length = f' [{length}]' if length else ''
-        return (f'\t{title}{length}\n{artist}'
-                f'\n{album}\n{genre}')
+        return self.file_path
