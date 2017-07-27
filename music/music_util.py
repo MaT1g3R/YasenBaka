@@ -21,7 +21,8 @@ def check_conditions(ctx: Context, music_player) -> tuple:
     :param music_player: the music player instance.
     :type music_player: MusicPlayer
     :return: a tuple of
-        (the playing condition has been matched, the message to send if any)
+        (the playing condition has been matched, the message to send if any,
+        voice channel)
     """
     ch = ctx.author.voice.channel
     status = music_player.playing_status
@@ -30,14 +31,15 @@ def check_conditions(ctx: Context, music_player) -> tuple:
     except AttributeError:
         ctx_ch = None
     if status == PlayingStatus.NO and not ch:
-        return False, 'You must be in a voice channel to use this command.'
+        return (False,
+                'You must be in a voice channel to use this command.', None)
     if (status != PlayingStatus.NO and
             not (ch == ctx_ch or ctx_ch is None)):
         return False, (
             'You must be in the same voice'
             'channel as me to use this command.'
-        )
-    return True, None
+        ), None
+    return True, None, ch
 
 
 def __to_string(tag: Union[str, list, None]) -> Optional[str]:

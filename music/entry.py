@@ -1,7 +1,7 @@
 from asyncio import sleep
 from typing import NewType, Union
 
-from discord import FFmpegPCMAudio, Member
+from discord import ClientException, FFmpegPCMAudio, Member, VoiceChannel
 from discord.ext.commands import Context
 from youtube_dl import YoutubeDL
 
@@ -81,24 +81,32 @@ class Entry:
             )
             return cls(ctx.author, yt)
 
-    async def play(self, ctx):
+    async def play(self, ctx: Context, channel: VoiceChannel):
         """
         Start playing music in the Context.
         :param ctx: discord `Context` object
+        :param channel: the voice channel to play audio in.
         """
-        vc = ctx.voice_client
-        if not vc:
-            return
         name = await self.source.true_name()
         src = FFmpegPCMAudio(name, before_options='-nostdin', options='-vn')
+        vc = ctx.voice_client
+        if not vc:
+            while True:
+                try:
+                    await channel.connect()
+                except ClientException as e:
+                    ctx.bot.logger.warn(str(e))
+                vc = ctx.voice_client
+                if vc:
+                    break
         vc.play(
             src,
-            after=lambda e: ctx.bot.logger.warn(str(e)) if e else None
+            after=lambda ex: ctx.bot.logger.warn(str(ex)) if ex else None
         )
         while True:
+            await sleep(5)
             if not vc.is_playing():
                 return
-            await sleep(5)
 
     def __calc_skip(self, ctx) -> tuple:
         """

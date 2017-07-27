@@ -76,14 +76,14 @@ class Music:
             await ctx.send('Please enter a link or a search term.')
             return
         music_player = await self.get_player(ctx.guild.id, True)
-        condition, msg = check_conditions(ctx, music_player)
+        condition, msg, ch = check_conditions(ctx, music_player)
         if not condition:
             await ctx.send(msg)
             return
         if music_player.playing_status == PlayingStatus.NO:
             await ctx.author.voice.channel.connect()
         await music_player.enqueue(ctx, search)
-        await music_player.play(ctx)
+        await music_player.play(ctx, ch)
 
     @commands.command()
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
@@ -99,7 +99,7 @@ class Music:
         Note: "This will be terminated by the `{prefix}play` command."
         """
         music_player = await self.get_player(ctx.guild.id, True)
-        condition, msg = check_conditions(ctx, music_player)
+        condition, msg, ch = check_conditions(ctx, music_player)
         if not condition:
             await ctx.send(msg)
             return
@@ -114,7 +114,7 @@ class Music:
             return
         if music_player.playing_status == PlayingStatus.NO:
             await ctx.author.voice.channel.connect()
-        await music_player.play_default(ctx)
+        await music_player.play_default(ctx, ch)
 
     @commands.command()
     async def playing(self, ctx: Context):

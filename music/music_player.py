@@ -4,6 +4,7 @@ from pathlib import Path
 from random import shuffle
 from typing import Optional
 
+from discord import VoiceChannel
 from discord.ext.commands import Context
 
 from music.entry import Entry
@@ -96,15 +97,13 @@ class MusicPlayer:
         else:
             skipped = await self.current.skip(ctx)
         if skipped:
+            if ctx.voice_client:
+                ctx.voice_client.stop()
+            self.__log_del(self.current)
             if ctx.author == self.current.requester and not force:
                 await ctx.send('Song skipped by requester.')
             elif not force:
                 await ctx.send('Song has been voted to be skipped.')
-            if ctx.voice_client:
-                ctx.voice_client.stop()
-            self.__log_del(self.current)
-            del self.current
-            self.current = None
 
     async def stop(self, ctx: Context):
         """
@@ -139,19 +138,20 @@ class MusicPlayer:
         await self.entry_queue.put(entry)
         await ctx.send(f'Enqueued: {entry.detail}')
 
-    async def play_default(self, ctx: Context):
+    async def play_default(self, ctx: Context, channel: VoiceChannel):
         """
         Play the default playlist.
         :param ctx: discord `Context` object
+        :param channel: the voice channel to play music in.
         """
         if self.playing_status != PlayingStatus.NO:
             return
         if not self.file_queue:
             self.__put_files()
         self.playing_status = PlayingStatus.FILE
-        await self.__play(ctx, True)
+        await self.__play(ctx, True, channel)
 
-    async def play(self, ctx: Context):
+    async def play(self, ctx: Context, channel: VoiceChannel):
         """
         Play the guild playlist.
 
@@ -160,16 +160,18 @@ class MusicPlayer:
         Will dissconnect from the voice channel after queue is empty.
 
         :param ctx: discord `Context` object
+        :param channel: the voice channel to play music in.
         """
         if self.playing_status == PlayingStatus.WEB:
             return
-        await self.__play(ctx, False)
+        await self.__play(ctx, False, channel)
 
-    async def __play(self, ctx: Context, is_file: bool):
+    async def __play(self, ctx: Context, is_file: bool, channel: VoiceChannel):
         """
         Helper method to play music.
         :param ctx: discord `Context` object
         :param is_file: True to play default files, False to play user quries.
+        :param channel: the voice channel to play music in.
         """
         while True:
             if not is_file and self.playing_status == PlayingStatus.FILE:
@@ -177,24 +179,25 @@ class MusicPlayer:
             if not is_file:
                 self.playing_status = PlayingStatus.WEB
             await self.__put_entries(is_file, ctx)
-            if self.entry_queue.empty():
+            if self.entry_queue.empty() and not self.current:
                 self.playing_status = PlayingStatus.NO
                 await self.stop(ctx)
                 return
-            await self.__play_current(ctx)
+            await self.__play_current(ctx, channel)
             if (is_file and self.playing_status != PlayingStatus.FILE) or \
                     (not is_file and self.playing_status != PlayingStatus.WEB):
                 await self.stop(ctx)
                 return
 
-    async def __play_current(self, ctx):
+    async def __play_current(self, ctx, channel: VoiceChannel):
         """
         Play the current entry.
         :param ctx: discord `Context` object
+        :param channel: the voice channel to play music in.
         """
         self.current = await self.entry_queue.get()
         await ctx.send(f'Now playing:{self.current.detail}')
-        await self.current.play(ctx)
+        await self.current.play(ctx, channel)
         try:
             if self.current:
                 current_name = str(self.current)
