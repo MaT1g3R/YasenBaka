@@ -1,4 +1,5 @@
 from asyncio import sleep
+from typing import NewType, Union
 
 from discord import FFmpegPCMAudio, Member
 from discord.ext.commands import Context
@@ -9,6 +10,11 @@ from music.file_source import FileSource
 from music.music_util import fetch_ytdl_info, get_ytdl_format
 from music.ytdl_source import YTDLSource
 
+_SourceType = Union[
+    NewType('FileSource', AbstractSource),
+    NewType('YTDLSource', AbstractSource)
+]
+
 
 class Entry:
     """
@@ -16,7 +22,7 @@ class Entry:
     """
     __slots__ = ('requester', 'source', 'skip_members')
 
-    def __init__(self, requester: Member, source: AbstractSource):
+    def __init__(self, requester: Member, source: _SourceType):
         """
         Init the instance.
         :param requester: the song requester.
