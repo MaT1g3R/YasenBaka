@@ -1,0 +1,12 @@
+sudo: false
+language: python
+python:
+  - 3.6
+install:
+  - pip install -Ur requirements.txt
+  - sh .travis_install.sh
+script:
+  - flake8
+  - pytest -v --capture=sys
+after_script:
+  - bash -c "$(curl -fsSL https://raw.githubusercontent.com/MaT1g3R/travis_discord/master/travis.sh)"
