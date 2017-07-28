@@ -3,7 +3,8 @@ Checks for commands
 """
 
 from discord import DMChannel, TextChannel
-from discord.ext.commands import CommandError, Context, NoPrivateMessage
+from discord.ext.commands import CommandError, Context, NoPrivateMessage, \
+    NotOwner
 
 from scripts.discord_utils import try_get_member
 
@@ -89,3 +90,14 @@ def no_pm(ctx):
     if ctx.guild:
         return True
     raise NoPrivateMessage('This command cannot be used in private messages.')
+
+
+async def is_owner(ctx):
+    """
+    Check if the user is bot owner.
+    :param ctx: the discord context
+    :return: True if the user is the bot owner.
+    """
+    if not (await ctx.bot.is_owner(ctx.author)):
+        raise NotOwner('This is an owner only command.')
+    return True

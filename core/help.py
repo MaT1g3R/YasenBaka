@@ -21,6 +21,8 @@ def general_help(bot: Yasen, prefix: str) -> Embed:
     embed.set_author(name=f'{name} Help', icon_url=bot.user.avatar_url)
     cog_cmd = {}
     for command in bot.commands:
+        if command.cog_name == 'OnwerOnly':
+            continue
         cog_name = ' '.join(
             [lower_words(s) for s in split_camel(command.cog_name)]
         )
@@ -49,7 +51,7 @@ def get_doc(bot: Yasen, cmd_name: Optional[str]) -> Optional[str]:
     """
     if cmd_name:
         c = bot.get_command(cmd_name)
-        return c.help if c else None
+        return c.help if c and c.cog_name != 'OnwerOnly' else None
 
 
 def cmd_help_embed(cmd_name: str, doc: str, icon_url, prefix: str,
