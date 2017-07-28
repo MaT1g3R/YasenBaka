@@ -4,42 +4,11 @@ from functools import partial
 from pathlib import Path
 from typing import Optional, Union
 
-from discord.ext.commands import Context
 from mutagen import MutagenError
 from mutagen.easymp4 import EasyMP4
 from mutagen.flac import FLAC
 from mutagen.mp3 import EasyMP3
 from youtube_dl import YoutubeDL
-
-from music.playing_status import PlayingStatus
-
-
-def check_conditions(ctx: Context, music_player) -> tuple:
-    """
-    Check conditions for playing music.
-    :param ctx: discord `Context` object.
-    :param music_player: the music player instance.
-    :type music_player: MusicPlayer
-    :return: a tuple of
-        (the playing condition has been matched, the message to send if any,
-        voice channel)
-    """
-    ch = ctx.author.voice.channel if ctx.author.voice else None
-    status = music_player.playing_status
-    try:
-        ctx_ch = ctx.voice_client.channel
-    except AttributeError:
-        ctx_ch = None
-    if status == PlayingStatus.NO and not ch:
-        return (False,
-                'You must be in a voice channel to use this command.', None)
-    if (status != PlayingStatus.NO and
-            not (ch == ctx_ch or ctx_ch is None)):
-        return False, (
-            'You must be in the same voice'
-            'channel as me to use this command.'
-        ), None
-    return True, None, ch
 
 
 def __to_string(tag: Union[str, list, None]) -> Optional[str]:

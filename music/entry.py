@@ -1,7 +1,6 @@
-from asyncio import sleep
 from typing import NewType, Union
 
-from discord import ClientException, FFmpegPCMAudio, Member, VoiceChannel
+from discord import ClientException, FFmpegPCMAudio, Member
 from discord.ext.commands import Context
 from youtube_dl import YoutubeDL
 
@@ -84,33 +83,20 @@ class Entry:
             )
             return cls(ctx.author, yt)
 
-    async def play(self, ctx: Context, channel: VoiceChannel):
+    async def play(self, ctx: Context, channel, after: callable):
         """
         Start playing music in the Context.
         :param ctx: discord `Context` object
-        :param channel: the voice channel to play audio in.
         """
         name = await self.source.true_name()
         src = FFmpegPCMAudio(name, before_options='-nostdin', options='-vn')
-        vc = ctx.voice_client
-        if not vc:
-            while True:
-                try:
-                    await channel.connect()
-                except ClientException as e:
-                    ctx.bot.logger.warn(str(e))
-                vc = ctx.voice_client
-                if vc:
-                    break
-        vc.play(
-            src,
-            after=lambda ex: ctx.bot.logger.warn(str(ex)) if ex else None
-        )
-        while True:
-            await sleep(5)
-            if not vc.is_playing():
-                del self.source
-                return
+        try:
+            if not ctx.voice_client:
+                await channel.connect()
+            assert ctx.voice_client is not None
+            ctx.voice_client.play(src, after=after)
+        except ClientException as e:
+            ctx.bot.logger.warn(str(e))
 
     def __calc_skip(self, ctx) -> tuple:
         """
@@ -119,7 +105,7 @@ class Entry:
         :return: a tuple of
             (vote count is >= than max vote count, max vote count)
         """
-        max_count = ctx.bot.data_mamager.get_skip(str(ctx.guild.id))
+        max_count = ctx.bot.data_manager.get_skip(str(ctx.guild.id))
         if not isinstance(max_count, int):
             max_count = 3
         return len(self.skip_members) >= max_count, max_count
@@ -132,14 +118,14 @@ class Entry:
         current = len(self.skip_members)
         return f'**[{current}/{max_c} Votes]**'
 
-    async def skip(self, ctx: Context) -> bool:
+    async def skip(self, ctx: Context) -> tuple:
         """
         Skip this entry.
         :param ctx: discord `Context` object
         :return: True if the entry should be skipped.
         """
         if ctx.author == self.requester:
-            return True
+            return True, True, None
         skipped, max_c = self.__calc_skip(ctx)
         self.skip_members.add(ctx.author)
         cur = self.__cur_skip(max_c)
@@ -147,4 +133,4 @@ class Entry:
             await ctx.send(f'You already voted to skip this song. {cur}')
         else:
             await ctx.send(f'You voted to skip this song. {cur}')
-        return skipped
+        return skipped, False, cur

@@ -1,27 +1,30 @@
-from asyncio import sleep
+from typing import NewType, Optional, Union
 
-from discord import opus
+from discord import VoiceChannel, opus
 from discord.ext import commands
 from discord.ext.commands import Context
 
 from bot import Yasen
-from music.music_player import MusicPlayer
-from music.music_util import check_conditions
-from music.playing_status import PlayingStatus
+from music.abstract_music_player import AbstractMusicPlayer
+from music.guild_music_manager import GuildMusicManager
 from scripts.checks import is_admin, no_pm
 from scripts.helpers import parse_number
+
+_PlayerType = Union[
+    NewType('FilePlayer', AbstractMusicPlayer),
+    NewType('YTPlayer', AbstractMusicPlayer),
+]
 
 
 class Music:
     """
     Muisc Commands.
     """
-    __slots__ = ('bot', 'music_players', 'deleting')
+    __slots__ = ('bot', 'music_managers')
 
     def __init__(self, bot: Yasen):
         self.bot = bot
-        self.music_players = {}
-        self.deleting = []
+        self.music_managers = {}
         if not opus.is_loaded():
             raise ValueError('libopus is not loaded, please install the'
                              'library through your package manager or add'
@@ -30,33 +33,59 @@ class Music:
     def __local_check(self, ctx: Context):
         return no_pm(ctx)
 
-    async def __wait_delete(self, guild_id: int):
+    async def check_conditions(self, ctx: Context) -> tuple:
         """
-        Wait for a MusicPlayer instance to be deleted.
-        :param guild_id: the guild id.
+        Check conditions for playing music in a guild.
+        :param ctx: the `discord.Context` object.
+        :return: a tuple of (Can play music, channel to play music in)
         """
-        while True:
-            player = self.music_players.get(guild_id, None)
-            if (guild_id not in self.deleting) and \
-                    (not player or not player.deleting):
-                return
-            await sleep(2)
+        guild_id = ctx.guild.id
+        voice_state = ctx.author.voice
+        channel = voice_state.channel if voice_state else None
+        if not channel:
+            await ctx.send('You must be in a voice channel'
+                           ' to use music commands.')
+            return False, channel
+        manager = self.music_managers.get(guild_id)
+        if not manager or \
+                not manager.player or manager.player.channel == channel:
+            return True, channel
+        else:
+            await ctx.send('You must be in the same voice'
+                           ' channel as me to use music commands.')
+            return False, channel
 
-    async def get_player(self, guild_id: int, create_new: bool) -> MusicPlayer:
+    async def get_player(self, ctx: Context, voice_channel: VoiceChannel,
+                         is_file: bool) -> Optional[_PlayerType]:
         """
-        Get a `MusicPlayer` instance for the guild.
-        :param guild_id: the gulid id.
-        :param create_new: True to create a new `MusicPlayer` for the guild.
-        :return: a `MusicPlayer` instance for the guild, if any.
+        Get a music player for the guild.
+        :param ctx: the `discord.Context` object.
+        :param voice_channel: the voice channel to play music in.
+        :param is_file:
+            True to play defualt playlist, False to play with youtube-dl.
+        :return: A music player for the guild.
         """
-        await self.__wait_delete(guild_id)
-        player = self.music_players.get(guild_id, None)
-        if not create_new:
-            return player
-        if not player:
-            player = MusicPlayer(self.bot.logger, self.bot.config.music_path)
-            self.music_players[guild_id] = player
-        return player
+        guild_id = ctx.guild.id
+        if guild_id not in self.music_managers:
+            self.music_managers[guild_id] = GuildMusicManager()
+        manager: GuildMusicManager = self.music_managers[guild_id]
+        if is_file:
+            return await manager.get_file_player(ctx, voice_channel)
+        return await manager.get_yt_player(ctx, voice_channel)
+
+    def is_playing(self, ctx) -> tuple:
+        """
+        Check if music is playing in the context.
+        :param ctx: the `discord.Context` object.
+        :return: A tuple of (is playing music, the music player if any)
+        """
+        manager = self.music_managers.get(ctx.guild.id)
+        if not manager or not manager.player:
+            return False, None
+        player = manager.player
+        if not player.current:
+            return False, player
+        return True, player
 
     @commands.command()
     async def play(self, ctx: Context, *, search=None):
@@ -75,15 +104,12 @@ class Music:
         if not search:
             await ctx.send('Please enter a link or a search term.')
             return
-        music_player = await self.get_player(ctx.guild.id, True)
-        condition, msg, ch = check_conditions(ctx, music_player)
+        condition, channel = await self.check_conditions(ctx)
         if not condition:
-            await ctx.send(msg)
             return
-        if music_player.playing_status == PlayingStatus.NO:
-            await ctx.author.voice.channel.connect()
-        await music_player.enqueue(ctx, search)
-        await music_player.play(ctx, ch)
+        player = await self.get_player(ctx, channel, False)
+        await player.enqueue(ctx, search)
+        await player.play(ctx)
 
     @commands.command()
     @commands.cooldown(rate=1, per=5, type=commands.BucketType.guild)
@@ -98,23 +124,18 @@ class Music:
         Usage: "`{prefix}playdefault`"
         Note: "This will be terminated by the `{prefix}play` command."
         """
-        music_player = await self.get_player(ctx.guild.id, True)
-        condition, msg, ch = check_conditions(ctx, music_player)
+        path = self.bot.config.music_path
+        if not path or not path.is_dir():
+            await ctx.send('I do not have a default playlist.')
+            return
+        condition, channel = await self.check_conditions(ctx)
         if not condition:
-            await ctx.send(msg)
             return
-        if music_player.playing_status == PlayingStatus.WEB:
-            await ctx.send('Currently playing user requested music,'
-                           'please wait for the queue to be empty'
-                           'to use this command.')
+        player = await self.get_player(ctx, channel, True)
+        if not player:
             return
-        if (not music_player.default_path or
-                not music_player.default_path.is_dir()):
-            await ctx.send("Sorry, I don't have a default playlist.")
-            return
-        if music_player.playing_status == PlayingStatus.NO:
-            await ctx.author.voice.channel.connect()
-        await music_player.play_default(ctx, ch)
+        await player.enqueue(ctx)
+        await player.play(ctx)
 
     @commands.command()
     async def playing(self, ctx: Context):
@@ -123,15 +144,11 @@ class Music:
         Restriction: Cannot be used in private message.
         Usage: "`{prefix}current`"
         """
-        not_playing = 'Not playing anything.'
-        music_player = await self.get_player(ctx.guild.id, False)
-        if not music_player:
-            await ctx.send(not_playing)
-            return
-        if music_player.playing_status == PlayingStatus.NO:
-            await ctx.send(not_playing)
-            return
-        await ctx.send(music_player.current.detail)
+        playing, player = self.is_playing(ctx)
+        if not playing:
+            await ctx.send('Not playing anything.')
+        else:
+            await ctx.send(f'Playing:{player.current.detail}')
 
     @commands.command()
     async def playlist(self, ctx: Context):
@@ -140,12 +157,7 @@ class Music:
         Restriction: Cannot be used in private message.
         Usage: "`{prefix}playlist`"
         """
-        empty = 'Playlist is empty.'
-        music_player = await self.get_player(ctx.guild.id, False)
-        if not music_player:
-            await ctx.send(empty)
-            return
-        await ctx.send(music_player.play_list)
+        pass
 
     @commands.command()
     async def skip(self, ctx: Context):
@@ -156,15 +168,11 @@ class Music:
         Usage: "`{prefix}skip`"
         Note: "Vote count can be set in `{prefix}setskip` default is 3."
         """
-        not_playing = 'Not playing anything.'
-        music_player = await self.get_player(ctx.guild.id, False)
-        if not music_player:
-            await ctx.send(not_playing)
-            return
-        if music_player.playing_status == PlayingStatus.NO:
-            await ctx.send(not_playing)
-            return
-        await music_player.skip(ctx, False)
+        playing, player = self.is_playing(ctx)
+        if not playing:
+            await ctx.send('Not playing anything.')
+        else:
+            await player.skip(ctx)
 
     @commands.command()
     @commands.check(is_admin)
@@ -197,15 +205,8 @@ class Music:
         Cooldown: Once every 5 seconds per guild.
         Usage: "`{prefix}stop`"
         """
-        self.deleting.append(ctx.guild.id)
-        music_player = self.music_players.pop(ctx.guild.id, None)
-        if music_player:
-            await music_player.stop(ctx)
-        del music_player
-        if ctx.voice_client:
-            await ctx.voice_client.disconnect()
-        await ctx.send('Turning off now! Bye bye ^-^ :wave:')
-        try:
-            self.deleting.remove(ctx.guild.id)
-        except ValueError:
-            pass
+        manager = self.music_managers.get(ctx.guild.id)
+        if not manager:
+            await ctx.send('Not playing anything.')
+            return
+        await manager.stop(ctx)
