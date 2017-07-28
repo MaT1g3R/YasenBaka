@@ -24,7 +24,7 @@ class FileSource(AbstractSource):
     def __str__(self):
         return self.title
 
-    def __del__(self):
+    def clean_up(self):
         del self.title
         del self.file_path
 

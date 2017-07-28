@@ -113,9 +113,10 @@ class AbstractMusicPlayer:
             return
         self.playing = True
         self.current = self.entry_queue.popleft()
-        await self.current.play(ctx, self.channel, self.__after)
-        await ctx.send(f'Now playing:{self.current.detail}')
-        fin = await self.finished.get()
+        with self.current as cur:
+            await cur.play(ctx, self.channel, self.__after)
+            await ctx.send(f'Now playing:{cur.detail}')
+            fin = await self.finished.get()
         del fin
         await self.__play_next(ctx)
 

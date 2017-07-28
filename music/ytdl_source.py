@@ -126,7 +126,7 @@ class YTDLSource(AbstractSource):
     def __str__(self):
         return f'{self.title}\tRequested by {self.requester}'
 
-    def __del__(self):
+    def clean_up(self):
         if self.delete_after and self.file_path is not None:
             try:
                 self.logger.info(f'Deleting {self.file_path}')

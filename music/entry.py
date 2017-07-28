@@ -35,13 +35,6 @@ class Entry:
     def __str__(self):
         return str(self.source)
 
-    def __del__(self):
-        del self.skip_members
-        try:
-            del self.source
-        except AttributeError:
-            pass
-
     @property
     def detail(self) -> str:
         """
@@ -141,3 +134,14 @@ class Entry:
         else:
             await ctx.send(f'You voted to skip this song. {cur}')
         return skipped, False, cur
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.source.clean_up()
+        del self.skip_members
+        try:
+            del self.source
+        except AttributeError:
+            pass

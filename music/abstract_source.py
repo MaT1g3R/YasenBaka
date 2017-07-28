@@ -11,7 +11,7 @@ class AbstractSource:
     def __str__(self):
         raise NotImplementedError
 
-    def __del__(self):
+    def clean_up(self):
         raise NotImplementedError
 
     @property
