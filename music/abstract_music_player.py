@@ -4,6 +4,8 @@ from collections import deque
 from discord import VoiceChannel
 from discord.ext.commands import Context
 
+from music.ytdl_source import YTDLSource
+
 
 class AbstractMusicPlayer:
     """
@@ -102,7 +104,7 @@ class AbstractMusicPlayer:
             return
         await self.__play(ctx)
 
-    async def __play(self, ctx):
+    async def __play(self, ctx: Context):
         """
         Method to play audio. After audio is finished playing this will call
         `self.__play_next` to check if it needs to continue playing.
@@ -114,6 +116,8 @@ class AbstractMusicPlayer:
         self.playing = True
         self.current = self.entry_queue.popleft()
         with self.current as cur:
+            if isinstance(cur.source, YTDLSource):
+                await ctx.trigger_typing()
             await cur.play(ctx, self.channel, self.__after)
             await ctx.send(f'Now playing:{cur.detail}')
             fin = await self.finished.get()

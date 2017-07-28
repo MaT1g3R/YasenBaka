@@ -1,4 +1,5 @@
 from discord import VoiceChannel
+from discord.ext.commands import Context
 
 from music.abstract_music_player import AbstractMusicPlayer
 from music.entry import Entry
@@ -16,7 +17,7 @@ class YTPlayer(AbstractMusicPlayer):
         """
         super().__init__(logger, channel)
 
-    async def enqueue(self, ctx, query: str = None):
+    async def enqueue(self, ctx: Context, query: str = None):
         """
         Search and enqueue one `Entry` from youtube-dl.
         Does not enqueue if the search result is empty.
@@ -25,7 +26,8 @@ class YTPlayer(AbstractMusicPlayer):
 
         :param query: the search query.
         """
-        entry = await Entry.from_yt(ctx, query)
+        async with ctx.typing():
+            entry = await Entry.from_yt(ctx, query)
         if not entry:
             await ctx.send(f'Search query {query} not found.')
             return

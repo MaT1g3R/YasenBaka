@@ -210,3 +210,4 @@ class Music:
             await ctx.send('Not playing anything.')
             return
         await manager.stop(ctx)
+        await ctx.send('Turning off now! Bye bye ^-^ :wave:')
