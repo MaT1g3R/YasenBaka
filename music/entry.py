@@ -1,6 +1,6 @@
 from typing import NewType, Union
 
-from discord import ClientException, FFmpegPCMAudio, Member
+from discord import ClientException, FFmpegPCMAudio, Member, VoiceChannel
 from discord.ext.commands import Context
 from youtube_dl import YoutubeDL
 
@@ -83,10 +83,17 @@ class Entry:
             )
             return cls(ctx.author, yt)
 
-    async def play(self, ctx: Context, channel, after: callable):
+    async def play(self, ctx: Context, channel: VoiceChannel, after: callable):
         """
-        Start playing music in the Context.
-        :param ctx: discord `Context` object
+        Start playing music in the given `VoiceChannel`.
+
+        :param ctx: discord `Context` object.
+
+        :param channel: a `VoiceChannel` to play audio in.
+
+        :param after:
+            a callable to be called after audio is finished plContextaying.
+            see `VoiceClient.play`
         """
         name = await self.source.true_name()
         src = FFmpegPCMAudio(name, before_options='-nostdin', options='-vn')
@@ -102,8 +109,8 @@ class Entry:
         """
         Calculate the skipping count.
         :param ctx: discord `Context` object
-        :return: a tuple of
-            (vote count is >= than max vote count, max vote count)
+        :return:
+            a tuple of (vote count is >= than max vote count, max vote count)
         """
         max_count = ctx.bot.data_manager.get_skip(str(ctx.guild.id))
         if not isinstance(max_count, int):
