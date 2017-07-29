@@ -96,7 +96,8 @@ class Pageable:
                 return
             try:
                 reaction, user = await ctx.bot.wait_for(
-                    'reaction_add', timeout=self.timeout
+                    'reaction_add',
+                    timeout=self.timeout
                 )
                 emoji = reaction.emoji
                 if emoji not in self.emojis \
