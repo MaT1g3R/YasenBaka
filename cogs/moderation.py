@@ -1,5 +1,3 @@
-from logging import WARN
-
 from discord import DiscordException, Forbidden, HTTPException
 from discord.ext import commands
 from discord.ext.commands import Context
@@ -51,7 +49,7 @@ class Moderation:
                 await m.send(msg)
                 sent.append(m.display_name)
             except DiscordException as e:
-                self.bot.logger.log(WARN, str(e))
+                self.bot.logger.warn(str(e))
                 failed.append(m.display_name)
         success_msg = (f'PM sent to the following members:'
                        f'\n```\n{", ".join(sent)}\n```') if sent else ''

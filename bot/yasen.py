@@ -3,7 +3,7 @@ The yasen bot object
 """
 from datetime import datetime, timedelta
 from itertools import chain
-from logging import CRITICAL, ERROR, WARN
+from logging import CRITICAL, ERROR
 from traceback import format_exc
 from typing import Optional
 
@@ -111,7 +111,7 @@ class Yasen(AutoShardedBot):
                 game=game, status=status, afk=afk, shard_id=shard_id)
         except ConnectionClosed as e:
             if retry:
-                self.logger.log(WARN, str(e))
+                self.logger.warn(str(e))
                 await self.logout()
                 await self.login(self.config.token)
                 await self.try_change_presence(

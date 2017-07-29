@@ -1,4 +1,3 @@
-from logging import WARN
 from typing import Optional
 
 from discord import Embed
@@ -96,7 +95,7 @@ class Player:
                 language='en'
             )
         except Exception as e:
-            self.logger.log(WARN, str(e))
+            self.logger.warn(str(e))
             return None, None
         try:
             data = alltime_resp['data'][self.player_id]
@@ -127,7 +126,7 @@ class Player:
             if not resp:
                 return None, None
         except Exception as e:
-            self.logger.log(WARN, str(e))
+            self.logger.warn(str(e))
             return None, None
         try:
             date_stats = resp['data'][self.player_id]['pvp']
@@ -173,7 +172,7 @@ class Player:
             if not resp:
                 return
         except Exception as e:
-            self.logger.log(WARN, str(e))
+            self.logger.warn(str(e))
             return
         try:
             data = resp['data'][self.player_id]
@@ -193,7 +192,7 @@ class Player:
                 fields='clan.name', language='en'
             )
         except Exception as e:
-            self.logger.log(WARN, str(e))
+            self.logger.warn(str(e))
             return
         try:
             return clan['data'][str(self.player_id)]['clan']['name']
@@ -226,7 +225,7 @@ class Player:
         try:
             recent_stats, recent_date = await self.fetch_recent(wows_api)
         except Exception as e:
-            self.logger.log(WARN, str(e))
+            self.logger.warn(str(e))
             recent_stats, recent_date = None, None
         if recent_stats:
             self.recent_stats = recent_stats

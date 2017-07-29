@@ -1,6 +1,5 @@
 import re
 from json import dumps
-from logging import INFO, WARN
 from traceback import format_exc
 
 from discord import File, Game, Guild, Message, TextChannel
@@ -31,8 +30,8 @@ class Listeners:
         """
         prefix = self.bot.default_prefix
         g = Game(name=f'{prefix}help | {prefix}info | {self.bot.version}')
-        self.bot.logger.log(INFO, f'Logged in as: {self.bot.user}')
-        self.bot.logger.log(INFO, f'Client Id: {self.bot.client_id}')
+        self.bot.logger.info(f'Logged in as: {self.bot.user}')
+        self.bot.logger.info(f'Client Id: {self.bot.client_id}')
         await self.bot.try_change_presence(True, game=g)
         await self.__post_guild_count()
         _mention = f'<@!?{self.bot.client_id}>'
@@ -52,7 +51,7 @@ class Listeners:
         except Exception as e:
             tb = format_exc()
             msg, triggered = format_command_error(e, context)
-            self.bot.logger.log(WARN, f'\n{msg}\n\n{tb}')
+            self.bot.logger.warn(f'\n{msg}\n\n{tb}')
             await context.send(f':warning: I ran into an error while '
                                f'executing this command.\n{msg}')
             await self.bot.send_tb(
@@ -96,7 +95,7 @@ class Listeners:
         Event for joining a guild.
         :param guild: the guild the Bot joined.
         """
-        self.bot.logger.log(INFO, f'Joined guild {guild.name}')
+        self.bot.logger.info(f'Joined guild {guild.name}')
         await self.__post_guild_count()
 
     async def on_guild_remove(self, guild: Guild):
@@ -104,7 +103,7 @@ class Listeners:
         Event for removing from a guild.
         :param guild: the guild the Bot was removed from.
         """
-        self.bot.logger.log(INFO, f'Left guild {guild.name}')
+        self.bot.logger.info(f'Left guild {guild.name}')
         await self.__post_guild_count()
 
     def __strip_mention(self, s: str):
@@ -155,6 +154,6 @@ class Listeners:
             resp = await self.bot.session_manager.post(
                 url, data=data, headers=header)
             await resp.release()
-            self.bot.logger.log(INFO, f'Posted {data} to {site}')
+            self.bot.logger.info(f'Posted {data} to {site}')
         except HTTPStatusError as e:
-            self.bot.logger.log(WARN, str(e))
+            self.bot.logger.warn(str(e))

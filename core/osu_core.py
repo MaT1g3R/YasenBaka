@@ -1,4 +1,3 @@
-from logging import WARN
 from math import ceil
 from time import time
 from typing import Union
@@ -90,7 +89,7 @@ async def generate_sig(name: str, mode: Mode, colour_str,
     try:
         bytes_io = await session_manager.bytes_img(sig)
     except HTTPStatusError as e:
-        session_manager.logger.log(WARN, str(e))
+        session_manager.logger.warn(str(e))
         return f'Could not generate player signature.'
     return File(bytes_io, f'{int(time())}osu.png')
 

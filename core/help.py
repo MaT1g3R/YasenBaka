@@ -1,4 +1,3 @@
-from logging import WARN
 from typing import Optional
 
 from discord import Embed
@@ -69,7 +68,7 @@ def cmd_help_embed(cmd_name: str, doc: str, icon_url, prefix: str,
     try:
         help_dict = safe_load(doc)
     except (YAMLError, AttributeError) as e:
-        logger.log(WARN, str(e))
+        logger.warn(str(e))
         return Embed(colour=colour, description=doc)
     else:
         embed = Embed(colour=colour, description=help_dict.pop('Description'))

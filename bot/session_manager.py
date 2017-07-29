@@ -1,7 +1,6 @@
 from http import HTTPStatus
 from io import BytesIO
 from json import loads
-from logging import WARN
 
 from aiohttp import ClientResponse, ClientSession
 
@@ -65,7 +64,6 @@ class SessionManager:
             res = await self.get(url, params=params, **kwargs)
         except HTTPStatusError as e:
             raise e
-
         async with res:
             content = await res.read()
             return loads(content) if content else None
@@ -131,7 +129,7 @@ class SessionManager:
             try:
                 content = await resp.read()
             except Exception as e:
-                self.logger.log(WARN, str(e))
+                self.logger.warn(str(e))
                 raise e
             else:
                 return BytesIO(content)

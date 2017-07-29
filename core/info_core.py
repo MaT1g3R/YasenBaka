@@ -2,8 +2,9 @@ from platform import python_version
 
 from discord import Embed, TextChannel, __version__ as discord_v
 
-from bot import (Yasen, __author__ as author, __title__ as name,
-                 __url__ as source)
+from bot import (
+    Yasen, __author__ as author, __title__ as name, __url__ as source
+)
 from scripts.discord_utils import find_member
 from scripts.helpers import timedelta_str
 from scripts.system import ram_usage, system_name, total_ram
