@@ -1,20 +1,26 @@
+# General ignores
 __pycache__/
 *.directory
-
-/run.sh
-no_wows\.py
-temp.py
-config/no_wows\.json
-config/beta_config\.json
-config/config\.json
-data/expected_and_coeff\.json
-data/ship_dict\.json
-/data/yasen_db
-
 .cache/
 \.idea/
+
+# File ignores
+/*.py
+*.json
+*_db
+
+# Ignore files under these directories
 data/dumps/*
 data/music_cache/*
 data/logs/*
 
-!.gitkeep
+# Git keep
+!data/dumps/.gitkeep
+!data/music_cache/.gitkeep
+!data/logs/.gitkeep
+
+# Keep these files
+!yasen-baka.py
+!clear_cache.py
+!config/sample_config.json
+!/data/sample_db
