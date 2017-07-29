@@ -12,6 +12,13 @@ from mutagen.flac import FLAC
 from mutagen.mp3 import EasyMP3
 from youtube_dl import YoutubeDL
 
+PLAYLIST_DES = (
+    'Click on :rewind: to go to the previous page.'
+    '\nClick on :fast_forward: to go to the next page.'
+    '\nClick on :x: to delete this message.'
+    '\nThis message will self destruct after 1 minute of inactivity.'
+)
+
 
 def __to_string(tag: Union[str, list, None]) -> Optional[str]:
     """

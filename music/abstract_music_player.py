@@ -5,7 +5,7 @@ from typing import Optional
 from discord import Embed, VoiceChannel
 from discord.ext.commands import Context
 
-from music.music_util import playlist_embed
+from music.music_util import PLAYLIST_DES, playlist_embed
 from music.playlist import PlayList
 from music.ytdl_source import YTDLSource
 
@@ -116,6 +116,7 @@ class AbstractMusicPlayer:
         embed = await self.playlist(ctx, 1)
         if not embed:
             return
+        embed.add_field(name='Options', value=PLAYLIST_DES, inline=False)
         msg = await ctx.send(embed=embed)
         _playlist = PlayList(msg, ctx.author, self)
         await _playlist(ctx)

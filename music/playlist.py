@@ -4,7 +4,7 @@ from discord import Embed, Member, Message, User
 from discord.ext.commands import Context
 
 from core import MessageContent, Pageable
-from music.music_util import playlist_embed
+from music.music_util import PLAYLIST_DES, playlist_embed
 
 
 class PlayList(Pageable):
@@ -44,10 +44,13 @@ class PlayList(Pageable):
 
         :return: an embed for the give section of `Entry`, if any.
         """
-        return playlist_embed(
+        embed = playlist_embed(
             ctx, self.cur_page, self.player.total_page,
             self.player.current, section
         )
+        if embed:
+            embed.add_field(name='Options', value=PLAYLIST_DES, inline=False)
+            return embed
 
     def __get_page(self, diff: int, ctx: Context) -> Optional[MessageContent]:
         """
