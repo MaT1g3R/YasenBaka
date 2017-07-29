@@ -32,22 +32,24 @@ class Osu:
         Usage: "`{prefix}osu player name --flag` Flag is optional,
         replace **--flag** with a flag listed above if you intend to use it."
         """
-        name, mode = parse_query(query)
-        resp = await get_player_resp(
-            self.bot.session_manager, self.bot.config.osu, name, mode
-        )
-        if isinstance(resp, str):
-            await ctx.send(resp)
-            return
-        embed = await osu_player(resp, mode, self.bot.config.colour)
-        if isinstance(embed, str):
-            await ctx.send(embed)
-            return
-
-        await ctx.send(embed=embed)
-        sig = await generate_sig(
-            name, mode, self.bot.config.colour_str, self.bot.session_manager)
-        if isinstance(sig, str):
-            await ctx.send(str)
-        else:
-            await ctx.send(file=sig)
+        async with ctx.typing():
+            name, mode = parse_query(query)
+            resp = await get_player_resp(
+                self.bot.session_manager, self.bot.config.osu, name, mode
+            )
+            if isinstance(resp, str):
+                await ctx.send(resp)
+                return
+            embed = await osu_player(resp, mode, self.bot.config.colour)
+            if isinstance(embed, str):
+                await ctx.send(embed)
+                return
+            sig = await generate_sig(
+                name, mode, self.bot.config.colour_str,
+                self.bot.session_manager
+            )
+            await ctx.send(embed=embed)
+            if isinstance(sig, str):
+                await ctx.send(str)
+            else:
+                await ctx.send(file=sig)
