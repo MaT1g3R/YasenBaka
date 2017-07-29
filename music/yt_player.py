@@ -1,5 +1,6 @@
 from discord import VoiceChannel
 from discord.ext.commands import Context
+from youtube_dl import DownloadError
 
 from music.abstract_music_player import AbstractMusicPlayer
 from music.entry import Entry
@@ -27,7 +28,12 @@ class YTPlayer(AbstractMusicPlayer):
         :param query: the search query.
         """
         async with ctx.typing():
-            entry = await Entry.from_yt(ctx, query)
+            try:
+                entry = await Entry.from_yt(ctx, query)
+            except DownloadError as e:
+                self.logger.warn(str(e))
+                await ctx.send('Sorry, this url is not supported.')
+                return
         if not entry:
             await ctx.send(f'Search query {query} not found.')
             return

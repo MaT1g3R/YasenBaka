@@ -1,6 +1,7 @@
 from asyncio import get_event_loop
 from collections import Iterable
 from functools import partial
+from os.path import isfile
 from pathlib import Path
 from typing import Optional, Union
 
@@ -12,12 +13,14 @@ from mutagen.flac import FLAC
 from mutagen.mp3 import EasyMP3
 from youtube_dl import YoutubeDL
 
-PLAYLIST_DES = (
-    'Click on :rewind: to go to the previous page.'
-    '\nClick on :fast_forward: to go to the next page.'
-    '\nClick on :x: to delete this message.'
-    '\nThis message will self destruct after 1 minute of inactivity.'
-)
+
+def add_embed_options(embed: Embed) -> Embed:
+    embed.add_field(name='Previous Page', value=':rewind:')
+    embed.add_field(name='Next Page', value=':fast_forward:')
+    embed.add_field(name='Exit', value=':x:')
+    embed.set_footer(text='This message will self destruct after'
+                          '1 minute of inactivity.')
+    return embed
 
 
 def __to_string(tag: Union[str, list, None]) -> Optional[str]:
@@ -118,29 +121,45 @@ def ytdl_detail(title, duration, uploader, requester, date) -> str:
     :return: a detailed string repersentation of a youtube-dl audio source.
     """
     try:
-        if duration:
-            duration = int(duration)
-            minutes, seconds = divmod(duration, 60)
-            hours = 0
-            if minutes > 60:
-                hours, minutes = divmod(minutes, 60)
-            length_list = []
-            if hours:
-                length_list.append(f'{int(hours)}hr')
-            if minutes:
-                length_list.append(f'{int(minutes):02d}min')
-            length_list.append(f'{round(seconds):02d}sec')
-            length = f' [{" ".join(length_list)}]'
-        else:
-            length = ''
-    except ValueError:
+        duration = float(duration)
+    except (TypeError, ValueError):
         length = ''
+    else:
+        hours, seconds = divmod(duration, 3600)
+        minutes, seconds = divmod(seconds, 60)
+        hours_str = f'{int(hours):02d}:' if hours else ''
+        length = f' [{hours_str}{int(minutes):02d}:{int(seconds):02d}]'
     uploader = f'\nUploaded by: `{uploader}`' if uploader else ''
     date = f'\tUpload date: `{date}`' if date else ''
-    return (
-        f'\n{title}{length}\tRequested by: `{requester}`'
-        f'{uploader}{date}'
+    return (f'\n{title}{length}\tRequested by: `{requester}`'
+            f'{uploader}{date}')
+
+
+async def yt_download(ydl: YoutubeDL, data: dict,
+                      logger, webpage_url: str) -> str:
+    """
+    Download a file from youtube dl.
+    :param ydl: the `YoutubeDL` instance.
+    :param data: the file data.
+    :param logger: the logger to do logging with.
+    :param webpage_url: the webpage url.
+    :return: the file path to the download.
+    """
+    loop = get_event_loop()
+    file_path = ydl.prepare_filename(data)
+    if isfile(file_path):
+        logger.info(
+            f'File {file_path} found, not downloading.'
+        )
+        return file_path
+    logger.info(f'Downloading {webpage_url}')
+    await loop.run_in_executor(
+        None, ydl.download, [webpage_url]
     )
+    logger.info(
+        f'{webpage_url} downloaded to {file_path}'
+    )
+    return file_path
 
 
 def playlist_embed(ctx: Context, cur_page: int, total_page: int,

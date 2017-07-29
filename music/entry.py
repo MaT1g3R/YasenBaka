@@ -65,8 +65,10 @@ class Entry:
             if 'entries' in data:
                 data = data['entries'][0]
             webpage_url = data.get('webpage_url')
+            url = data.get('url')
             duration = data.get('duration')
-            if not webpage_url or not isinstance(duration, (int, float)):
+            if not webpage_url or not url \
+                    or not isinstance(duration, (int, float)):
                 return
             need_download = duration <= 1800
             delete_after = duration > 600

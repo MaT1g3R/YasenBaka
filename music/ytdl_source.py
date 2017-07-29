@@ -1,15 +1,14 @@
-from asyncio import get_event_loop
 from datetime import datetime
 from functools import partial
 from os import remove
-from os.path import isfile
 from time import time
 
 from youtube_dl import YoutubeDL
 
 from data import data_path
 from music.abstract_source import AbstractSource
-from music.music_util import fetch_ytdl_info, get_ytdl_format, ytdl_detail
+from music.music_util import fetch_ytdl_info, get_ytdl_format, yt_download, \
+    ytdl_detail
 
 
 class YTDLSource(AbstractSource):
@@ -99,34 +98,36 @@ class YTDLSource(AbstractSource):
             out = (f'{str(data_path.joinpath(out_dir))}'
                    f'/{epoch}%(extractor)s-%(id)s-%(title)s.%(ext)s')
             with YoutubeDL(get_ytdl_format(out)) as ydl:
-                loop = get_event_loop()
-                self.file_path = ydl.prepare_filename(self.data)
-                if isfile(self.file_path):
-                    self.logger.info(
-                        f'File {self.file_path} found, not downloading.'
-                    )
-                    return self.file_path
-                self.logger.info(f'Downloading {self.webpage_url}')
-                await loop.run_in_executor(
-                    None, ydl.download, [self.webpage_url]
+                fp = await yt_download(
+                    ydl, self.data,
+                    self.logger, self.webpage_url
                 )
-                self.logger.info(
-                    f'{self.webpage_url} downloaded to {self.file_path}'
-                )
-                return self.file_path
+                self.file_path = fp
+                return fp
         else:
             with YoutubeDL(get_ytdl_format(None)) as ydl:
-                data = await fetch_ytdl_info(ydl, self.webpage_url)
-                if 'entries' in data:
-                    data = data['entries'][0]
-            url = data['url']
-            del data
-            return url
+                return await self.__fetch_url(ydl)
+
+    async def __fetch_url(self, ydl: YoutubeDL) -> str:
+        """
+        Helper method to fetch a stream url.
+        :param ydl: the `YoutubeDL` instance.
+        :return: the stream url.
+        """
+        data = await fetch_ytdl_info(ydl, self.webpage_url)
+        if 'entries' in data:
+            data = data['entries'][0]
+        url = data['url']
+        del data
+        return url
 
     def __str__(self):
         return f'{self.title}\tRequested by {self.requester}'
 
     def clean_up(self):
+        """
+        Cleanup function for when the audio is finished playing.
+        """
         if self.delete_after and self.file_path is not None:
             try:
                 self.logger.info(f'Deleting {self.file_path}')
