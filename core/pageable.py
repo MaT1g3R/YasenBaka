@@ -2,7 +2,7 @@ from asyncio import TimeoutError
 from collections import namedtuple
 from typing import Optional, Union
 
-from discord import HTTPException, Member, Message, User
+from discord import Member, Message, User
 from discord.ext.commands import Context
 
 
@@ -87,10 +87,7 @@ class Pageable:
         :param ctx: `discord.Context` object.
         """
         for emoji in self.emojis:
-            try:
-                await self.message.add_reaction(emoji)
-            except HTTPException:
-                print(emoji)
+            await self.message.add_reaction(emoji)
         while True:
             if not self.message:
                 return
