@@ -1,9 +1,12 @@
 from asyncio import Queue
 from collections import deque
+from typing import Optional
 
-from discord import VoiceChannel
+from discord import Embed, VoiceChannel
 from discord.ext.commands import Context
 
+from music.music_util import playlist_embed
+from music.playlist import PlayList
 from music.ytdl_source import YTDLSource
 
 
@@ -70,6 +73,52 @@ class AbstractMusicPlayer:
             self.logger.warn(str(error))
         self.finished.put_nowait(self.current)
         self.current = None
+
+    @property
+    def total_page(self) -> int:
+        """
+        :return: The total amount of pages in the playlist.
+        """
+        return len(self.entry_queue) // 10 + 1
+
+    @property
+    def lst(self):
+        """
+        :return: `self.entry_queue` as a list.
+        """
+        return list(self.entry_queue)
+
+    async def playlist(self, ctx: Context, page: int) -> Optional[Embed]:
+        """
+        Get the playlist as an embed.
+        :param ctx: the `discord.Context` object.
+        :param page: the page number.
+        :return: the `page`th page of the playlist if any.
+        """
+        if self.empty:
+            await ctx.send('Playlist is empty')
+            return
+        start = 10 * (page - 1)
+        section = self.lst[start:start + 10]
+        if not section and not self.current:
+            await ctx.send(f'Page {page} is not in the playlist.')
+            return
+        return playlist_embed(
+            ctx, page, self.total_page, self.current, section
+        )
+
+    async def playlist_interactive(self, ctx: Context):
+        """
+        Start an interactive playlist session.
+
+        :param ctx: the `discord.Context` object.
+        """
+        embed = await self.playlist(ctx, 1)
+        if not embed:
+            return
+        msg = await ctx.send(embed=embed)
+        _playlist = PlayList(msg, ctx.author, self)
+        await _playlist(ctx)
 
     async def enqueue(self, ctx, query: str = None):
         """

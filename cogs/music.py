@@ -151,13 +151,36 @@ class Music:
             await ctx.send(f'Playing:{player.current.detail}')
 
     @commands.command()
-    async def playlist(self, ctx: Context):
+    async def playlist(self, ctx: Context, arg=None):
         """
         Description: Display the current playlist for this guild.
         Restriction: Cannot be used in private message.
-        Usage: "`{prefix}playlist`"
+        Usage: |
+            `{prefix}playlist` to display the first page of the playlist.
+            `{prefix}playlist num` to display the `num`th page of the playlist.
+            `{prefix}playlist -i` to display an interactive playlist.
         """
-        pass
+        playing, player = self.is_playing(ctx)
+        if not playing:
+            await ctx.send('Not playing anything.')
+            return
+        if arg == '-i':
+            await player.playlist_interactive(ctx)
+            return
+        if not arg:
+            page = 1
+        else:
+            try:
+                page = int(arg)
+            except ValueError:
+                await ctx.send('Please enter a valid page number.')
+                return
+        if page < 1 or page > player.total_page:
+            await ctx.send(f'Page {page} is not in the playlist.')
+            return
+        embed = await player.playlist(ctx, page)
+        if embed:
+            await ctx.send(embed=embed)
 
     @commands.command()
     async def skip(self, ctx: Context):

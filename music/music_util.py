@@ -4,6 +4,8 @@ from functools import partial
 from pathlib import Path
 from typing import Optional, Union
 
+from discord import Embed
+from discord.ext.commands import Context
 from mutagen import MutagenError
 from mutagen.easymp4 import EasyMP4
 from mutagen.flac import FLAC
@@ -132,3 +134,43 @@ def ytdl_detail(title, duration, uploader, requester, date) -> str:
         f'\n{title}{length}\tRequested by: `{requester}`'
         f'{uploader}{date}'
     )
+
+
+def playlist_embed(ctx: Context, cur_page: int, total_page: int,
+                   current, section: list) -> Optional[Embed]:
+    """
+    Get an embed representation of a section of a audio playlist.
+
+    :param ctx: the `discord.Context` object.
+
+    :param cur_page: the current page number.
+
+    :param total_page: the total page count.
+
+    :param current: the currently playing `Entry`
+    :type current: Entry
+
+    :param section: a list of `Entry` in the section.
+    :type section: List[Entry]
+
+    :return: An embed representation of a section of a audio playlist, if any.
+    """
+    if not section and not current:
+        return
+    colour = ctx.bot.config.colour
+    embed = Embed(
+        colour=colour,
+        title=f'Playlist page {cur_page} of {total_page}'
+    )
+    embed.add_field(
+        name='Currently Playing',
+        value=str(current),
+        inline=False
+    )
+    if section:
+        section_str = '\n'.join(
+            f'{i+1+((cur_page -1)* 10)}. {entry}'
+            for i, entry in enumerate(section)
+        )
+        embed.add_field(name='Up Next', value=section_str, inline=False)
+    return embed
