@@ -9,11 +9,11 @@ from wowspy import WowsAsync
 
 from bot import SessionManager, Yasen, version_info as vs
 from bot.logger import get_console_handler, setup_logging
-from clear_cache import clean
 from cogs import *
 from config import Config
 from data import data_path
 from data_manager import DataManager
+from scripts.clear_cache import clean
 from world_of_warships import WowsManager
 
 try:

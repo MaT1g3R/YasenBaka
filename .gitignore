@@ -21,6 +21,5 @@ data/logs/*
 
 # Keep these files
 !yasen-baka.py
-!clear_cache.py
 !config/sample_config.json
 !/data/sample_db
