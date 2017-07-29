@@ -227,17 +227,17 @@ async def get_lewd(
     """
     assert (
         site in (
-            'danbooru', 'konachan', 'yandere', 'e621', 'gelbooru', 'rule34',
-            'safebooru'
+            'danbooru', 'konachan', 'yandere', 'e621',
+            'gelbooru', 'rule34', 'safebooru'
         )
     )
     assert (user and api_key) or site != 'danbooru'
     tags, rating = __parse_query(search_query)
     site_params = __get_site_params(site, api_key, user)
-
     try:
         file_url, searched_tags, fuzzy, tags_to_write = await __get_lewd(
-            tags, rating, site, site_params, data_manager, session_manager)
+            tags, rating, site, site_params, data_manager, session_manager
+        )
         if file_url:
             if fuzzy:
                 msg = ('You have entered invalid {} tags, '
