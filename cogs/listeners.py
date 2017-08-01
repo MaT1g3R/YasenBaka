@@ -129,8 +129,8 @@ class Listeners:
         if not bots_discord_pw and not botsorgapi:
             return
         data = dumps({
-            'shard_id': str(self.bot.shard_id),
-            'shard_count': str(self.bot.shard_count),
+            'shard_id': self.bot.shard_id,
+            'shard_count': self.bot.shard_count,
             'server_count': len(self.bot.guilds)
         })
         if botsorgapi:
