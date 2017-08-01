@@ -8,6 +8,7 @@ __pycache__/
 /*.py
 *.json
 *_db
+*.sh
 
 # Ignore files under these directories
 data/dumps/*
@@ -23,3 +24,4 @@ data/logs/*
 !yasen-baka.py
 !config/sample_config.json
 !/data/sample_db
+!/.travis_install.sh

@@ -128,7 +128,7 @@ class Weeb:
         Description: Search for an anime.
         Usage: "`{prefix}anime Saenai Heroine no Sodatekata`"
         """
-        raise NotImplementedError
+        await ctx.send('Coming soon')
 
     @commands.command()
     async def manga(self, ctx, *, search=None):
@@ -136,7 +136,7 @@ class Weeb:
         Description: Search for a manga.
         Usage: "`{prefix}manga Kami nomi zo Shiru Sekai`"
         """
-        raise NotImplementedError
+        await ctx.send('Coming soon')
 
     @commands.command(name='LN')
     async def _light_novel(self, ctx, *, search=None):
@@ -144,4 +144,4 @@ class Weeb:
         Description: Search for a light novel.
         Usage: "`{prefix}LN Overlord`"
         """
-        raise NotImplementedError
+        await ctx.send('Coming soon')

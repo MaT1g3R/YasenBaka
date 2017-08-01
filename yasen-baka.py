@@ -24,7 +24,7 @@ except ImportError:
 
 async def run():
     session = ClientSession()
-    config = Config('beta_config.json')
+    config = Config('config.json')
     start_time = int(time())
     logger = setup_logging(start_time, data_path.joinpath('logs'))
     if config.console_logging:
