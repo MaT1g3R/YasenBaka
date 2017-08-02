@@ -32,6 +32,9 @@ class Osu:
         Usage: "`{prefix}osu player name --flag` Flag is optional,
         replace **--flag** with a flag listed above if you intend to use it."
         """
+        if not query:
+            await ctx.send('Please enter a player name.')
+            return
         async with ctx.typing():
             name, mode = parse_query(query)
             resp = await get_player_resp(
