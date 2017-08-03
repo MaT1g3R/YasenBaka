@@ -146,6 +146,8 @@ async def wtr_absolute(all_expected, coeff, actual: dict, ship_dict) -> int:
     :return: the wtr of the player
     """
     total, total_battles = 0, 0
+    if not actual:
+        return 0
     for ship_id, stat in actual.items():
         expected = all_expected.get(str(ship_id), None)
         if not expected:
@@ -185,7 +187,7 @@ def choose_colour(wtr: int) -> int:
     :param wtr: the wtr
     :return: a hex integer of the colour
     """
-    if wtr < 300:
+    if not wtr or wtr < 300:
         return 0x930D0D
     elif wtr < 700:
         return 0xCD3333

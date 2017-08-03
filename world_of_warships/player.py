@@ -176,6 +176,8 @@ class Player:
             return
         try:
             data = resp['data'][self.player_id]
+            if not data:
+                return
         except (KeyError, TypeError):
             return
         return {entry['ship_id']: entry['pvp'] for entry in data}
