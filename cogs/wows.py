@@ -38,7 +38,10 @@ class WorldOfWarships:
         else:
             bytes_io = await self.bot.session_manager.bytes_img(res)
             file = File(bytes_io, f'{int(time())}_wows_sig.png')
-            await ctx.send(file=file)
+            await ctx.send(
+                'Player profile is hidden, detailed stats not available.',
+                file=file
+            )
 
     @commands.command()
     async def clan(self, ctx: Context, name=None,

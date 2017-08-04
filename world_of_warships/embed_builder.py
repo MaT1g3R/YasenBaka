@@ -26,7 +26,7 @@ def get_shame_embed(embed: Embed, all_time_stats: dict, wtr: int,
         name=f'{nick_name} | Clan: {clan_tag} <- Link to profile',
         url=profile_url
     )
-    battles = all_time_stats['battles']
+    battles = all_time_stats.get('battles')
     if not battles:
         a(
             name='Error',

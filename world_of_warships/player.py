@@ -73,6 +73,8 @@ class Player:
         self.updating = False
         if not updated and self.__embed is not None:
             return self.__embed
+        if self.hidden:
+            return
         colour = choose_colour(self.wtr)
         tmp_embed = Embed(colour=colour)
         embed = get_shame_embed(
