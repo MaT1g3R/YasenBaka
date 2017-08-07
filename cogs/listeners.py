@@ -78,10 +78,12 @@ class Listeners:
         stripped = self.__strip_mention(content)
         if stripped and stripped.lower() == 'prefix' \
                 and isinstance(channel, TextChannel):
-            msg = (f'The prefix for this guild is: `{prefix}`\n'
-                   f'`{prefix}prefix set <YOUR_PREFIX>` to set the '
-                   f'prefix for this guild.\n`{prefix} reset` to reset'
-                   f' the prefix for this guild to default. `({prefix})`')
+            msg = (
+                f'The prefix for this guild is `{prefix}`\n'
+                f'`{prefix}prefix set` to set the prefix for this guild.\n'
+                f'`{prefix}prefix reset` to reset the prefix for this guild. '
+                f'`({self.bot.default_prefix})`'
+            )
             await channel.send(msg)
         elif content == '/o/':
             await channel.send('\\o\\')

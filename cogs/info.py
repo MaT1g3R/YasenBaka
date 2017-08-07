@@ -72,7 +72,7 @@ class BotInfo:
                 f'The prefix for this guild is `{prefix}`\n'
                 f'`{prefix}prefix set` to set the prefix for this guild.\n'
                 f'`{prefix}prefix reset` to reset the prefix for this guild. '
-                f'({self.bot.default_prefix})'
+                f'`({self.bot.default_prefix})`'
             )
         else:
             await ctx.send(f'The prefix for this bot is {prefix}')
