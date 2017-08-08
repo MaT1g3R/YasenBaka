@@ -163,29 +163,33 @@ class AbstractMusicPlayer:
         """
         if self.empty:
             return
-        self.playing = True
-        self.current = self.entry_queue.popleft()
-        with self.current as cur:
-            if isinstance(cur.source, YTDLSource):
-                await ctx.trigger_typing()
-            await cur.play(ctx, self.channel, self.__after)
-            await ctx.send(f'Now playing:{cur.detail}')
-            fin = await self.finished.get()
-        del fin
-        await self.__play_next(ctx)
+        while True:
+            self.playing = True
+            self.current = self.entry_queue.popleft()
+            with self.current as cur:
+                if isinstance(cur.source, YTDLSource):
+                    await ctx.trigger_typing()
+                await cur.play(ctx, self.channel, self.__after)
+                await ctx.send(f'Now playing:{cur.detail}')
+                fin = await self.finished.get()
+            del fin
+            if not await self.__play_next(ctx):
+                return
 
-    async def __play_next(self, ctx):
+    async def __play_next(self, ctx) -> bool:
         """
         After an `Entry` is finished playing, check if there is a need to
         play the next `Entry` in `self.entry_queue`
 
         :param ctx: the `discord.Context` object.
+
+        :return: True if continue playing, False to stop.
         """
         if self.empty:
             self.playing = False
             await self.stop(ctx, True)
-            return
-        await self.__play(ctx)
+            return False
+        return True
 
     async def stop(self, ctx: Context, disconnect: bool):
         """
