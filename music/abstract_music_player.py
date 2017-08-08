@@ -172,7 +172,7 @@ class AbstractMusicPlayer:
                 await cur.play(ctx, self.channel, self.__after)
                 await ctx.send(f'Now playing:{cur.detail}')
                 fin = await self.finished.get()
-            del fin
+                fin.__del__()
             if not await self.__play_next(ctx):
                 return
 
