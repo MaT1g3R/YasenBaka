@@ -171,8 +171,7 @@ class AbstractMusicPlayer:
                     await ctx.trigger_typing()
                 await cur.play(ctx, self.channel, self.__after)
                 await ctx.send(f'Now playing:{cur.detail}')
-                fin = await self.finished.get()
-                fin.__del__()
+                await self.finished.get()
             if not await self.__play_next(ctx):
                 return
 
