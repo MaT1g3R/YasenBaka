@@ -18,8 +18,8 @@ async def wolke_image(session_manager: SessionManager, key: str,
     :param type_: the type of the image.
     :return: the image url if found else an error message.
     """
-    url = 'https://staging-api.ram.moe/images/random?'
-    header = {'Authorization': key}
+    url = 'https://staging.weeb.sh/images/random?'
+    header = {'Authorization': f'Bearer {key}'}
     params = {'type': type_}
     try:
         js = await session_manager.get_json(
