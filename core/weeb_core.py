@@ -4,33 +4,9 @@ from typing import List, Tuple, Union
 
 from discord import File
 
-from bot import HTTPStatusError, SessionManager
+from bot import SessionManager
 from core.nsfw_core import get_lewd
 from data_manager import DataManager
-
-
-async def wolke_image(session_manager: SessionManager, key: str,
-                      type_: str) -> str:
-    """
-    Search wolke api for image by type.
-    :param session_manager: the SessionManager instance.
-    :param key: the api key.
-    :param type_: the type of the image.
-    :return: the image url if found else an error message.
-    """
-    url = 'https://staging.weeb.sh/images/random?'
-    header = {'Authorization': f'Bearer {key}'}
-    params = {'type': type_}
-    try:
-        js = await session_manager.get_json(
-            url, params,
-            headers=header
-        )
-    except HTTPStatusError as e:
-        return f'Sorry, something went wrong with the Wolke api.\n{e}'
-    else:
-        img = js.get('url', None)
-        return img or 'Sorry, nothing found.'
 
 
 async def random_picture(files: List[Path], tags: Tuple[str],

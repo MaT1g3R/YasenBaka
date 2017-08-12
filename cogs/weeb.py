@@ -7,7 +7,7 @@ from discord.ext.commands import Context
 
 from bot import Yasen
 from core.nsfw_core import get_lewd
-from core.weeb_core import random_picture, wolke_image
+from core.weeb_core import random_picture
 from data import data_path
 
 
@@ -75,16 +75,6 @@ class Weeb:
         Usage: "`{prefix}ayaya`"
         """
         await ctx.send(file=File(str(data_path.joinpath('ayaya.png'))))
-
-    @commands.command()
-    async def lewd(self, ctx: Context):
-        """
-        Description: "Onii chan no baka, echhi, hentai!"
-        Usage: "`{prefix}lewd`"
-        """
-        res = await wolke_image(
-            self.bot.session_manager, self.bot.config.wolke_api, 'lewd')
-        await ctx.send(res)
 
     @commands.command()
     async def chensaw(self, ctx: Context):

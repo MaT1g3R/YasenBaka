@@ -94,10 +94,6 @@ class Config:
         return self.__content['owners']
 
     @property
-    def wolke_api(self):
-        return self.__content['wolke_api']
-
-    @property
     def colour(self):
         return int(self.__content['colour'], base=16)
 
