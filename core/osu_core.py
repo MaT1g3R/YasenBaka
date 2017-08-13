@@ -5,7 +5,7 @@ from typing import Union
 from discord import Embed, File
 from osu_sig import Mode, generate
 
-from bot import HTTPStatusError, SessionManager
+from aiohttp_wrapper import HTTPStatusError, SessionManager
 
 
 async def osu_player(player_data: list, mode: Mode,

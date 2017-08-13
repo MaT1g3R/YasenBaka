@@ -2,9 +2,9 @@ from pathlib import Path
 from random import choice, random
 from typing import List, Tuple, Union
 
+from aiohttp_wrapper import SessionManager
 from discord import File
 
-from bot import SessionManager
 from core.nsfw_core import get_lewd
 from data_manager import DataManager
 

@@ -2,11 +2,12 @@ import re
 from json import dumps
 from traceback import format_exc
 
+from aiohttp_wrapper import HTTPStatusError
 from discord import File, Game, Guild, Message, TextChannel
 from discord.abc import Messageable
 from discord.ext.commands import CommandNotFound, Context
 
-from bot import HTTPStatusError, Yasen
+from bot import Yasen
 from bot.error_handler import command_error_handler, format_command_error
 from data import data_path
 from data_manager.data_utils import get_prefix

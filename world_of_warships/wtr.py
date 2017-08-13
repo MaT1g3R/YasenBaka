@@ -1,6 +1,6 @@
+from aiohttp_wrapper import SessionManager
 from wowspy import Region, WowsAsync
 
-from bot import SessionManager
 from scripts.helpers import try_divide
 
 CONVERT_REGION = {

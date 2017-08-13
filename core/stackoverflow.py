@@ -1,6 +1,6 @@
 from html import unescape
 
-from bot import HTTPStatusError, SessionManager
+from aiohttp_wrapper import HTTPStatusError, SessionManager
 
 
 async def search_answer(session_manager: SessionManager,

@@ -4,10 +4,10 @@ from json import dumps
 from pathlib import Path
 from typing import List, Optional
 
+from aiohttp_wrapper import SessionManager
 from discord import Embed
 from wowspy import Region, WowsAsync
 
-from bot import SessionManager
 from data import data_path
 from scripts.helpers import combine_objects
 from world_of_warships.embed_builder import build_clan_embed

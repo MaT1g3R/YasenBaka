@@ -9,6 +9,7 @@ __pycache__/
 *.json
 *_db
 *.sh
+*.db
 
 # Ignore files under these directories
 data/dumps/*

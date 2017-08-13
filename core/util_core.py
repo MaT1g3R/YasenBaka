@@ -3,7 +3,7 @@ from urllib import parse
 
 from discord import File, Member, User
 
-from bot import HTTPStatusError, SessionManager
+from aiohttp_wrapper import HTTPStatusError, SessionManager
 
 
 async def generate_latex_online(session_manager: SessionManager,
@@ -17,7 +17,7 @@ async def generate_latex_online(session_manager: SessionManager,
     exp = parse.quote(expression, safe='')
     url = f'http://frog.isima.fr/cgi-bin/bruno/tex2png--10.cgi?{exp}'
     try:
-        bytes_io = await session_manager.bytes_img(url)
+        bytes_io = await session_manager.bytes_io(url)
     except HTTPStatusError as e:
         return f'Sorry, something went wrong with the HTTP request.\n{e}'
     return File(bytes_io, 'latex.png')

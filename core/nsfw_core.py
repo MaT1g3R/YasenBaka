@@ -4,7 +4,8 @@ NSFW functions
 from random import choice
 from typing import List, Optional, Tuple
 
-from bot import HTTPStatusError, SessionManager
+from aiohttp_wrapper import HTTPStatusError, SessionManager
+
 from data_manager import DataManager
 from scripts.helpers import flatten
 
