@@ -7,7 +7,7 @@ from time import time
 from aiohttp import ClientSession
 from wowspy import WowsAsync
 
-from bot import SessionManager, Yasen, version_info as vs
+from bot import AnimeSearcher, Yasen, version_info as vs
 from bot.logger import get_console_handler, setup_logging
 from cogs import *
 from config import Config
@@ -32,8 +32,13 @@ async def run():
     v = f'{vs.releaselevel} {vs.major}.{vs.minor}.{vs.micro}'
     if vs.serial:
         v += f'-{vs.serial}'
+    anime_search = await AnimeSearcher.from_sqlite(
+        {'user': config.mal_user, 'password': config.mal_pass},
+        data_path.joinpath('minoshiro.db'),
+        cache_pages=1, cache_mal_entries=40, logger=logger
+    )
+    session_manager = anime_search.session_manager
     data_manager = DataManager(connect(f'{data_path.joinpath("yasen_db")}'))
-    session_manager = SessionManager(session, logger)
     wows_api = WowsAsync(config.wows, session)
     wows_manager = await WowsManager.wows_manager(
         session_manager, wows_api, logger
@@ -44,7 +49,7 @@ async def run():
         config=config,
         start_time=start_time,
         data_manager=data_manager,
-        session_manager=session_manager,
+        anime_search=anime_search,
         wows_manager=wows_manager,
         wows_api=wows_api
     )

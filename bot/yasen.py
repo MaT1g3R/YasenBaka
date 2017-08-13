@@ -11,7 +11,6 @@ from discord import ConnectionClosed, Game, Permissions, Status
 from discord.abc import Messageable
 from discord.ext.commands import AutoShardedBot, Context
 from discord.utils import oauth_url
-from minoshiro import Minoshiro
 from wowspy import WowsAsync
 
 from config import Config
@@ -19,6 +18,7 @@ from data_manager import DataManager
 from data_manager.data_utils import get_prefix
 from scripts.helpers import code_block
 from world_of_warships import WowsManager
+from .anime_searcher import AnimeSearcher
 
 
 class Yasen(AutoShardedBot):
@@ -34,7 +34,7 @@ class Yasen(AutoShardedBot):
                  wows_api=WowsAsync,
                  data_manager: DataManager,
                  wows_manager: WowsManager,
-                 anime_search: Minoshiro):
+                 anime_search: AnimeSearcher):
         self.config = config
         self.logger = logger
         self.version = version

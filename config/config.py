@@ -110,3 +110,11 @@ class Config:
         p = Path(self.__content['music_path'])
         if p.is_dir() and tuple(p.iterdir()):
             return p
+
+    @property
+    def mal_user(self):
+        return self.__content['mal_user']
+
+    @property
+    def mal_pass(self):
+        return self.__content['mal_pass']

@@ -4,10 +4,11 @@ from typing import List
 from discord import File
 from discord.ext import commands
 from discord.ext.commands import Context
+from minoshiro import Medium
 
 from bot import Yasen
 from core.nsfw_core import get_lewd
-from core.weeb_core import random_picture
+from core.weeb_core import random_picture, search_weeb
 from data import data_path
 
 
@@ -118,7 +119,7 @@ class Weeb:
         Description: Search for an anime.
         Usage: "`{prefix}anime Saenai Heroine no Sodatekata`"
         """
-        await ctx.send('Coming soon')
+        await search_weeb(ctx, search, Medium.ANIME)
 
     @commands.command()
     async def manga(self, ctx, *, search=None):
@@ -126,7 +127,7 @@ class Weeb:
         Description: Search for a manga.
         Usage: "`{prefix}manga Kami nomi zo Shiru Sekai`"
         """
-        await ctx.send('Coming soon')
+        await search_weeb(ctx, search, Medium.MANGA)
 
     @commands.command(name='LN')
     async def _light_novel(self, ctx, *, search=None):
@@ -134,4 +135,4 @@ class Weeb:
         Description: Search for a light novel.
         Usage: "`{prefix}LN Overlord`"
         """
-        await ctx.send('Coming soon')
+        await search_weeb(ctx, search, Medium.LN)

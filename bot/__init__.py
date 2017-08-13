@@ -8,6 +8,7 @@ with special World of Warships commands.
 """
 from collections import namedtuple
 
+from bot.anime_searcher import AnimeSearcher
 from bot.yasen import Yasen
 
 VersionInfo = namedtuple(
@@ -24,5 +25,6 @@ __copyright__ = 'Copyright 2016-2017 MaT1g3R'
 __version__ = '.'.join([str(i) for i in list(version_info)[:3]])
 __url__ = 'https://github.com/MaT1g3R/YasenBaka'
 
-__all__ = ['Yasen', 'version_info', '__title__', '__author__', '__license__',
-           '__copyright__', '__version__', '__url__']
+__all__ = ['Yasen', 'version_info', 'AnimeSearcher', '__title__',
+           '__author__', '__license__', '__copyright__',
+           '__version__', '__url__']

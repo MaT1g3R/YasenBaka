@@ -15,5 +15,7 @@
   "error_log": null,
   "colour": "A hex colour code to use for embeds. Example: 1660A5",
   "support": "Your support server invite link",
-  "music_path": "A path to the directory that contains your default playlist. Leave blank if you don't want one."
+  "music_path": "A path to the directory that contains your default playlist. Leave blank if you don't want one.",
+  "mal_user": "Your MAL username",
+  "mal_pass": "Yout MAL password"
 }
