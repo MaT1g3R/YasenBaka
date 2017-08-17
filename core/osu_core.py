@@ -2,10 +2,9 @@ from math import ceil
 from time import time
 from typing import Union
 
+from aiohttp_wrapper import HTTPStatusError, SessionManager
 from discord import Embed, File
 from osu_sig import Mode, generate
-
-from aiohttp_wrapper import HTTPStatusError, SessionManager
 
 
 async def osu_player(player_data: list, mode: Mode,
@@ -87,9 +86,8 @@ async def generate_sig(name: str, mode: Mode, colour_str,
         xpbar=True, xpbarhex=True, onlineindicator=3
     )
     try:
-        bytes_io = await session_manager.bytes_img(sig)
-    except HTTPStatusError as e:
-        session_manager.logger.warn(str(e))
+        bytes_io = await session_manager.bytes_io(sig)
+    except HTTPStatusError:
         return f'Could not generate player signature.'
     return File(bytes_io, f'{int(time())}osu.png')
 
