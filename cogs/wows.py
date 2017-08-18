@@ -36,7 +36,7 @@ class WorldOfWarships:
         if isinstance(res, Embed):
             await ctx.send(embed=res)
         else:
-            bytes_io = await self.bot.session_manager.bytes_img(res)
+            bytes_io = await self.bot.session_manager.bytes_io(res)
             file = File(bytes_io, f'{int(time())}_wows_sig.png')
             await ctx.send(
                 'Player profile is hidden, detailed stats not available.',
