@@ -1,7 +1,7 @@
 # YasenBaka [![Build Status](https://travis-ci.org/MaT1g3R/YasenBaka.svg?branch=master)](https://travis-ci.org/MaT1g3R/YasenBaka)
 Yasen-Baka, a multifunctional Discord bot
 with special World of Warships commands., written with the [discord.py](https://github.com/Rapptz/discord.py) api.  
-You can invite the bot to your channel with this [link](https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=-1)  
+You can invite the bot to your guild with this [link](https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=-1)  
 
 ## Notice
 I no longer use discord for personal reasons. I will try to fix bugs as they come up but as of this momnet I do not plan on adding any new features.
