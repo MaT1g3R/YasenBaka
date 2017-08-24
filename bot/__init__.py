@@ -15,7 +15,7 @@ VersionInfo = namedtuple(
     'VersionInfo', 'major minor micro releaselevel serial')
 
 version_info = VersionInfo(
-    major=0, minor=9, micro=0, releaselevel='beta', serial=0
+    major=1, minor=0, micro=0, releaselevel='release', serial=0
 )
 
 __title__ = 'Yasen-Baka'
