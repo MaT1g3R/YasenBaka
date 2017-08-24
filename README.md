@@ -1,36 +1,74 @@
 # YasenBaka [![Build Status](https://travis-ci.org/MaT1g3R/YasenBaka.svg?branch=master)](https://travis-ci.org/MaT1g3R/YasenBaka)
-Yasen-Baka discord bot, written with the [discord.py](https://github.com/Rapptz/discord.py) api.  
+Yasen-Baka, a multifunctional Discord bot
+with special World of Warships commands., written with the [discord.py](https://github.com/Rapptz/discord.py) api.  
 You can invite the bot to your channel with this [link](https://discordapp.com/oauth2/authorize?client_id=243230010532560896&scope=bot&permissions=-1)  
-Join the support server [here](https://discord.gg/BnPbz6q)  
-## Commands
-* #### Moderation commands:
-```
-pmall, setprefix
-```
-* #### World of Warship commands:
-```
-addshame, clan, clanwtr, removeshame, shame, shamelist
-```
 
-* #### Fun commadns:  
-```
-ayaya, chensaw, choose, joke, kanna, kyubey, lewd, osu, place, repeat, roll, salt, umi
-```
+## Notice
+I no longer use discord for personal reasons. I will try to fix bugs as they come up but as of this momnet I do not plan on adding any new features.
 
-* #### Utility commands:
-```
-anime, avatar, currency, info, joined, latex, ping, prefix, stackoverflow, systeminfo
-```
+If you  are interested in continuing this project please shoot me an email at `mat1g3r at gmail dot com` or contact me on matrix at `mat1g3r@matrix.org`.
 
-* #### Music commands:
-```
-pause, play, playing, resume, skip, stop, summon, volume
-```
-* #### NSFW commands:
-```
-danbooru, gelbooru, konachan, yandere
-```
-You can also talk to the bot by mentioning her!
+## Usage
+
+To get started with the bot, simply type `?help` into your guild channel.
+
+Commands are divided into 9 categories, they are listed below.
+
+
+  * #### Bot Info Commands:
+
+    ```
+    help, info, ping, prefix reset, prefix set, prefix
+    ```
+
+  * #### Fun Commands:
+
+    ```
+    choose, repeat, roll, salt
+    ```
+
+  * #### Moderation Commands:  
+
+    ```
+    masspm, purge
+    ```
+
+  * #### Music Commands:
+
+    ```
+    play, playdefault, playing, playlist, setskip, skip, stop
+    ```
+
+  * #### Nsfw Commands:
+
+    ```
+    danbooru, e621, gelbooru, konachan, rule34, yandere
+    ```
+
+  * #### Osu Commands:
+
+    ```
+    osu
+    ```
+
+  * #### Utility Commands:
+
+    ```
+    avatar, currency, joined, latex, stackoverflow
+    ```
+
+  * #### Weeb Commands:
+
+    ```
+    LN, anime, ayaya, chensaw, joke, kanna, karen, manga, safebooru, umi
+    ```
+
+  * #### World of Warships Commands:
+
+    ```
+    clan, shame, shamelist add, shamelist remove, shamelist
+    ```
+
 
 ## Self Host
 To self host yasen, you will need those packages installed on your system:
@@ -38,27 +76,26 @@ To self host yasen, you will need those packages installed on your system:
 * FFmpeg: https://ffmpeg.org/
 * SQLite3: https://www.sqlite.org/
 
-
 In addition, you will need to execute the following command to install required libraries:
 
 First cd into the directory where yasen is located, then:
+
+```bash
+pip install -Ur requirements.txt
 ```
-$ pip3 install cffi
-$ pip3 install -r requirements.txt
+
+Make a copy of `YasenBaka/data/sample_db` in the `YasenBaka/data/` directory and rename it to `yasen_db`
+
+Make a copy of `YasenBaka/config/sample_config.json` in the `YasenBaka/config/` directory and rename it to `config.json`. Then you will need to fill out the required config values and api keys. I am not responsible for helping you obtaining any of the api keys.
+
+Finally to run, do:
+```bash
+python3 yasen-baka.py
 ```
-On Linux, you might run into trouble installing PyNaCl, please refer to the below image.
-
-![logo](https://camo.githubusercontent.com/70c57a8abd17504a36554c87290f864be48686ea/687474703a2f2f692e696d6775722e636f6d2f35625165584a582e706e67)
-
-Then you will need to rename ``sample_mydb`` to ``mydb`` in the ``data`` directory and rename ``sample_api.py`` to ``api.py`` in the ``config`` directory, and fill out the api keys inside.
-
-Then to run, execute ``yasen-baka.py`` in the root directory with a python3.6+ interpreter, or execute ``run.sh`` on GNU/Linux or MacOS, ``run.bat`` on Microsoft<sup>®</sup> Windows<sup>®</sup>.
 
 ## Contributing
-For non-developers, you can contribute by reporting bugs or making suggestions. They can be done in three ways:
-* Join the support server [here](https://discord.gg/BnPbz6q)  
-* Message me on discord: ラブアローシュート#6728
-* Open a Github issue [here](https://github.com/MaT1g3R/YasenBaka/issues/new)
+For non-developers, you can contribute by reporting bugs or making suggestions.
+Simply open a Github issue [here](https://github.com/MaT1g3R/YasenBaka/issues/new)
 
 For developers, if you are interested in contributing, follow the steps below:
 1. Fork it ( https://github.com/MaT1g3R/YasenBaka/fork )
