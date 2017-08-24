@@ -33,7 +33,12 @@ def get_info_embed(bot: Yasen) -> Embed:
         value=f'{len(tuple(bot.get_channels(TextChannel))):,}'
     )
     a(name='Voice Connections', value=f'{len(bot.voice_clients):,}')
-    a(name='Support Guild', value=f'[{name} Support]({bot.config.support})')
+    suppport = bot.config.support
+    if suppport:
+        a(
+            name='Support Guild',
+            value=f'[{name} Support]({bot.config.support})'
+        )
     a(name='Source Code', value=f'[{name} Source]({source})')
     a(name='Invite Link', value=f'[{name} Invite]({bot.invite_link})')
     del a
