@@ -63,7 +63,10 @@ class Entry:
         with YoutubeDL(get_ytdl_format(None)) as ydl:
             data = await fetch_ytdl_info(ydl, query)
             if 'entries' in data:
-                data = data['entries'][0]
+                try:
+                    data = data['entries'][0]
+                except IndexError:
+                    return
             webpage_url = data.get('webpage_url')
             url = data.get('url')
             duration = data.get('duration')
