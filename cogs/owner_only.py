@@ -6,7 +6,7 @@ from bot import Yasen
 from scripts.checks import is_owner
 
 
-class OnwerOnly:
+class OwnerOnly:
     __slots__ = ('bot',)
 
     def __init__(self, bot: Yasen):
@@ -16,7 +16,7 @@ class OnwerOnly:
         return await is_owner(ctx)
 
     @command()
-    async def announce(self, ctx: Context, *msg):
+    async def announce(self, ctx: Context, *, msg: str):
         """
         Send an announcement to every guild.
 
