@@ -6,7 +6,7 @@ You can invite the bot to your guild with this [link](https://discordapp.com/oau
 ## Notice
 I no longer use discord for personal reasons. I will try to fix bugs as they come up but as of this momnet I do not plan on adding any new features.
 
-If you  are interested in continuing this project please shoot me an email at `mat1g3r at gmail dot com` or contact me on matrix at `mat1g3r@matrix.org`.
+If you  are interested in continuing this project please shoot me an email at `mat1g3r at gmail dot com` or contact me on matrix at `@umi:otonokizaka.is-a-linux-user.org`.
 
 ## Usage
 
