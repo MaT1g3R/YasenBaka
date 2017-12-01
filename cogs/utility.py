@@ -30,6 +30,7 @@ class Utility:
             await ctx.send('Please enter a valid LaTeX expression.')
             return
         try:
+            expression = f'\\[{expression}\\]'
             file = pnglatex(expression)
         except ValueError as e:
             await ctx.send(str(e))
