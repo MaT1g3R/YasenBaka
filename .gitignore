@@ -10,6 +10,7 @@ __pycache__/
 *_db
 *.sh
 *.db
+docker-compose.yml
 
 # Ignore files under these directories
 data/dumps/*

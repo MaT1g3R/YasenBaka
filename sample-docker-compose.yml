@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+
+  yasen-baka:
+    image: python:3.6-stretch
+    build: .
+    volumes:
+      - .:/code
+      - /path/to/music/directory:/music
+      - /path/to/database/directory:/db
+    restart: always
+    environment:
+      IN_DOCKER: 1
