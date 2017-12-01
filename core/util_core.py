@@ -55,9 +55,7 @@ async def convert_currency(session_manager: SessionManager, key: str,
     if not data:
         return 'Please enter vaild currency codes.'
     try:
-        rate = (
-                float(data[f'USD{target}']) / float(data[f'USD{base}'])
-        )
+        rate = (float(data[f'USD{target}']) / float(data[f'USD{base}']))
     except KeyError:
         return 'Please enter vaild currency codes.'
     if amt.is_integer():
