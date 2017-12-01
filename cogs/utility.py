@@ -3,10 +3,11 @@ from html import unescape
 from discord import Embed, File, Member, User
 from discord.ext import commands
 from discord.ext.commands import Context
+from pnglatex import pnglatex
 
 from bot import Yasen
 from core.stackoverflow import stackoverflow
-from core.util_core import convert_currency, generate_latex_online, get_avatar
+from core.util_core import convert_currency, delete, get_avatar
 from scripts.helpers import code_block
 
 
@@ -28,11 +29,14 @@ class Utility:
         if not expression:
             await ctx.send('Please enter a valid LaTeX expression.')
             return
-        res = await generate_latex_online(self.bot.session_manager, expression)
-        if isinstance(res, File):
-            await ctx.send(file=res)
+        try:
+            expression = f'\\[{expression}\\]'
+            file = pnglatex(expression)
+        except ValueError as e:
+            await ctx.send(str(e))
         else:
-            await ctx.send(res)
+            with delete(file):
+                await ctx.send(file=File(str(file)))
 
     @commands.command()
     async def avatar(self, ctx: Context, *, user: User = None):

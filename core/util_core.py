@@ -1,26 +1,17 @@
+from contextlib import contextmanager
 from typing import Union
-from urllib import parse
-
-from discord import File, Member, User
 
 from aiohttp_wrapper import HTTPStatusError, SessionManager
+from discord import Member, User
 
 
-async def generate_latex_online(session_manager: SessionManager,
-                                expression: str) -> Union[str, File]:
-    """
-    Generate latex image from latex website.
-    :param session_manager: the SessionManager instance.
-    :param expression: the latex equation to be rendered.
-    :return: A discord File of the latex image if success else an error message
-    """
-    exp = parse.quote(expression, safe='')
-    url = f'http://frog.isima.fr/cgi-bin/bruno/tex2png--10.cgi?{exp}'
+@contextmanager
+def delete(path):
+    yield
     try:
-        bytes_io = await session_manager.bytes_io(url)
-    except HTTPStatusError as e:
-        return f'Sorry, something went wrong with the HTTP request.\n{e}'
-    return File(bytes_io, 'latex.png')
+        path.unlink()
+    except FileNotFoundError:
+        pass
 
 
 def get_avatar(target: Union[User, Member]) -> str:
@@ -64,9 +55,7 @@ async def convert_currency(session_manager: SessionManager, key: str,
     if not data:
         return 'Please enter vaild currency codes.'
     try:
-        rate = (
-            float(data[f'USD{target}']) / float(data[f'USD{base}'])
-        )
+        rate = (float(data[f'USD{target}']) / float(data[f'USD{base}']))
     except KeyError:
         return 'Please enter vaild currency codes.'
     if amt.is_integer():
