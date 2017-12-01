@@ -16,6 +16,5 @@ PyNaCl>=1.2.0
 pytest>=3.3.0
 pytz>=2017.3
 PyYAML>=3.12
-uvloop>=0.9.1
 wowspy>=1.2.3
 youtube-dl>=2017.11.15

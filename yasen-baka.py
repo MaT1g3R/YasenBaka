@@ -1,5 +1,6 @@
 """The main bot run file"""
-from asyncio import get_event_loop, set_event_loop_policy
+from asyncio import get_event_loop
+from os import getenv
 from pathlib import Path
 from sqlite3 import connect
 from time import time
@@ -16,10 +17,8 @@ from data_manager import DataManager
 from scripts.clear_cache import clean
 from world_of_warships import WowsManager
 
-try:
-    from uvloop import EventLoopPolicy
-except ImportError:
-    EventLoopPolicy = None
+IN_DOCKER = str(getenv('IN_DOCKER')) == '1'
+DB_PATH = Path('/db') if IN_DOCKER else data_path
 
 
 async def run():
@@ -34,11 +33,11 @@ async def run():
         v += f'-{vs.serial}'
     anime_search = await AnimeSearcher.from_sqlite(
         {'user': config.mal_user, 'password': config.mal_pass},
-        data_path.joinpath('minoshiro.db'),
+        DB_PATH / 'minoshiro.db',
         cache_pages=1, cache_mal_entries=40, logger=logger
     )
     session_manager = anime_search.session_manager
-    data_manager = DataManager(connect(f'{data_path.joinpath("yasen_db")}'))
+    data_manager = DataManager(connect(f'{DB_PATH / "yasen_db"}'))
     wows_api = WowsAsync(config.wows, session)
     wows_manager = await WowsManager.wows_manager(
         session_manager, wows_api, logger
@@ -64,8 +63,6 @@ async def run():
 
 if __name__ == '__main__':
     clean(('dumps', 'music_cache'))
-    if EventLoopPolicy:
-        set_event_loop_policy(EventLoopPolicy())
     loop = get_event_loop()
     b, c = loop.run_until_complete(run())
     try:
