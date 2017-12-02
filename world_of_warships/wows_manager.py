@@ -1,6 +1,6 @@
 from asyncio import sleep
 from datetime import date
-from json import dumps
+from json import dumps, load
 from pathlib import Path
 from typing import List, Optional
 
@@ -93,6 +93,11 @@ class WowsManager:
             self.logger.info(f'{generic} Warships Today success.')
         else:
             self.logger.warn(f'{generic} from Warships Today failed.')
+            with self.e_and_c_path.open() as f:
+                self.expected_and_coeff = load(f)
+
+        assert self.expected_and_coeff is not None
+
         self.logger.info(f'{generic} from Wargaming.')
         ships = await self.__update_data(
             get_ship_dicts(self.wows_api), self.ship_path
